@@ -1,65 +1,179 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
+import { University } from '@/lib/types';
+import UniversitySelect from '@/components/UniversitySelect';
+import CodeInput from '@/components/CodeInput';
+import CapsulePicker from '@/components/CapsulePicker';
+import LoadingOverlay from '@/components/LoadingOverlay';
+
+type Step = 'intro' | 'selectUniversity' | 'enterCode' | 'pickCapsule';
+
+export default function HomePage() {
+  const router = useRouter();
+  const [step, setStep] = useState<Step>('intro');
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [codeError, setCodeError] = useState('');
+  const [verifiedCode, setVerifiedCode] = useState('');
+
+  useEffect(() => {
+    if (step === 'selectUniversity') {
+      loadUniversities();
+    }
+  }, [step]);
+
+  const loadUniversities = async () => {
+    setIsLoading(true);
+    const { data } = await supabase
+      .from('universities')
+      .select('id, name, assigned_character_id, assigned_at, created_at')
+      .order('name');
+    setUniversities((data as University[]) ?? []);
+    setIsLoading(false);
+  };
+
+  const handleUniversitySelect = (uni: University) => {
+    setSelectedUniversity(uni);
+    if (uni.assigned_character_id) {
+      router.push(`/result/${uni.id}`);
+      return;
+    }
+    setCodeError('');
+    setStep('enterCode');
+  };
+
+  const handleCodeSubmit = async (code: string) => {
+    if (!selectedUniversity) return;
+    setIsLoading(true);
+    setCodeError('');
+
+    const res = await fetch('/api/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ universityId: selectedUniversity.id, code }),
+    });
+    const data = await res.json();
+    setIsLoading(false);
+
+    if (data.alreadyAssigned) {
+      router.push(`/result/${selectedUniversity.id}`);
+      return;
+    }
+    if (!data.success) {
+      setCodeError(data.error);
+      return;
+    }
+    setVerifiedCode(code);
+    setStep('pickCapsule');
+  };
+
+  const handleCapsulePick = async () => {
+    if (!selectedUniversity || !verifiedCode) return;
+    setIsLoading(true);
+
+    const res = await fetch('/api/assign-character', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ universityId: selectedUniversity.id, code: verifiedCode }),
+    });
+    const data = await res.json();
+    setIsLoading(false);
+
+    if (data.alreadyAssigned || data.success) {
+      router.push(`/result/${selectedUniversity.id}`);
+      return;
+    }
+    alert(data.error ?? '오류가 발생했어요. 다시 시도해주세요.');
+    setStep('selectUniversity');
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="min-h-screen bg-white flex flex-col">
+      {isLoading && step !== 'pickCapsule' && <LoadingOverlay />}
+
+      {step === 'intro' && (
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-16 text-center min-h-screen">
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-2 mb-6">
+              <span className="text-[#FF6000] text-sm font-medium">🎴 캐릭터 캡슐 뽑기</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-gray-900 leading-tight mb-3">
+              80개 대학,<br />80종 캐릭터
+            </h1>
+            <p className="text-gray-500 text-base leading-relaxed">
+              우리 학교의 캐릭터를<br />직접 뽑아보세요.
+            </p>
+          </div>
+
+          <div className="w-32 h-32 bg-orange-50 rounded-full flex items-center justify-center text-6xl mb-10 shadow-inner">
+            🎁
+          </div>
+
+          <button
+            onClick={() => setStep('selectUniversity')}
+            className="w-full max-w-xs bg-[#FF6000] text-white font-bold py-4 rounded-2xl text-lg shadow-lg active:scale-95 transition-all"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            시작하기
+          </button>
+        </div>
+      )}
+
+      {step === 'selectUniversity' && (
+        <div className="flex-1 flex flex-col px-5 py-8 min-h-screen">
+          <button onClick={() => setStep('intro')} className="text-gray-400 text-sm mb-6 self-start">
+            ← 뒤로
+          </button>
+          <h2 className="text-2xl font-extrabold text-gray-900 mb-2">우리 학교를<br />선택해주세요.</h2>
+          <p className="text-gray-500 text-sm mb-6">학교별로 단 하나의 캐릭터가 배정됩니다.</p>
+          {isLoading ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="w-8 h-8 border-4 border-orange-200 border-t-[#FF6000] rounded-full animate-spin" />
+            </div>
+          ) : (
+            <UniversitySelect universities={universities} onSelect={handleUniversitySelect} />
+          )}
+        </div>
+      )}
+
+      {step === 'enterCode' && selectedUniversity && (
+        <div className="flex-1 flex flex-col px-5 py-8 min-h-screen">
+          <button
+            onClick={() => { setStep('selectUniversity'); setCodeError(''); }}
+            className="text-gray-400 text-sm mb-6 self-start"
+          >
+            ← 뒤로
+          </button>
+          <h2 className="text-2xl font-extrabold text-gray-900 mb-6">
+            {selectedUniversity.name}<br />캡슐 오픈 코드
+          </h2>
+          <CodeInput
+            universityName={selectedUniversity.name}
+            onSubmit={handleCodeSubmit}
+            isLoading={isLoading}
+            error={codeError}
+          />
+        </div>
+      )}
+
+      {step === 'pickCapsule' && selectedUniversity && (
+        <div className="flex-1 flex flex-col px-5 py-8 min-h-screen">
+          {isLoading && <LoadingOverlay message="캐릭터를 배정하는 중..." />}
+          <h2 className="text-2xl font-extrabold text-gray-900 mb-2 text-center">
+            {selectedUniversity.name}<br />캐릭터 캡슐을 선택해주세요.
+          </h2>
+          <div className="mt-8">
+            <CapsulePicker
+              universityName={selectedUniversity.name}
+              onPick={handleCapsulePick}
+              isLoading={isLoading}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
-    </div>
+      )}
+    </main>
   );
 }
