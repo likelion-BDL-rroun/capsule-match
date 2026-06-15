@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import AdminStatusTable from '@/components/AdminStatusTable';
 import ResetAssignmentModal from '@/components/ResetAssignmentModal';
 
@@ -22,6 +23,7 @@ type StatusData = {
 export default function AdminPage() {
   const [data, setData] = useState<StatusData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
   const [resetTarget, setResetTarget] = useState<UniversityRow | null>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -79,12 +81,23 @@ export default function AdminPage() {
             <h1 className="text-2xl font-extrabold text-gray-900">관리자 현황판</h1>
             <p className="text-sm text-gray-500 mt-1">캐릭터 배정 현황 및 초기화 관리</p>
           </div>
-          <button
-            onClick={loadStatus}
-            className="text-sm text-[#FF6000] font-medium border border-orange-200 px-3 py-2 rounded-xl"
-          >
-            새로고침
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={loadStatus}
+              className="text-sm text-[#FF6000] font-medium border border-orange-200 px-3 py-2 rounded-xl"
+            >
+              새로고침
+            </button>
+            <button
+              onClick={async () => {
+                await fetch('/api/admin/auth', { method: 'DELETE' });
+                router.push('/admin/login');
+              }}
+              className="text-sm text-gray-500 font-medium border border-gray-200 px-3 py-2 rounded-xl"
+            >
+              로그아웃
+            </button>
+          </div>
         </div>
 
         {isLoading ? (
