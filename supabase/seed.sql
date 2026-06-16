@@ -30,12 +30,4 @@ INSERT INTO characters (name, image_url, status) VALUES
   ('캐릭터 03', '/characters/char_003.svg', 'available')
 ON CONFLICT (name) DO NOTHING;
 
--- 해시 값은 generate-hashes.js 실행 결과입니다.
--- SHA-256("TEST-001") = d16625aea1b224c4a75015b16591b03db85083f199e39b78a3f507fc3420605d
--- SHA-256("TEST-002") = 5552a1e71691b27a46c16d086f5003b8a17c9142cd1cc05521ca0d3c811d4aff
--- SHA-256("TEST-003") = 28f371ab5bece3107ac9895ce4695e4da8f48cb76f736f78b758618c7f0d6375
-INSERT INTO universities (name, open_code_hash) VALUES
-  ('OO대학교', 'd16625aea1b224c4a75015b16591b03db85083f199e39b78a3f507fc3420605d'),
-  ('XX대학교', '5552a1e71691b27a46c16d086f5003b8a17c9142cd1cc05521ca0d3c811d4aff'),
-  ('YY대학교', '28f371ab5bece3107ac9895ce4695e4da8f48cb76f736f78b758618c7f0d6375')
-ON CONFLICT (name) DO NOTHING;
+-- 대학 데이터는 supabase/seed-universities.sql 을 사용하세요

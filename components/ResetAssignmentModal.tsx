@@ -80,7 +80,7 @@ export default function ResetAssignmentModal({
               onChange={(e) => setReason(e.target.value)}
               placeholder="예: 담당자 요청으로 재배정 필요"
               rows={2}
-              className="w-full border-2 border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#FF6000] resize-none"
+              className="w-full border-2 border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#FF6000] resize-none"
               disabled={isLoading}
             />
           </div>
