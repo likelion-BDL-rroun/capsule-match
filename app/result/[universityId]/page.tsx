@@ -106,7 +106,8 @@ export default function ResultPage() {
   }
 
   return (
-    <main style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', padding: '32px 20px', position: 'relative', overflow: 'hidden' }}>
+    <main style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ width: '100%', maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', padding: '32px 24px' }}>
       <CornerGlow />
 
       <button onClick={() => router.push('/')} style={{ color: 'rgba(255,255,255,0.3)', fontSize: 13, marginBottom: 28, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
@@ -153,6 +154,7 @@ export default function ResultPage() {
         >
           다운로드
         </button>
+      </div>
       </div>
     </main>
   );
