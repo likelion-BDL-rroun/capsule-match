@@ -71,6 +71,22 @@ export default function ResultCard({ universityName, characterName, characterIma
             </div>
           )}
 
+          {/* 숨겨진 홀로그램 패턴 — 커서 위치에서만 마스크로 노출 */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            backgroundImage: 'url(/holo-pattern.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: isHovered ? 1 : 0,
+            maskImage: isHovered
+              ? `radial-gradient(circle 130px at var(--mx, 50%) var(--my, 50%), black 0%, transparent 100%)`
+              : 'none',
+            WebkitMaskImage: isHovered
+              ? `radial-gradient(circle 130px at var(--mx, 50%) var(--my, 50%), black 0%, transparent 100%)`
+              : 'none',
+            mixBlendMode: 'overlay',
+            transition: 'opacity 0.2s',
+          }} />
+
           {/* 홀로그래픽 shimmer — hover 시에만 */}
           {isHovered && (
             <>
@@ -82,6 +98,8 @@ export default function ResultCard({ universityName, characterName, characterIma
                   hsla(240,80%,65%,0.13), hsla(300,80%,65%,0.13),
                   hsla(360,80%,65%,0.13))`,
                 mixBlendMode: 'screen',
+                maskImage: `radial-gradient(circle 160px at var(--mx, 50%) var(--my, 50%), black 0%, transparent 100%)`,
+                WebkitMaskImage: `radial-gradient(circle 160px at var(--mx, 50%) var(--my, 50%), black 0%, transparent 100%)`,
               }} />
               <div className="absolute inset-0 pointer-events-none" style={{
                 background: `radial-gradient(ellipse 60% 50% at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.28) 0%, transparent 70%)`,

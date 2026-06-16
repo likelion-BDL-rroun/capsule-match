@@ -17,9 +17,9 @@ export default function ResultPage() {
   const router = useRouter();
   const params = useParams();
   const universityId = params.universityId as string;
-
   const [result, setResult] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSharing, setIsSharing] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -47,6 +47,45 @@ export default function ResultPage() {
       assignedAt: data.assigned_at ?? '',
     });
     setIsLoading(false);
+  };
+
+  const fetchBlob = async () => {
+    const res = await fetch(result!.characterImageUrl!);
+    return res.blob();
+  };
+
+  const handleDownload = async () => {
+    if (!result?.characterImageUrl || isSharing) return;
+    setIsSharing(true);
+    try {
+      const blob = await fetchBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${result.characterName ?? 'character'}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!result?.characterImageUrl || isSharing) return;
+    setIsSharing(true);
+    try {
+      const blob = await fetchBlob();
+      const file = new File([blob], `${result.characterName ?? 'character'}.png`, { type: blob.type });
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: `${result.universityName} 캐릭터` });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   if (isLoading) {
@@ -88,21 +127,42 @@ export default function ResultPage() {
         />
       )}
 
-      <button
-        onClick={() => router.push('/')}
-        style={{
-          width: '100%', maxWidth: 320, margin: '24px auto 0',
-          display: 'block',
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          color: 'rgba(255,255,255,0.5)',
-          fontWeight: 700, fontSize: 15,
-          padding: '15px 0', borderRadius: 16,
-          cursor: 'pointer',
-        }}
-      >
-        다른 학교 결과 보기
-      </button>
+      <div style={{ display: 'flex', gap: 10, width: '100%', maxWidth: 320, margin: '24px auto 0' }}>
+        <button
+          onClick={handleShare}
+          disabled={isSharing}
+          style={{
+            flex: 1,
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: '#fff',
+            fontWeight: 700, fontSize: 15,
+            padding: '15px 0', borderRadius: 16,
+            cursor: isSharing ? 'wait' : 'pointer',
+            opacity: isSharing ? 0.5 : 1,
+            transition: 'opacity 0.2s',
+          }}
+        >
+          공유하기
+        </button>
+        <button
+          onClick={handleDownload}
+          disabled={isSharing}
+          style={{
+            flex: 1,
+            background: '#FF6000',
+            border: 'none',
+            color: '#fff',
+            fontWeight: 700, fontSize: 15,
+            padding: '15px 0', borderRadius: 16,
+            cursor: isSharing ? 'wait' : 'pointer',
+            opacity: isSharing ? 0.5 : 1,
+            transition: 'opacity 0.2s',
+          }}
+        >
+          다운로드
+        </button>
+      </div>
     </main>
   );
 }
