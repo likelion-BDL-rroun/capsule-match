@@ -193,11 +193,21 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           </div>
         ))}
 
-        {/* 하단 페이드아웃 그라디언트 */}
+        {/* 하단 블러 오버레이 */}
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0,
           height: 140, pointerEvents: 'none', zIndex: 150,
-          background: 'linear-gradient(to bottom, transparent 0%, var(--bg) 100%)',
+          backdropFilter: 'blur(1px)',
+          WebkitBackdropFilter: 'blur(1px)',
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 60%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 60%)',
+        }} />
+
+        {/* 하단 페이드아웃 그라디언트 */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: 140, pointerEvents: 'none', zIndex: 151,
+          background: 'linear-gradient(to top, hsl(0 0% 5%) 0%, hsl(0 0% 4.2% / 0.83907) 6.49%, hsl(0 0% 3.5% / 0.69957) 13.72%, hsl(0 0% 2.9% / 0.57926) 20.3%, hsl(0 0% 2.38% / 0.47611) 26.3%, hsl(0 0% 1.94% / 0.38821) 31.79%, hsl(0 0% 1.57% / 0.3138) 36.84%, hsl(0 0% 1.26% / 0.25126) 41.48%, hsl(0 0% 1% / 0.19912) 45.76%, hsl(0 0% 0.78% / 0.15601) 49.71%, hsl(0 0% 0.6% / 0.12072) 53.36%, hsl(0 0% 0.46% / 0.09212) 56.71%, hsl(0 0% 0.35% / 0.06922) 59.81%, hsl(0 0% 0.26% / 0.05112) 62.65%, hsl(0 0% 0.19% / 0.03702) 65.27%, hsl(0 0% 0.13% / 0.02622) 67.66%, hsl(0 0% 0.09% / 0.0181) 69.85%, hsl(0 0% 0.06% / 0.01213) 71.83%, hsl(0 0% 0.04% / 0.00785) 73.63%, hsl(0 0% 0.02% / 0.00488) 75.25%, hsl(0 0% 0.01% / 0.00288) 76.7%, hsl(0 0% 0.01% / 0.0016) 77.98%, hsl(0 0% 0% / 0.00082) 79.11%, hsl(0 0% 0% / 0.00038) 80.08%, hsl(0 0% 0% / 0.00015) 80.9%, hsl(0 0% 0% / 0.00005) 81.59%, hsl(0 0% 0% / 0.00001) 82.13%, hsl(0 0% 0% / 0) 82.55%, hsl(0 0% 0% / 0) 82.84%, hsl(0 0% 0% / 0) 83%)',
         }} />
 
         {/* 선택 버튼 — 카드 위에 얹힘 */}
@@ -243,9 +253,11 @@ function CardFace({ isPicked }: { isPicked: boolean }) {
         draggable={false}
         priority
       />
+
+
       {isPicked && (
         <div style={{
-          position: 'absolute', inset: 0,
+          position: 'absolute', inset: 0, zIndex: 2,
           background: 'rgba(255,200,50,0.25)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           borderRadius: 16,
