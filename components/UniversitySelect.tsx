@@ -20,6 +20,9 @@ export default function UniversitySelect({ universities, onSelect }: Props) {
         @media (min-width: 1280px) {
           .univ-grid { grid-template-columns: repeat(8, 1fr); gap: 16px; }
         }
+        .univ-item:hover .univ-box {
+          border-color: #FF6000 !important;
+        }
       `}</style>
       <div className="univ-grid">
 
@@ -32,92 +35,53 @@ export default function UniversitySelect({ universities, onSelect }: Props) {
           <button
             key={uni.id}
             onClick={() => onSelect(uni)}
-            className="flex flex-col items-center gap-2"
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-            }}
+            className="univ-item"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}
           >
             {/* 정사각형 박스 */}
             <div
+              className={isAssigned ? 'univ-box assigned' : 'univ-box'}
               style={{
                 width: '100%',
                 aspectRatio: '1 / 1',
                 borderRadius: 14,
-                border: isAssigned
-                  ? '1.5px solid rgba(255,96,0,0.5)'
-                  : '1.5px solid rgba(255,255,255,0.1)',
-                background: isAssigned
-                  ? 'rgba(255,96,0,0.1)'
-                  : 'rgba(255,255,255,0.05)',
-                backdropFilter: 'blur(8px)',
+                border: isAssigned ? '2px solid #8f3e1b' : '2px solid #343232',
+                background: isAssigned ? '#261711' : 'rgba(35,35,33,0.5)',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
+                gap: 8,
                 position: 'relative',
                 overflow: 'hidden',
-                transition: 'border 0.15s, background 0.15s',
-              }}
-              onMouseEnter={e => {
-                if (!isAssigned) {
-                  (e.currentTarget as HTMLDivElement).style.border = '1.5px solid rgba(255,96,0,0.5)';
-                  (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,96,0,0.08)';
-                }
-              }}
-              onMouseLeave={e => {
-                if (!isAssigned) {
-                  (e.currentTarget as HTMLDivElement).style.border = '1.5px solid rgba(255,255,255,0.1)';
-                  (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.05)';
-                }
+                transition: 'border-color 0.15s',
               }}
             >
-              {logoUrl ? (
-                <Image
-                  src={logoUrl}
-                  alt={uni.name}
-                  fill
-                  style={{ objectFit: 'contain', padding: '16%' }}
-                />
-              ) : (
-                <span style={{
-                  fontSize: 22,
-                  fontWeight: 800,
-                  color: isAssigned ? 'rgba(255,96,0,0.6)' : 'rgba(255,255,255,0.25)',
-                }}>
-                  {initial}
+              {/* 로고 or 플레이스홀더 */}
+              <div style={{ width: '45%', aspectRatio: '1/1', borderRadius: '50%', background: 'rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+                {logoUrl ? (
+                  <Image src={logoUrl} alt={uni.name} fill style={{ objectFit: 'contain' }} />
+                ) : (
+                  <span style={{ fontSize: 16, fontWeight: 800, color: isAssigned ? '#FF6000' : '#949494' }}>{initial}</span>
+                )}
+              </div>
+
+              {/* 학교명 + 뱃지 */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, width: '100%', padding: '0 6px' }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: isAssigned ? '#FF6000' : '#949494', textAlign: 'center', lineHeight: 1.2, wordBreak: 'keep-all', letterSpacing: '0.03em' }}>
+                  {uni.name.replace('대학교', '').replace('국립', '')}
                 </span>
-              )}
-
-              {/* 배정 완료 뱃지 */}
-              {isAssigned && (
                 <div style={{
-                  position: 'absolute', bottom: 5, left: '50%',
-                  transform: 'translateX(-50%)',
-                  fontSize: 9, fontWeight: 700,
-                  background: '#FF6000', color: '#fff',
-                  padding: '2px 7px', borderRadius: 999,
-                  whiteSpace: 'nowrap',
-                }}>완료</div>
-              )}
+                  background: isAssigned ? '#FF6000' : '#3e3e3d',
+                  color: isAssigned ? '#fff' : '#949494',
+                  fontSize: 10, fontWeight: 500,
+                  padding: '3px 8px', borderRadius: 999,
+                  letterSpacing: '0.03em', whiteSpace: 'nowrap',
+                }}>
+                  {isAssigned ? '완료' : '미배정'}
+                </div>
+              </div>
             </div>
-
-            {/* 학교명 */}
-            <span style={{
-              fontSize: 10,
-              fontWeight: 500,
-              color: isAssigned ? 'rgba(255,96,0,0.7)' : 'rgba(255,255,255,0.5)',
-              textAlign: 'center',
-              lineHeight: 1.3,
-              wordBreak: 'keep-all',
-              width: '100%',
-            }}>
-              {uni.name
-                .replace('대학교', '')
-                .replace('국립', '')
-                .replace('여자', '여자\n')}
-            </span>
           </button>
         );
       })}
