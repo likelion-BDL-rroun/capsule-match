@@ -3,10 +3,10 @@
 import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 
-const N = 13;
-const STEP = 360 / N;   // ~27.7° per card
-const RADIUS = 490;     // 카드 하단이 닿는 원의 반지름
-const CENTER_Y = 860;   // 원의 중심 y (컨테이너 상단 기준 px)
+const N = 17;
+const STEP = 360 / N;   // ~21.2° per card
+const RADIUS = 490;     // 원 반지름
+const CENTER_Y = 880;   // 원의 중심 y (컨테이너 상단 기준 px)
 const CARD_W = 180;
 const CARD_H = 256;
 const DRAG_PX_PER_STEP = 60;  // 카드 한 칸 이동에 필요한 드래그 px
@@ -70,7 +70,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     const aRad = (a * Math.PI) / 180;
     const cosA = Math.cos(aRad);
 
-    // 카드 하단 중심을 원 위에 배치하고, 카드 중심은 반지름 방향으로 CARD_H/2 만큼 밀어냄
+    // 원 위에 카드 배치
     const R_center = RADIUS + CARD_H / 2;
     const cx = Math.sin(aRad) * R_center;
     const cy = CENTER_Y - Math.cos(aRad) * R_center;
@@ -115,7 +115,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
 
       <div
         className="relative w-full"
-        style={{ height: 520, overflow: 'hidden', touchAction: 'pan-y' }}
+        style={{ height: 620, overflow: 'hidden', touchAction: 'pan-y' }}
         onMouseDown={e => onPointerDown(e.clientX)}
         onMouseMove={e => { if (dragStartX.current !== null) onPointerMove(e.clientX); }}
         onMouseUp={onPointerUp}
@@ -154,10 +154,9 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
               style={{
                 background: '#FF6000', color: '#fff',
                 fontWeight: 700, fontSize: 15,
-                padding: '15px 48px', borderRadius: 18,
+                padding: '15px 48px', borderRadius: 16,
                 border: 'none', cursor: isLoading ? 'wait' : 'pointer',
                 opacity: isLoading ? 0.5 : 1,
-                boxShadow: '0 0 28px rgba(255,96,0,0.4)',
                 transition: 'opacity 0.2s',
               }}
             >
