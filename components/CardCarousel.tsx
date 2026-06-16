@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 
 const N = 17;
@@ -10,6 +10,7 @@ const CENTER_Y = 880;   // 원의 중심 y (컨테이너 상단 기준 px)
 const CARD_W = 180;
 const CARD_H = 256;
 const DRAG_PX_PER_STEP = 60;  // 카드 한 칸 이동에 필요한 드래그 px
+const SCROLL_PX_PER_STEP = 200; // 카드 한 칸 이동에 필요한 스크롤 px
 
 interface Props {
   onComplete: () => void;
@@ -25,6 +26,63 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   const dragStartX = useRef<number | null>(null);
   const dragStartRot = useRef(0);
   const didDrag = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const rotRef = useRef(0);       // 소스 오브 트루스
+  const velRef = useRef(0);       // 현재 속도 (deg/frame)
+  const rafRef = useRef<number | null>(null);
+  const isAnimating = useRef(false);
+
+  const startRAF = useCallback(() => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
+    let last = performance.now();
+
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 50);
+      last = now;
+
+      // 감쇠: 프레임레이트 독립적 마찰
+      velRef.current *= Math.pow(0.88, dt / 16);
+      rotRef.current += velRef.current * (dt / 16);
+      setRotation(rotRef.current);
+
+      if (Math.abs(velRef.current) > 0.05) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        // 가장 가까운 카드로 스냅
+        const snapped = Math.round(rotRef.current / STEP) * STEP;
+        rotRef.current = snapped;
+        setRotation(snapped);
+        setIsScrolling(false);
+        isAnimating.current = false;
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  // 스크롤로 회전 (스크롤 다운 = 반시계, 스크롤 업 = 시계)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const handleWheel = (e: WheelEvent) => {
+      if (picked) return;
+      e.preventDefault();
+      setIsScrolling(true);
+      // deltaY → 속도 누적 (감도 조절: 0.04)
+      velRef.current -= e.deltaY * 0.04;
+      // RAF가 안 돌고 있으면 시작
+      if (!isAnimating.current) {
+        rotRef.current = rotRef.current; // sync (rotRef already correct)
+        startRAF();
+      }
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      el.removeEventListener('wheel', handleWheel);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [picked, startRAF]);
 
   // 현재 앞에 있는 카드 (각도 0에 가장 가까운 카드)
   const frontCard = ((Math.round(-rotation / STEP) % N) + N) % N;
@@ -41,7 +99,9 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     if (dragStartX.current === null || picked) return;
     const delta = clientX - dragStartX.current;
     if (Math.abs(delta) > 5) didDrag.current = true;
-    setRotation(dragStartRot.current + (delta / DRAG_PX_PER_STEP) * STEP);
+    const next = dragStartRot.current + (delta / DRAG_PX_PER_STEP) * STEP;
+    rotRef.current = next;
+    setRotation(next);
   }, [picked]);
 
   const onPointerUp = useCallback(() => {
@@ -49,7 +109,9 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     dragStartX.current = null;
     setIsDragging(false);
     // 가장 가까운 카드로 스냅
-    setRotation(r => Math.round(r / STEP) * STEP);
+    const snapped = Math.round(rotRef.current / STEP) * STEP;
+    rotRef.current = snapped;
+    setRotation(snapped);
   }, []);
 
   const handleCardClick = (i: number) => {
@@ -97,7 +159,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
       boxShadow: isFront
         ? '0 32px 80px rgba(0,0,0,0.65), 0 0 0 1.5px rgba(255,255,255,0.14), 0 0 40px rgba(255,96,0,0.2)'
         : '0 8px 20px rgba(0,0,0,0.3)',
-      transition: isDragging
+      transition: (isDragging || isScrolling)
         ? 'none'
         : 'transform 0.42s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease',
       cursor: 'pointer',
@@ -110,10 +172,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   return (
     <div className="flex flex-col items-center w-full select-none">
       <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>
-        {picked ? '캐릭터를 배정하는 중...' : '카드를 돌려 원하는 카드를 선택하세요'}
+        {picked ? '캐릭터를 배정하는 중...' : '스크롤하거나 드래그해서 카드를 돌려보세요'}
       </p>
 
       <div
+        ref={containerRef}
         className="relative w-full"
         style={{ height: 620, overflow: 'hidden', touchAction: 'pan-y' }}
         onMouseDown={e => onPointerDown(e.clientX)}
