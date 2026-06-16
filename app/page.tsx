@@ -171,6 +171,10 @@ export default function HomePage() {
             0%, 100% { transform: translateY(0); opacity: 0.5; }
             50%      { transform: translateY(6px); opacity: 1; }
           }
+          @keyframes hero-cards-float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50%      { transform: translateX(-50%) translateY(-14px); }
+          }
         `}</style>
 
         {/* 배경 — 다층 오렌지 글로우 + 그리드 + 입자 */}
@@ -219,22 +223,43 @@ export default function HomePage() {
           }} />
         </div>
 
+        {/* 카드 3장 */}
+        <img
+          src="/카드3장.png"
+          alt="Animal League 카드"
+          style={{
+            position: 'absolute',
+            top: '1%', left: '55%',
+            transform: 'translateX(-50%)',
+            width: 'min(94%, 1100px)',
+            height: 'auto',
+            zIndex: 1,
+            pointerEvents: 'none',
+            filter: 'drop-shadow(0 24px 60px rgba(49,20,11,0.45))',
+            animation: 'hero-cards-float 6s ease-in-out infinite',
+          }}
+        />
+
         {/* 텍스트 + 버튼 */}
         <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
-          <p style={{ fontSize: 13, color: 'rgba(255,180,60,0.95)', fontWeight: 600, marginBottom: 14, letterSpacing: '0.02em', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#FF6000', boxShadow: '0 0 10px #FF6000', display: 'inline-block' }} />
-            우리 학교 대표 캐릭터를 선택해주세요
-          </p>
           <h1 style={{
-            fontSize: 'clamp(36px, 7vw, 64px)', fontWeight: 900,
-            lineHeight: 1.1, margin: '0 0 32px',
-            letterSpacing: '-1px',
-            background: 'linear-gradient(120deg, #ffffff 30%, #ffd6a8 60%, #FF6000 100%)',
-            WebkitBackgroundClip: 'text', backgroundClip: 'text',
-            WebkitTextFillColor: 'transparent', color: 'transparent',
+            fontFamily: "'Anton', sans-serif",
+            fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 400,
+            lineHeight: 1.25, margin: '0 0 16px',
+            letterSpacing: '0.03em',
+            color: '#fff',
+            textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
           }}>
             Animal League<br />Hackathon 2026
           </h1>
+          <p style={{
+            fontSize: 'clamp(17px, 3vw, 32px)', fontWeight: 700,
+            color: '#fff', margin: '0 0 32px',
+            letterSpacing: '0.03em', lineHeight: 1.25,
+            textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
+          }}>
+            카드를 선택하고 대표 캐릭터를 매칭해주세요
+          </p>
           <button
             onClick={scrollToSelect}
             style={{
