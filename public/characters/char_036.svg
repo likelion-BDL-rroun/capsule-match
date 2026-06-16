@@ -1,0 +1,10 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="90" fill="#FFF0E6"/>
+  <circle cx="100" cy="85" r="45" fill="#E55A00"/>
+  <circle cx="85" cy="80" r="8" fill="white"/>
+  <circle cx="115" cy="80" r="8" fill="white"/>
+  <circle cx="86" cy="81" r="4" fill="#333"/>
+  <circle cx="116" cy="81" r="4" fill="#333"/>
+  <path d="M 82 100 Q 100 115 118 100" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <text x="100" y="160" text-anchor="middle" font-size="14" fill="#E55A00" font-family="sans-serif" font-weight="bold">캐릭터 036</text>
+</svg>
