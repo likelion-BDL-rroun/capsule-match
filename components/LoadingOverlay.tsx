@@ -1,15 +1,32 @@
 'use client';
 
-type Props = {
-  message?: string;
-};
+type Props = { message?: string };
 
 export default function LoadingOverlay({ message = '처리 중...' }: Props) {
   return (
-    <div className="fixed inset-0 bg-black/40 flex flex-col items-center justify-center z-50">
-      <div className="bg-white rounded-2xl px-8 py-6 flex flex-col items-center gap-4 shadow-xl">
-        <div className="w-12 h-12 border-4 border-orange-200 border-t-[#FF6000] rounded-full animate-spin" />
-        <p className="text-gray-700 font-medium">{message}</p>
+    <div style={{
+      position: 'fixed', inset: 0,
+      background: 'rgba(0,0,0,0.7)',
+      backdropFilter: 'blur(4px)',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      zIndex: 50,
+    }}>
+      <div style={{
+        background: '#1a1a1a',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: 20, padding: '28px 40px',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', gap: 16,
+        boxShadow: '0 0 60px rgba(255,96,0,0.15)',
+      }}>
+        <div style={{
+          width: 44, height: 44,
+          border: '4px solid rgba(255,96,0,0.2)',
+          borderTop: '4px solid #FF6000',
+          borderRadius: '50%',
+        }} className="animate-spin" />
+        <p style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 500, margin: 0 }}>{message}</p>
       </div>
     </div>
   );

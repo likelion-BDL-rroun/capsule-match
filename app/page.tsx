@@ -6,8 +6,9 @@ import { supabase } from '@/lib/supabaseClient';
 import { University } from '@/lib/types';
 import UniversitySelect from '@/components/UniversitySelect';
 import CodeInput from '@/components/CodeInput';
-import CapsulePicker from '@/components/CapsulePicker';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import CardCarousel from '@/components/CardCarousel';
+import CornerGlow from '@/components/CornerGlow';
 
 type Step = 'intro' | 'selectUniversity' | 'enterCode' | 'pickCapsule';
 
@@ -21,9 +22,7 @@ export default function HomePage() {
   const [verifiedCode, setVerifiedCode] = useState('');
 
   useEffect(() => {
-    if (step === 'selectUniversity') {
-      loadUniversities();
-    }
+    if (step === 'selectUniversity') loadUniversities();
   }, [step]);
 
   const loadUniversities = async () => {
@@ -38,10 +37,7 @@ export default function HomePage() {
 
   const handleUniversitySelect = (uni: University) => {
     setSelectedUniversity(uni);
-    if (uni.assigned_character_id) {
-      router.push(`/result/${uni.id}`);
-      return;
-    }
+    if (uni.assigned_character_id) { router.push(`/result/${uni.id}`); return; }
     setCodeError('');
     setStep('enterCode');
   };
@@ -50,7 +46,6 @@ export default function HomePage() {
     if (!selectedUniversity) return;
     setIsLoading(true);
     setCodeError('');
-
     const res = await fetch('/api/verify-code', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -58,15 +53,8 @@ export default function HomePage() {
     });
     const data = await res.json();
     setIsLoading(false);
-
-    if (data.alreadyAssigned) {
-      router.push(`/result/${selectedUniversity.id}`);
-      return;
-    }
-    if (!data.success) {
-      setCodeError(data.error);
-      return;
-    }
+    if (data.alreadyAssigned) { router.push(`/result/${selectedUniversity.id}`); return; }
+    if (!data.success) { setCodeError(data.error); return; }
     setVerifiedCode(code);
     setStep('pickCapsule');
   };
@@ -74,7 +62,6 @@ export default function HomePage() {
   const handleCapsulePick = async () => {
     if (!selectedUniversity || !verifiedCode) return;
     setIsLoading(true);
-
     const res = await fetch('/api/assign-character', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -82,56 +69,74 @@ export default function HomePage() {
     });
     const data = await res.json();
     setIsLoading(false);
-
-    if (data.alreadyAssigned || data.success) {
-      router.push(`/result/${selectedUniversity.id}`);
-      return;
-    }
+    if (data.alreadyAssigned || data.success) { router.push(`/result/${selectedUniversity.id}`); return; }
     alert(data.error ?? '오류가 발생했어요. 다시 시도해주세요.');
     setStep('selectUniversity');
   };
 
   return (
-    <main className="min-h-screen bg-white flex flex-col">
+    <main className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
       {isLoading && step !== 'pickCapsule' && <LoadingOverlay />}
 
+      {/* 인트로 */}
       {step === 'intro' && (
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-16 text-center min-h-screen">
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-2 mb-6">
-              <span className="text-[#FF6000] text-sm font-medium">🎴 캐릭터 캡슐 뽑기</span>
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-16 text-center min-h-screen relative overflow-hidden">
+          <CornerGlow />
+          <div className="relative mb-8">
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              background: 'rgba(255,96,0,0.1)', border: '1px solid rgba(255,96,0,0.25)',
+              borderRadius: 999, padding: '6px 16px', marginBottom: 20,
+            }}>
+              <span style={{ color: '#FF6000', fontSize: 13, fontWeight: 600 }}>🎴 캐릭터 카드 뽑기</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900 leading-tight mb-3">
+            <h1 style={{ fontSize: 30, fontWeight: 800, color: '#f0f0f0', lineHeight: 1.3, margin: '0 0 12px' }}>
               80개 대학,<br />80종 캐릭터
             </h1>
-            <p className="text-gray-500 text-base leading-relaxed">
+            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 15, lineHeight: 1.7, margin: 0 }}>
               우리 학교의 캐릭터를<br />직접 뽑아보세요.
             </p>
           </div>
 
-          <div className="w-32 h-32 bg-orange-50 rounded-full flex items-center justify-center text-6xl mb-10 shadow-inner">
+          <div style={{
+            width: 120, height: 120,
+            background: 'rgba(255,96,0,0.1)',
+            border: '1px solid rgba(255,96,0,0.2)',
+            borderRadius: '50%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 52, marginBottom: 40,
+          }}>
             🎁
           </div>
 
           <button
             onClick={() => setStep('selectUniversity')}
-            className="w-full max-w-xs bg-[#FF6000] text-white font-bold py-4 rounded-2xl text-lg shadow-lg active:scale-95 transition-all"
+            style={{
+              width: '100%', maxWidth: 320,
+              background: '#FF6000', color: '#fff',
+              fontWeight: 700, fontSize: 17,
+              padding: '16px 0', borderRadius: 18,
+              border: 'none', cursor: 'pointer',
+              boxShadow: '0 0 32px rgba(255,96,0,0.4)',
+            }}
           >
             시작하기
           </button>
         </div>
       )}
 
+      {/* 학교 선택 */}
       {step === 'selectUniversity' && (
-        <div className="flex-1 flex flex-col px-5 py-8 min-h-screen">
-          <button onClick={() => setStep('intro')} className="text-gray-400 text-sm mb-6 self-start">
+        <div className="flex-1 flex flex-col px-5 py-8 min-h-screen relative overflow-hidden">
+          <CornerGlow />
+          <button onClick={() => setStep('intro')} style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, marginBottom: 24, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
             ← 뒤로
           </button>
-          <h2 className="text-2xl font-extrabold text-gray-900 mb-2">우리 학교를<br />선택해주세요.</h2>
-          <p className="text-gray-500 text-sm mb-6">학교별로 단 하나의 캐릭터가 배정됩니다.</p>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0f0', marginBottom: 6 }}>우리 학교를<br />선택해주세요.</h2>
+          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, marginBottom: 24 }}>학교별로 단 하나의 캐릭터가 배정됩니다.</p>
           {isLoading ? (
             <div className="flex-1 flex items-center justify-center">
-              <div className="w-8 h-8 border-4 border-orange-200 border-t-[#FF6000] rounded-full animate-spin" />
+              <div style={{ width: 32, height: 32, border: '4px solid rgba(255,96,0,0.2)', borderTop: '4px solid #FF6000', borderRadius: '50%' }} className="animate-spin" />
             </div>
           ) : (
             <UniversitySelect universities={universities} onSelect={handleUniversitySelect} />
@@ -139,15 +144,14 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* 코드 입력 */}
       {step === 'enterCode' && selectedUniversity && (
-        <div className="flex-1 flex flex-col px-5 py-8 min-h-screen">
-          <button
-            onClick={() => { setStep('selectUniversity'); setCodeError(''); }}
-            className="text-gray-400 text-sm mb-6 self-start"
-          >
+        <div className="flex-1 flex flex-col px-5 py-8 min-h-screen relative overflow-hidden">
+          <CornerGlow />
+          <button onClick={() => { setStep('selectUniversity'); setCodeError(''); }} style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, marginBottom: 24, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
             ← 뒤로
           </button>
-          <h2 className="text-2xl font-extrabold text-gray-900 mb-6">
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#f0f0f0', marginBottom: 24 }}>
             {selectedUniversity.name}<br />캡슐 오픈 코드
           </h2>
           <CodeInput
@@ -159,19 +163,17 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* 카드 뽑기 — glow 없음 */}
       {step === 'pickCapsule' && selectedUniversity && (
-        <div className="flex-1 flex flex-col px-5 py-8 min-h-screen">
+        <div className="flex-1 flex flex-col items-center px-5 py-10 min-h-screen">
           {isLoading && <LoadingOverlay message="캐릭터를 배정하는 중..." />}
-          <h2 className="text-2xl font-extrabold text-gray-900 mb-2 text-center">
-            {selectedUniversity.name}<br />캐릭터 캡슐을 선택해주세요.
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#f0f0f0', marginBottom: 4, textAlign: 'center' }}>
+            {selectedUniversity.name}
           </h2>
-          <div className="mt-8">
-            <CapsulePicker
-              universityName={selectedUniversity.name}
-              onPick={handleCapsulePick}
-              isLoading={isLoading}
-            />
-          </div>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginBottom: 28, textAlign: 'center' }}>
+            카드를 골라 캐릭터를 뽑아보세요!
+          </p>
+          <CardCarousel onComplete={handleCapsulePick} isLoading={isLoading} />
         </div>
       )}
     </main>

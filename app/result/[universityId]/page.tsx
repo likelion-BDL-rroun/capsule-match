@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import ResultCard from '@/components/ResultCard';
+import CornerGlow from '@/components/CornerGlow';
 
 type ResultData = {
   universityName: string;
@@ -29,26 +30,15 @@ export default function ResultPage() {
     setIsLoading(true);
     const { data, error: dbError } = await supabase
       .from('universities')
-      .select(`
-        name, assigned_at,
-        characters:assigned_character_id ( name, image_url )
-      `)
+      .select(`name, assigned_at, characters:assigned_character_id ( name, image_url )`)
       .eq('id', universityId)
       .single();
 
-    if (dbError || !data) {
-      setError('결과를 불러올 수 없어요.');
-      setIsLoading(false);
-      return;
-    }
+    if (dbError || !data) { setError('결과를 불러올 수 없어요.'); setIsLoading(false); return; }
 
     const character = (Array.isArray(data.characters) ? data.characters[0] : data.characters) as { name: string; image_url: string | null } | null;
 
-    if (!character) {
-      // 아직 배정 안 된 학교라면 홈으로 이동
-      router.replace('/');
-      return;
-    }
+    if (!character) { router.replace('/'); return; }
 
     setResult({
       universityName: data.name,
@@ -61,31 +51,31 @@ export default function ResultPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-orange-200 border-t-[#FF6000] rounded-full animate-spin" />
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
+        <div style={{ width: 40, height: 40, border: '4px solid rgba(255,96,0,0.2)', borderTop: '4px solid #FF6000', borderRadius: '50%' }} className="animate-spin" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-6 gap-4">
-        <p className="text-gray-500">{error}</p>
-        <button onClick={() => router.push('/')} className="text-[#FF6000] font-semibold">
-          홈으로 돌아가기
-        </button>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 16, background: 'var(--bg)' }}>
+        <p style={{ color: 'rgba(255,255,255,0.4)' }}>{error}</p>
+        <button onClick={() => router.push('/')} style={{ color: '#FF6000', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>홈으로 돌아가기</button>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white flex flex-col px-5 py-8">
-      <button onClick={() => router.push('/')} className="text-gray-400 text-sm mb-8 self-start">
+    <main style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', padding: '32px 20px', position: 'relative', overflow: 'hidden' }}>
+      <CornerGlow />
+
+      <button onClick={() => router.push('/')} style={{ color: 'rgba(255,255,255,0.3)', fontSize: 13, marginBottom: 28, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
         ← 처음으로
       </button>
 
-      <div className="mb-6 text-center">
-        <p className="text-sm text-gray-400">
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+        <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 12 }}>
           {result?.assignedAt && new Date(result.assignedAt).toLocaleString('ko-KR')} 배정
         </p>
       </div>
@@ -100,7 +90,16 @@ export default function ResultPage() {
 
       <button
         onClick={() => router.push('/')}
-        className="w-full max-w-sm mx-auto mt-6 bg-gray-100 text-gray-700 font-bold py-4 rounded-2xl text-base active:scale-95 transition-all"
+        style={{
+          width: '100%', maxWidth: 320, margin: '24px auto 0',
+          display: 'block',
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          color: 'rgba(255,255,255,0.5)',
+          fontWeight: 700, fontSize: 15,
+          padding: '15px 0', borderRadius: 16,
+          cursor: 'pointer',
+        }}
       >
         다른 학교 결과 보기
       </button>
