@@ -17,11 +17,42 @@ interface Props {
   isLoading: boolean;
 }
 
+type Particle = {
+  id: number;
+  tx: number;       // 도착 x (px)
+  ty: number;       // 도착 y (px)
+  size: number;
+  delay: number;
+  duration: number;
+  color: string;
+};
+
+const PARTICLE_COLORS = [
+  '#FFFFFF', '#FFE9B0', '#FFC24D', '#FF8A3D', '#FF6000', '#FFD27A',
+];
+
+function makeParticles(count: number): Particle[] {
+  return Array.from({ length: count }).map((_, i) => {
+    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+    const dist = 80 + Math.random() * 160;
+    return {
+      id: i,
+      tx: Math.cos(angle) * dist,
+      ty: Math.sin(angle) * dist,
+      size: 5 + Math.random() * 9,
+      delay: Math.random() * 0.12,
+      duration: 0.7 + Math.random() * 0.5,
+      color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+    };
+  });
+}
+
 export default function CardCarousel({ onComplete, isLoading }: Props) {
   const [rotation, setRotation] = useState(0);   // 실수, 무제한
   const [isDragging, setIsDragging] = useState(false);
   const [picked, setPicked] = useState(false);
   const [pickedCard, setPickedCard] = useState<number | null>(null);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   const dragStartX = useRef<number | null>(null);
   const dragStartRot = useRef(0);
@@ -117,10 +148,16 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   const handleCardClick = (i: number) => {
     if (didDrag.current || picked || isLoading) return;
     if (i === frontCard) return;  // 앞 카드 클릭해도 선택 안 됨 — 버튼으로만 선택 가능
-    // 비중심 카드 클릭 시 해당 카드를 앞으로 당기기
-    const visualAngle = ((i * STEP + rotation) % 360 + 360) % 360;
+    // 진행 중인 관성 애니메이션 중단
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    isAnimating.current = false;
+    velRef.current = 0;
+    // 비중심 카드 클릭 시 해당 카드를 앞으로 당기기 (rotRef도 함께 동기화)
+    const visualAngle = ((i * STEP + rotRef.current) % 360 + 360) % 360;
     const short = visualAngle > 180 ? visualAngle - 360 : visualAngle;
-    setRotation(r => r - short);
+    const next = rotRef.current - short;
+    rotRef.current = next;
+    setRotation(next);
   };
 
   const getStyle = (i: number): React.CSSProperties => {
@@ -142,10 +179,13 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     const isPickedCard = picked && pickedCard === i;
     const isFront = i === frontCard && !picked;
 
-    const scale = isPickedCard ? 1.05 : isFront ? 1.08 : 0.82;
+    // 선택되지 않은 나머지 카드는 사라짐
+    const fadedOut = picked && !isPickedCard;
+
+    const scale = isPickedCard ? 1.18 : isFront ? 1.08 : 0.82;
     // 바닥 고정 스케일: 카드가 커질 때 하단이 움직이지 않도록 위로만 늘어남
     const bottomAnchorOffset = isFront ? CARD_H * (scale - 1) : 0;
-    const ty = isPickedCard ? cy - CARD_H / 2 - 160 : cy - CARD_H / 2 - bottomAnchorOffset;
+    const ty = isPickedCard ? 110 : cy - CARD_H / 2 - bottomAnchorOffset;
 
     return {
       position: 'absolute',
@@ -154,14 +194,19 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
       width: CARD_W,
       height: CARD_H,
       borderRadius: 16,
-      transform: `translate(calc(-50% + ${cx}px), ${ty}px) rotate(${isPickedCard ? 0 : a}deg) scale(${scale})`,
+      transform: `translate(calc(-50% + ${fadedOut ? cx : isPickedCard ? 0 : cx}px), ${ty}px) rotate(${isPickedCard ? 0 : a}deg) scale(${fadedOut ? 0.6 : scale})`,
+      opacity: fadedOut ? 0 : 1,
       zIndex: isPickedCard ? 200 : zIndex,
-      boxShadow: isFront
-        ? '0 32px 80px rgba(0,0,0,0.65), 0 0 0 1.5px rgba(255,255,255,0.14), 0 0 40px rgba(255,96,0,0.2)'
+      boxShadow: isPickedCard
+        ? '0 30px 90px rgba(0,0,0,0.7), 0 0 0 2px rgba(255,255,255,0.25), 0 0 70px 10px rgba(255,96,0,0.55)'
+        : isFront
+        ? '0 0 0 3px #FF6000, 0 0 28px rgba(255,96,0,0.55), 0 24px 60px rgba(0,0,0,0.6)'
         : '0 8px 20px rgba(0,0,0,0.3)',
       transition: (isDragging || isScrolling)
         ? 'none'
-        : 'transform 0.42s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease',
+        : isPickedCard
+        ? 'transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.5s ease, opacity 0.4s ease'
+        : 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease, opacity 0.5s ease',
       cursor: 'pointer',
       userSelect: 'none',
       WebkitUserSelect: 'none',
@@ -169,8 +214,34 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     };
   };
 
+  // 선택된 카드 중심 좌표 (오버레이 정렬용)
+  const BURST_TOP = 110 + (CARD_H * 1.18) / 2;
+
   return (
     <div className="flex flex-col items-center w-full select-none">
+      <style>{`
+        @keyframes burst-glow {
+          0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+          35%  { opacity: 1; }
+          100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes burst-ring {
+          0%   { opacity: 0.9; transform: translate(-50%, -50%) scale(0.2); }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6); }
+        }
+        @keyframes burst-spark {
+          0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+          15%  { opacity: 1; }
+          70%  { opacity: 1; }
+          100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.1); }
+        }
+        @keyframes card-shine {
+          0%   { transform: translateX(-120%) rotate(8deg); opacity: 0; }
+          25%  { opacity: 0.9; }
+          60%  { transform: translateX(120%) rotate(8deg); opacity: 0; }
+          100% { transform: translateX(120%) rotate(8deg); opacity: 0; }
+        }
+      `}</style>
       <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>
         {picked ? '캐릭터를 배정하는 중...' : '스크롤하거나 드래그해서 카드를 돌려보세요'}
       </p>
@@ -187,11 +258,55 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         onTouchMove={e => { e.preventDefault(); onPointerMove(e.touches[0].clientX); }}
         onTouchEnd={onPointerUp}
       >
+        {/* 선택 카드 뒤 빛 글로우 (카드보다 아래) */}
+        {picked && (
+          <div style={{
+            position: 'absolute', left: '50%', top: BURST_TOP,
+            width: 420, height: 420, zIndex: 190, pointerEvents: 'none',
+            background: 'radial-gradient(circle, rgba(255,150,50,0.55) 0%, rgba(255,96,0,0.25) 35%, transparent 70%)',
+            animation: 'burst-glow 0.8s ease-out both',
+          }} />
+        )}
+
         {Array.from({ length: N }).map((_, i) => (
           <div key={i} style={getStyle(i)} onClick={() => handleCardClick(i)}>
             <CardFace isPicked={picked && pickedCard === i} />
           </div>
         ))}
+
+        {/* 빛 폭발 — 확산 링 + 스파클 (카드 위) */}
+        {picked && (
+          <div style={{
+            position: 'absolute', left: '50%', top: BURST_TOP,
+            width: 0, height: 0, zIndex: 210, pointerEvents: 'none',
+          }}>
+            {/* 확산 링 2겹 */}
+            <div style={{
+              position: 'absolute', left: '50%', top: '50%',
+              width: 220, height: 220, borderRadius: '50%',
+              border: '2px solid rgba(255,200,120,0.8)',
+              animation: 'burst-ring 0.9s ease-out both',
+            }} />
+            <div style={{
+              position: 'absolute', left: '50%', top: '50%',
+              width: 220, height: 220, borderRadius: '50%',
+              border: '2px solid rgba(255,255,255,0.6)',
+              animation: 'burst-ring 1.1s ease-out 0.12s both',
+            }} />
+            {/* 스파클 */}
+            {particles.map(p => (
+              <div key={p.id} style={{
+                position: 'absolute', left: '50%', top: '50%',
+                width: p.size, height: p.size, borderRadius: '50%',
+                background: p.color,
+                boxShadow: `0 0 ${p.size}px ${p.color}`,
+                ['--tx' as string]: `${p.tx}px`,
+                ['--ty' as string]: `${p.ty}px`,
+                animation: `burst-spark ${p.duration}s ease-out ${p.delay}s both`,
+              }} />
+            ))}
+          </div>
+        )}
 
         {/* 하단 블러 오버레이 */}
         <div style={{
@@ -219,9 +334,20 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             <button
               onClick={() => {
                 if (isLoading) return;
+                // 진행 중인 관성 애니메이션 중단
+                if (rafRef.current) cancelAnimationFrame(rafRef.current);
+                isAnimating.current = false;
+                velRef.current = 0;
+                // 화면에 하이라이트된 카드(frontCard)를 그대로 선택 — 보이는 그대로 보장
+                const target = frontCard;
+                // frontCard가 정확히 가운데 오도록 회전값 스냅 (frontCard는 불변)
+                const snapped = Math.round(rotation / STEP) * STEP;
+                rotRef.current = snapped;
+                setRotation(snapped);
                 setPicked(true);
-                setPickedCard(frontCard);
-                setTimeout(() => onComplete(), 900);
+                setPickedCard(target);
+                setParticles(makeParticles(28));
+                setTimeout(() => onComplete(), 1700);
               }}
               disabled={isLoading}
               style={{
@@ -254,16 +380,15 @@ function CardFace({ isPicked }: { isPicked: boolean }) {
         priority
       />
 
-
+      {/* 샤인 스윕 */}
       {isPicked && (
         <div style={{
-          position: 'absolute', inset: 0, zIndex: 2,
-          background: 'rgba(255,200,50,0.25)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          borderRadius: 16,
-        }}>
-          <span style={{ fontSize: 36 }}>✨</span>
-        </div>
+          position: 'absolute', top: 0, bottom: 0, left: 0,
+          width: '60%',
+          background: 'linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%)',
+          animation: 'card-shine 1.4s ease-in-out 0.25s both',
+          pointerEvents: 'none',
+        }} />
       )}
     </div>
   );

@@ -1,3 +1,4 @@
+@import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css');
 @import "tailwindcss";
 
 :root {
@@ -23,6 +24,6 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'SUIT Variable', 'SUIT', Arial, Helvetica, sans-serif;
   min-height: 100dvh;
 }
