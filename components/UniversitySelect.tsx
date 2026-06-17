@@ -43,7 +43,7 @@ export default function UniversitySelect({ universities, onSelect }: Props) {
           const isAssigned = !!uni.assigned_character_id;
           const logoUrl = universityLogos[uni.name];
           const initial = uni.name.replace(/[()\/\s]/g, '').charAt(0);
-          const displayName = uni.name.replace('대학교', '대').replace('국립', '');
+          const displayName = uni.name;
 
           return (
             <div key={uni.id}>
