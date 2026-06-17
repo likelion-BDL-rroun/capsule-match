@@ -53,11 +53,17 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           position: relative;
           overflow: hidden;
         }
+        .ci-header {
+          position: sticky;
+          top: 0;
+          background: #0e0e0e;
+          z-index: 10;
+          padding: 20px 0 16px;
+          flex: 0 0 auto;
+        }
         .ci-back {
-          position: fixed;
-          top: 20px;
-          left: 16px;
-          margin: 0;
+          display: block;
+          margin: 0 0 0 0;
           color: rgba(255,255,255,0.3);
           font-size: 14px;
           font-weight: 500;
@@ -65,7 +71,6 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           border: none;
           cursor: pointer;
           letter-spacing: 0.03em;
-          z-index: 100;
           transition: color 0.15s;
         }
         .ci-back:hover { color: rgba(255,255,255,0.7); }
@@ -120,6 +125,7 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           caret-color: #FF6000;
           transition: border-color 0.15s, box-shadow 0.15s;
         }
+        .ci-text-pc { display: none; }
         .ci-error { color: #f87171; font-size: 13px; text-align: center; margin: 14px 0 0; }
         .ci-submit {
           width: 100%;
@@ -149,7 +155,10 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
         /* ===== PC: 가운데 카드 패널 ===== */
         @media (min-width: 769px) {
           .ci-root { justify-content: center; padding: 28px 40px 40px; max-width: 1232px; position: relative; }
+          .ci-header { position: static; background: none; padding: 0; }
           .ci-back { position: absolute; top: 28px; left: 40px; z-index: 2; }
+          .ci-header .ci-text { display: none; }
+          .ci-text-pc { display: block; }
           .ci-card {
             display: flex;
             flex-direction: column;
@@ -170,15 +179,31 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
       `}</style>
 
 
-      {onBack && (
-        <button onClick={onBack} className="ci-back">
-          ‹ 돌아가기
-        </button>
-      )}
+      <div className="ci-header">
+        {onBack && (
+          <button onClick={onBack} className="ci-back">
+            ‹ 돌아가기
+          </button>
+        )}
+        <div className="ci-text">
+          <h1 className="ci-title">티켓 코드를 입력해주세요</h1>
+          <div className="ci-pill-row">
+            <div className="ci-pill">
+              <span style={{ fontSize: 12, color: '#9e9e9e', letterSpacing: '0.03em', fontWeight: 500 }}>
+                선택된 학교
+              </span>
+              <div style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.25)' }} />
+              <span style={{ fontSize: 14, color: '#fff', letterSpacing: '0.02em', fontWeight: 700 }}>
+                {universityName}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="ci-card">
-        {/* 상단 텍스트 */}
-        <div className="ci-text">
+        {/* PC 전용 타이틀 */}
+        <div className="ci-text ci-text-pc">
           <h1 className="ci-title">티켓 코드를 입력해주세요</h1>
           <div className="ci-pill-row">
             <div className="ci-pill">
