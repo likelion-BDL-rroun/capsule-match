@@ -7,9 +7,10 @@ import { University } from '@/lib/types';
 import UniversitySelect from '@/components/UniversitySelect';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import CodeInput from '@/components/CodeInput';
+import TicketIntro from '@/components/TicketIntro';
 import CardCarousel from '@/components/CardCarousel';
 
-type Step = 'select' | 'enterCode' | 'pickCapsule';
+type Step = 'select' | 'ticketIntro' | 'enterCode' | 'pickCapsule';
 
 export default function SelectPage() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function SelectPage() {
     setSelectedUniversity(uni);
     if (uni.assigned_character_id) { router.push(`/result/${uni.id}`); return; }
     setCodeError('');
-    setStep('enterCode');
+    setStep('ticketIntro');
   };
 
   const handleCodeSubmit = async (code: string) => {
@@ -71,22 +72,31 @@ export default function SelectPage() {
     setStep('select');
   };
 
+  // 티켓 확인 인트로
+  if (step === 'ticketIntro' && selectedUniversity) {
+    return (
+      <main className="min-h-screen relative overflow-hidden" style={{ background: 'var(--bg)' }}>
+        <TicketIntro
+          universityName={selectedUniversity.name}
+          onContinue={() => setStep('enterCode')}
+          onBack={() => setStep('select')}
+        />
+      </main>
+    );
+  }
+
   // 코드 입력
   if (step === 'enterCode' && selectedUniversity) {
     return (
       <main className="min-h-screen relative overflow-hidden" style={{ background: 'var(--bg)' }}>
         {isLoading && <LoadingOverlay />}
-        <div style={{ width: '100%', maxWidth: 1280, margin: '0 auto', padding: '32px 24px', minHeight: '100dvh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <button onClick={() => { setStep('select'); setCodeError(''); }} style={{ position: 'absolute', top: 32, left: 24, color: 'rgba(255,255,255,0.35)', fontSize: 13, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', zIndex: 5 }}>
-            ← 뒤로
-          </button>
-          <CodeInput
-            universityName={selectedUniversity.name}
-            onSubmit={handleCodeSubmit}
-            isLoading={isLoading}
-            error={codeError}
-          />
-        </div>
+        <CodeInput
+          universityName={selectedUniversity.name}
+          onSubmit={handleCodeSubmit}
+          isLoading={isLoading}
+          error={codeError}
+          onBack={() => { setStep('ticketIntro'); setCodeError(''); }}
+        />
       </main>
     );
   }
@@ -120,27 +130,26 @@ export default function SelectPage() {
   return (
     <main style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <style>{`
-        .univ-section-inner { padding: 80px 24px 120px; }
-        .univ-title { font-size: 36px; }
-        .univ-subtitle { font-size: 20px; margin-bottom: 80px; }
-        @media (max-width: 768px) {
-          .univ-section-inner { padding: 60px 16px 100px !important; }
-          .univ-title { font-size: 24px !important; }
-          .univ-subtitle { font-size: 15px !important; margin-bottom: 40px !important; }
+        .univ-section-inner { padding: 20px 16px 120px; }
+        .univ-back { color: rgba(255,255,255,0.3); font-size: 14px; font-weight: 500; letter-spacing: 0.03em; background: none; border: none; cursor: pointer; display: block; transition: color 0.15s; }
+        .univ-back:hover { color: rgba(255,255,255,0.7); }
+        .univ-title { font-size: 24px; font-weight: 800; color: #fff; text-align: center; margin: 36px 0 14px; }
+        .univ-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); text-align: center; line-height: 1.6; margin: 0 0 40px; }
+        @media (min-width: 769px) {
+          .univ-section-inner { padding: 28px 40px 120px; }
+          .univ-title { font-size: 36px; }
+          .univ-subtitle { font-size: 18px; margin-bottom: 80px; }
         }
       `}</style>
 
-      <div className="univ-section-inner" style={{ width: '100%', maxWidth: 1280, margin: '0 auto' }}>
-        <button
-          onClick={() => router.push('/')}
-          style={{ color: 'rgba(255,255,255,0.35)', fontSize: 13, background: 'none', border: 'none', cursor: 'pointer', marginBottom: 40, display: 'block' }}
-        >
-          ← 돌아가기
+      <div className="univ-section-inner" style={{ width: '100%', maxWidth: 1232, margin: '0 auto' }}>
+        <button className="univ-back" onClick={() => router.push('/')}>
+          ‹ 돌아가기
         </button>
-        <h2 className="univ-title" style={{ fontWeight: 800, color: '#f0f0f0', marginBottom: 8, textAlign: 'center' }}>
+        <h2 className="univ-title">
           학교를 선택해주세요.
         </h2>
-        <p className="univ-subtitle" style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>
+        <p className="univ-subtitle">
           학교별로 단 하나의 캐릭터가 배정됩니다.
         </p>
         {universities.length === 0 ? (

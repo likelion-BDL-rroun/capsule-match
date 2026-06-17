@@ -134,7 +134,7 @@ export default function HomePage() {
         />
 
         {/* 텍스트 + 버튼 */}
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1232, margin: '0 auto', padding: '0 40px' }}>
           <h1 style={{
             fontFamily: "'Anton', sans-serif",
             fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 400,

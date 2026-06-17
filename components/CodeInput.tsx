@@ -1,179 +1,264 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState, KeyboardEvent, ChangeEvent } from 'react';
 
 type Props = {
   universityName: string;
   onSubmit: (code: string) => void;
   isLoading: boolean;
   error?: string;
+  onBack?: () => void;
 };
 
-// 페이지 배경색 — 펀치 홀 표현에 사용
-const BG = '#0e0e0e';
+const BOX_COUNT = 5;
 
-export default function CodeInput({ universityName, onSubmit, isLoading, error }: Props) {
-  const [code, setCode] = useState('');
-  const [focused, setFocused] = useState(false);
+export default function CodeInput({ universityName, onSubmit, isLoading, error, onBack }: Props) {
+  const [chars, setChars] = useState<string[]>(Array(BOX_COUNT).fill(''));
+  const [focusIdx, setFocusIdx] = useState<number | null>(null);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (code.trim()) onSubmit(code.trim());
+  const handleChange = (i: number, e: ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.toUpperCase().slice(-1);
+    const next = [...chars];
+    next[i] = val;
+    setChars(next);
+    if (val && i < BOX_COUNT - 1) inputRefs.current[i + 1]?.focus();
   };
 
+  const handleKeyDown = (i: number, e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !chars[i] && i > 0) {
+      inputRefs.current[i - 1]?.focus();
+    }
+  };
+
+  const handleSubmit = () => {
+    const code = chars.join('');
+    if (code.length === BOX_COUNT) onSubmit(code);
+  };
+
+  const isFilled = chars.every((c) => c !== '');
+
   return (
-    <div className="w-full mx-auto" style={{ maxWidth: 420 }}>
+    <div className="ci-root">
       <style>{`
-        @keyframes coupon-in {
-          0%   { opacity: 0; transform: translateY(16px) scale(0.97); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
+        .ci-root {
+          min-height: 100dvh;
+          background: #0e0e0e;
+          display: flex;
+          flex-direction: column;
+          padding: 20px 16px 18px;
+          max-width: 480px;
+          margin: 0 auto;
+          width: 100%;
+          position: relative;
+          overflow: hidden;
         }
-        @keyframes coupon-glow {
-          0%, 100% { box-shadow: 0 0 0 1px rgba(255,96,0,0.3), 0 24px 60px rgba(0,0,0,0.5), 0 0 50px rgba(255,96,0,0.12); }
-          50%      { box-shadow: 0 0 0 1px rgba(255,96,0,0.45), 0 24px 60px rgba(0,0,0,0.5), 0 0 70px rgba(255,96,0,0.22); }
+        .ci-glow {
+          position: absolute;
+          top: -120px; left: 50%;
+          transform: translateX(-50%);
+          width: 420px; height: 420px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,96,0,0.16) 0%, rgba(255,96,0,0.05) 45%, transparent 70%);
+          filter: blur(20px);
+          pointer-events: none;
+          z-index: 0;
         }
+        .ci-back {
+          align-self: flex-start;
+          margin: 0;
+          color: rgba(255,255,255,0.3);
+          font-size: 14px;
+          font-weight: 500;
+          background: none;
+          border: none;
+          cursor: pointer;
+          letter-spacing: 0.03em;
+          z-index: 2;
+          transition: color 0.15s;
+        }
+        .ci-back:hover { color: rgba(255,255,255,0.7); }
+
+        .ci-card { display: contents; }
+        .ci-text { flex: 0 0 auto; z-index: 1; }
+        .ci-center {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          z-index: 1;
+        }
+        .ci-cta { flex: 0 0 auto; z-index: 1; }
+
+        .ci-title {
+          font-size: 24px;
+          font-weight: 800;
+          color: #fff;
+          text-align: center;
+          letter-spacing: 0.02em;
+          line-height: 1.3;
+          margin: 36px 0 14px;
+          text-shadow: 0px 2px 8px rgba(214,81,0,0.3);
+        }
+        .ci-pill-row { display: flex; justify-content: center; margin-bottom: 14px; }
+        .ci-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 16px;
+          border-radius: 99px;
+          border: 1px solid rgba(255,96,0,0.35);
+          background: linear-gradient(180deg, rgba(255,96,0,0) 30%, rgba(255,96,0,0.12) 100%);
+        }
+        .ci-boxes {
+          display: flex;
+          gap: 8px;
+          justify-content: center;
+        }
+        .ci-box {
+          width: 58px;
+          height: 66px;
+          border-radius: 10px;
+          text-align: center;
+          font-size: 26px;
+          font-weight: 600;
+          background: linear-gradient(180deg, rgba(78,69,64,0.5) 0%, rgba(0,0,0,0.5) 100%);
+          outline: none;
+          letter-spacing: 0.03em;
+          caret-color: #FF6000;
+          transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .ci-error { color: #f87171; font-size: 13px; text-align: center; margin: 14px 0 0; }
+        .ci-submit {
+          width: 100%;
+          padding: 17px 10px;
+          border-radius: 14px;
+          background: #FF6000;
+          color: #fff;
+          font-size: 16px;
+          font-weight: 800;
+          border: none;
+          letter-spacing: 0.03em;
+          text-shadow: 0px 2px 4px rgba(214,81,0,0.25);
+          transition: opacity 0.2s, box-shadow 0.2s, transform 0.08s;
+        }
+        .ci-submit:not(:disabled):active { transform: scale(0.985); }
+
         @keyframes code-shake {
           0%, 100% { transform: translateX(0); }
-          20%, 60% { transform: translateX(-6px); }
-          40%, 80% { transform: translateX(6px); }
+          20%, 60% { transform: translateX(-7px); }
+          40%, 80% { transform: translateX(7px); }
+        }
+        @keyframes ci-glow-anim {
+          0%, 100% { box-shadow: 0 0 24px 4px rgba(255,96,0,0.18); }
+          50%      { box-shadow: 0 0 40px 10px rgba(255,96,0,0.28); }
+        }
+
+        /* ===== PC: 가운데 카드 패널 ===== */
+        @media (min-width: 769px) {
+          .ci-root { justify-content: center; padding: 28px 40px 40px; max-width: 1232px; position: relative; }
+          .ci-back { position: absolute; top: 28px; left: 40px; }
+          .ci-card {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 560px;
+            margin: 24px auto 0;
+            padding: 48px 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+          }
+          .ci-center { flex: 0 0 auto; margin: 36px 0; }
+          .ci-title { font-size: 30px; margin: 0 0 16px; }
+          .ci-box { width: 66px; height: 76px; font-size: 30px; }
+          .ci-submit { font-size: 18px; padding: 19px 10px; }
         }
       `}</style>
 
-      {/* ── 쿠폰(티켓) ── */}
-      <div
-        style={{
-          position: 'relative',
-          borderRadius: 22,
-          background: 'linear-gradient(165deg, #2a1408 0%, #1c1a18 55%, #161616 100%)',
-          animation: 'coupon-in 0.5s cubic-bezier(0.22,1,0.36,1) both, coupon-glow 3s ease-in-out 0.5s infinite',
-        }}
-      >
-        {/* ── 상단: 쿠폰 정보 ── */}
-        <div style={{ padding: '28px 26px 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-            <span style={{
-              fontSize: 11, fontWeight: 800, letterSpacing: '0.18em',
-              color: '#FF6000', textTransform: 'uppercase',
-            }}>
-              Capsule Coupon
-            </span>
-            <span style={{ fontSize: 22, lineHeight: 1 }}>🎟️</span>
-          </div>
+      <div className="ci-glow" aria-hidden />
 
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', margin: '0 0 6px' }}>
-            이 쿠폰으로 캡슐을 열 수 있어요
-          </p>
-          <h3 style={{
-            fontSize: 24, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1.25,
-            letterSpacing: '-0.02em',
-          }}>
-            {universityName}
-          </h3>
+      {onBack && (
+        <button onClick={onBack} className="ci-back">
+          ‹ 돌아가기
+        </button>
+      )}
 
-          {/* 발행처 / 캡슐 1회 표기 */}
-          <div style={{ display: 'flex', gap: 24, marginTop: 20 }}>
-            <div>
-              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', margin: '0 0 3px', letterSpacing: '0.08em' }}>ISSUED BY</p>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', margin: 0, fontWeight: 600 }}>LIKELION</p>
-            </div>
-            <div>
-              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', margin: '0 0 3px', letterSpacing: '0.08em' }}>VALUE</p>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', margin: 0, fontWeight: 600 }}>캐릭터 캡슐 1회</p>
+      <div className="ci-card">
+        {/* 상단 텍스트 */}
+        <div className="ci-text">
+          <h1 className="ci-title">티켓 코드를 입력해주세요</h1>
+          <div className="ci-pill-row">
+            <div className="ci-pill">
+              <span style={{ fontSize: 12, color: '#9e9e9e', letterSpacing: '0.03em', fontWeight: 500 }}>
+                선택된 학교
+              </span>
+              <div style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.25)' }} />
+              <span style={{ fontSize: 14, color: '#fff', letterSpacing: '0.02em', fontWeight: 700 }}>
+                {universityName}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* ── 절취선 + 펀치 홀 ── */}
-        <div style={{ position: 'relative', height: 1 }}>
-          {/* 왼쪽 펀치 홀 */}
-          <div style={{
-            position: 'absolute', left: -13, top: '50%', transform: 'translateY(-50%)',
-            width: 26, height: 26, borderRadius: '50%', background: BG,
-            boxShadow: 'inset 0 0 0 1px rgba(255,96,0,0.2)',
-          }} />
-          {/* 오른쪽 펀치 홀 */}
-          <div style={{
-            position: 'absolute', right: -13, top: '50%', transform: 'translateY(-50%)',
-            width: 26, height: 26, borderRadius: '50%', background: BG,
-            boxShadow: 'inset 0 0 0 1px rgba(255,96,0,0.2)',
-          }} />
-          {/* 점선 */}
-          <div style={{
-            position: 'absolute', left: 20, right: 20, top: 0,
-            borderTop: '2px dashed rgba(255,255,255,0.18)',
-          }} />
-        </div>
-
-        {/* ── 하단(스텁): 코드 입력 ── */}
-        <form onSubmit={handleSubmit} style={{ padding: '26px 26px 28px' }}>
-          <label style={{
-            display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em',
-            color: 'rgba(255,255,255,0.4)', marginBottom: 10, textTransform: 'uppercase',
-          }}>
-            쿠폰 코드 입력
-          </label>
-
-          <div style={{ animation: error ? 'code-shake 0.4s ease' : undefined }}>
-            <input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="LION-000"
-              style={{
-                width: '100%',
-                background: 'rgba(0,0,0,0.35)',
-                border: error
-                  ? '1.5px solid rgba(239,68,68,0.6)'
-                  : focused
-                  ? '1.5px solid rgba(255,96,0,0.7)'
-                  : '1.5px dashed rgba(255,255,255,0.22)',
-                borderRadius: 12,
-                padding: '16px 18px',
-                fontSize: 22, fontWeight: 700,
-                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-                letterSpacing: '0.18em',
-                color: '#fff',
-                textAlign: 'center',
-                outline: 'none',
-                transition: 'border 0.2s',
-              }}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              disabled={isLoading}
-              autoComplete="off"
-              autoCapitalize="characters"
-            />
+        {/* 입력칸 */}
+        <div className="ci-center">
+          <div className="ci-boxes" style={{ animation: error ? 'code-shake 0.4s ease' : undefined }}>
+            {chars.map((ch, i) => {
+              const filled = ch !== '';
+              const active = focusIdx === i;
+              return (
+                <input
+                  key={i}
+                  ref={(el) => {
+                    inputRefs.current[i] = el;
+                  }}
+                  type="text"
+                  inputMode="text"
+                  maxLength={2}
+                  value={ch}
+                  onChange={(e) => handleChange(i, e)}
+                  onKeyDown={(e) => handleKeyDown(i, e)}
+                  onFocus={() => setFocusIdx(i)}
+                  onBlur={() => setFocusIdx(null)}
+                  disabled={isLoading}
+                  className="ci-box"
+                  style={{
+                    color: filled ? '#fff' : 'rgba(255,255,255,0.35)',
+                    border: `1.5px solid ${
+                      active || filled ? 'rgba(255,96,0,0.9)' : 'rgba(255,255,255,0.28)'
+                    }`,
+                    boxShadow: active ? '0 0 0 3px rgba(255,96,0,0.18)' : 'none',
+                  }}
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                />
+              );
+            })}
           </div>
 
-          {error && (
-            <p style={{ color: '#f87171', fontSize: 13, margin: '10px 2px 0', textAlign: 'center' }}>{error}</p>
-          )}
+          {error && <p className="ci-error">{error}</p>}
+        </div>
 
+        {/* 제출 버튼 */}
+        <div className="ci-cta">
           <button
-            type="submit"
-            disabled={isLoading || !code.trim()}
+            onClick={handleSubmit}
+            disabled={isLoading || !isFilled}
+            className="ci-submit"
             style={{
-              width: '100%', marginTop: 16,
-              background: '#FF6000', color: '#fff',
-              fontWeight: 800, fontSize: 16,
-              padding: '15px 0', borderRadius: 14,
-              border: 'none', cursor: isLoading || !code.trim() ? 'not-allowed' : 'pointer',
-              opacity: isLoading || !code.trim() ? 0.4 : 1,
-              boxShadow: '0 0 24px rgba(255,96,0,0.3)',
-              transition: 'opacity 0.2s, transform 0.1s',
+              cursor: isLoading || !isFilled ? 'not-allowed' : 'pointer',
+              opacity: isLoading || !isFilled ? 0.45 : 1,
+              boxShadow: isLoading || !isFilled ? 'none' : '0 8px 28px rgba(255,96,0,0.35)',
+              animation: isFilled && !isLoading ? 'ci-glow-anim 2.4s ease-in-out infinite' : undefined,
             }}
           >
-            쿠폰 사용하기
+            티켓 사용하기 &nbsp;›
           </button>
-        </form>
+        </div>
       </div>
-
-      <p style={{
-        textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.3)',
-        marginTop: 18, lineHeight: 1.6,
-      }}>
-        코드는 학교 대표에게 전달되었어요.<br />학교당 한 번만 사용할 수 있습니다.
-      </p>
     </div>
   );
 }
