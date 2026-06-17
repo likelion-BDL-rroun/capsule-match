@@ -53,19 +53,10 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           position: relative;
           overflow: hidden;
         }
-        .ci-glow {
-          position: absolute;
-          top: -120px; left: 50%;
-          transform: translateX(-50%);
-          width: 420px; height: 420px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(255,96,0,0.16) 0%, rgba(255,96,0,0.05) 45%, transparent 70%);
-          filter: blur(20px);
-          pointer-events: none;
-          z-index: 0;
-        }
         .ci-back {
-          align-self: flex-start;
+          position: fixed;
+          top: 20px;
+          left: 16px;
           margin: 0;
           color: rgba(255,255,255,0.3);
           font-size: 14px;
@@ -74,7 +65,7 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           border: none;
           cursor: pointer;
           letter-spacing: 0.03em;
-          z-index: 2;
+          z-index: 100;
           transition: color 0.15s;
         }
         .ci-back:hover { color: rgba(255,255,255,0.7); }
@@ -158,7 +149,7 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
         /* ===== PC: 가운데 카드 패널 ===== */
         @media (min-width: 769px) {
           .ci-root { justify-content: center; padding: 28px 40px 40px; max-width: 1232px; position: relative; }
-          .ci-back { position: absolute; top: 28px; left: 40px; }
+          .ci-back { position: absolute; top: 28px; left: 40px; z-index: 2; }
           .ci-card {
             display: flex;
             flex-direction: column;
@@ -178,7 +169,6 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
         }
       `}</style>
 
-      <div className="ci-glow" aria-hidden />
 
       {onBack && (
         <button onClick={onBack} className="ci-back">
@@ -216,12 +206,20 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
                     inputRefs.current[i] = el;
                   }}
                   type="text"
-                  inputMode="text"
+                  inputMode="numeric"
                   maxLength={2}
                   value={ch}
                   onChange={(e) => handleChange(i, e)}
                   onKeyDown={(e) => handleKeyDown(i, e)}
                   onFocus={() => setFocusIdx(i)}
+                  onPointerDown={(e) => {
+                    const firstEmpty = chars.findIndex((c) => c === '');
+                    const target = firstEmpty === -1 ? BOX_COUNT - 1 : firstEmpty;
+                    if (target !== i) {
+                      e.preventDefault();
+                      inputRefs.current[target]?.focus();
+                    }
+                  }}
                   onBlur={() => setFocusIdx(null)}
                   disabled={isLoading}
                   className="ci-box"

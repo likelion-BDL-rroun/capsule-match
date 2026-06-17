@@ -22,17 +22,6 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
           position: relative;
           overflow: hidden;
         }
-        .ti-glow {
-          position: absolute;
-          top: -420px; left: 50%;
-          transform: translateX(-50%);
-          width: 900px; height: 700px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(255,96,0,0.16) 0%, rgba(255,96,0,0.05) 45%, transparent 70%);
-          filter: blur(20px);
-          pointer-events: none;
-          z-index: 10;
-        }
         .ti-back {
           align-self: flex-start;
           margin: 0;
@@ -126,9 +115,6 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
           50%      { box-shadow: 0 0 40px 10px rgba(255,96,0,0.28); }
         }
 
-        @media (max-width: 768px) {
-          .ti-glow { z-index: 0; }
-        }
         /* ===== PC: 좌우 2단 배치 ===== */
         @media (min-width: 769px) {
           .ti-root { max-width: 1232px; padding: 28px 40px 40px; }
@@ -155,7 +141,6 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
         }
       `}</style>
 
-      <div className="ti-glow" aria-hidden />
 
       {onBack && (
         <button onClick={onBack} className="ti-back">
