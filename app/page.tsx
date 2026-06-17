@@ -231,7 +231,7 @@ export default function HomePage() {
             position: 'absolute',
             top: '1%', left: '55%',
             transform: 'translateX(-50%)',
-            width: 'min(94%, 1100px)',
+            width: 'min(94%, 1056px)',
             height: 'auto',
             zIndex: 1,
             pointerEvents: 'none',
@@ -290,7 +290,7 @@ export default function HomePage() {
 
       {/* ── 학교 선택 섹션 ── */}
       <section ref={selectRef} style={{ position: 'relative', overflow: 'hidden' }}>
-        <div style={{ width: '100%', maxWidth: 1280, margin: '0 auto', padding: '120px 24px 240px' }}>
+        <div style={{ width: '100%', maxWidth: 1280, margin: '0 auto', padding: '220px 24px 240px' }}>
         <h2 style={{ fontSize: 36, fontWeight: 800, color: '#f0f0f0', marginBottom: 8, textAlign: 'center' }}>
           학교를 선택해주세요.
         </h2>
