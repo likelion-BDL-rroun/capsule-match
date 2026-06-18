@@ -441,9 +441,11 @@ function CardFace({ isPicked }: { isPicked: boolean }) {
         src="/card-back.png"
         alt="카드"
         fill
+        sizes="200px"
         style={{ objectFit: 'cover' }}
         draggable={false}
         priority
+        unoptimized
       />
 
       {/* 샤인 스윕 */}
