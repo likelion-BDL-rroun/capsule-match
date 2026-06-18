@@ -86,11 +86,14 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
           margin: 0;
         }
         .ti-lion {
-          max-height: min(46vh, 340px);
+          max-height: min(36vh, 260px);
           width: auto;
           object-fit: contain;
           pointer-events: none;
           filter: none;
+        }
+        @media (min-width: 769px) {
+          .ti-lion { max-height: min(70vh, 520px); }
         }
         .ti-next {
           width: 100%;
@@ -155,12 +158,13 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
         {/* 사자 GIF */}
         <div className="ti-lion-wrap">
           <video
-            src="/검표 영상.mp4"
+            src="/검표원 사자 배경보정.mp4"
             className="ti-lion"
             autoPlay
             loop
             muted
             playsInline
+            poster="/검표원_더미이미지.png"
           />
         </div>
 
