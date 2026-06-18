@@ -148,8 +148,8 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           40%, 80% { transform: translateX(7px); }
         }
         @keyframes ci-glow-anim {
-          0%, 100% { box-shadow: 0 0 24px 4px rgba(255,96,0,0.18); }
-          50%      { box-shadow: 0 0 40px 10px rgba(255,96,0,0.28); }
+          0%, 100% { box-shadow: 0 0 12px 1px rgba(255,96,0,0.10); }
+          50%      { box-shadow: 0 0 20px 3px rgba(255,96,0,0.16); }
         }
 
         /* ===== PC: 가운데 카드 패널 ===== */
@@ -266,7 +266,7 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
             style={{
               cursor: isLoading || !isFilled ? 'not-allowed' : 'pointer',
               opacity: isLoading || !isFilled ? 0.45 : 1,
-              boxShadow: isLoading || !isFilled ? 'none' : '0 8px 28px rgba(255,96,0,0.35)',
+              boxShadow: isLoading || !isFilled ? 'none' : '0 6px 18px rgba(255,96,0,0.18)',
               animation: isFilled && !isLoading ? 'ci-glow-anim 2.4s ease-in-out infinite' : undefined,
             }}
           >

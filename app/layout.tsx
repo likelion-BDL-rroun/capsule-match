@@ -28,7 +28,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <link rel="preload" as="image" href="/더미이미지_용량 조절.webp" />
+        <link rel="preload" as="image" href="/더미 배경 투명.webp" />
         <link rel="preload" as="video" href="/검표원 사자 배경보정.mp4" type="video/mp4" />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>

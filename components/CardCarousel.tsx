@@ -404,7 +404,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
                 opacity: isLoading ? 0.5 : 1,
                 letterSpacing: '0.03em',
                 textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
-                boxShadow: '0 8px 28px rgba(255,96,0,0.35)',
+                boxShadow: '0 6px 18px rgba(255,96,0,0.18)',
                 transition: 'opacity 0.2s',
               }}
             >

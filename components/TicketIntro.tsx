@@ -45,7 +45,7 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
         }
         .ti-group { display: contents; }
 
-        .ti-text { order: 1; flex: 0 0 auto; }
+        .ti-text { order: 1; flex: 0 0 auto; position: relative; z-index: 3; }
         .ti-lion-wrap {
           order: 2;
           flex: 1;
@@ -54,8 +54,22 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
           justify-content: center;
           padding: 12px 0;
           min-height: 200px;
+          position: relative;
         }
-        .ti-cta { order: 3; flex: 0 0 auto; }
+        /* 사자 영상 뒤 원형 글로우 */
+        .ti-lion-wrap::before {
+          content: '';
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: 460px;
+          height: 460px;
+          background: radial-gradient(circle, #0b0b0b 0%, #0b0b0b 38%, rgba(11,11,11,0) 72%);
+          pointer-events: none;
+          z-index: 0;
+        }
+        .ti-cta { order: 3; flex: 0 0 auto; position: relative; z-index: 3; }
 
         .ti-title {
           font-size: 24px;
@@ -91,9 +105,12 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
           object-fit: contain;
           pointer-events: none;
           filter: none;
+          position: relative;
+          z-index: 1;
         }
         @media (min-width: 769px) {
           .ti-lion { max-height: min(70vh, 520px); }
+          .ti-lion-wrap::before { width: 860px; height: 1060px; }
         }
         .ti-next {
           width: 100%;
@@ -107,9 +124,9 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
           cursor: pointer;
           letter-spacing: 0.03em;
           text-shadow: 0px 2px 4px rgba(214,81,0,0.25);
-          box-shadow: 0 8px 28px rgba(255,96,0,0.35);
+          box-shadow: 0 6px 18px rgba(255,96,0,0.18);
           transition: transform 0.08s;
-          animation: ti-glow-anim 2.4s ease-in-out infinite;
+          animation: ti-glow-anim 2.6s ease-in-out infinite;
         }
         .ti-next:active { transform: scale(0.985); }
 
@@ -117,8 +134,8 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
           to { transform: rotate(360deg); }
         }
         @keyframes ti-glow-anim {
-          0%, 100% { box-shadow: 0 0 24px 4px rgba(255,96,0,0.18); }
-          50%      { box-shadow: 0 0 40px 10px rgba(255,96,0,0.28); }
+          0%, 100% { box-shadow: 0 0 12px 1px rgba(255,96,0,0.10); }
+          50%      { box-shadow: 0 0 20px 3px rgba(255,96,0,0.16); }
         }
 
         /* ===== PC: 좌우 2단 배치 ===== */
@@ -164,7 +181,7 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
             loop
             muted
             playsInline
-            poster="/더미이미지_용량 조절.webp"
+            poster="/더미 배경 투명.webp"
           />
         </div>
 
