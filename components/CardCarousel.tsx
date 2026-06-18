@@ -296,6 +296,10 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           pointer-events: auto;
           max-width: 448px;
         }
+        /* PC: 메인 페이지 버튼과 동일하게 바닥에서 52px */
+        @media (min-width: 769px) {
+          .pick-cta { padding-bottom: 52px; }
+        }
         @keyframes card-shine {
           0%   { transform: translateX(-120%) rotate(8deg); opacity: 0; }
           25%  { opacity: 0.9; }
