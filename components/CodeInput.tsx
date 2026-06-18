@@ -58,7 +58,7 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           top: 0;
           background: #0e0e0e;
           z-index: 10;
-          padding: 20px 0 16px;
+          padding: 0 0 16px;
           flex: 0 0 auto;
         }
         .ci-back {
