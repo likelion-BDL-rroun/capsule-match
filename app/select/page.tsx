@@ -104,24 +104,63 @@ export default function SelectPage() {
   // 카드 뽑기
   if (step === 'pickCapsule' && selectedUniversity) {
     return (
-      <main className="min-h-screen flex flex-col items-center" style={{ background: 'var(--bg)' }}>
+      <main className="min-h-screen flex flex-col items-center" style={{ background: 'var(--bg)', overflowX: 'hidden' }}>
         {isLoading && <LoadingOverlay message="캐릭터를 배정하는 중..." />}
-        <div style={{
+        <div className="pick-header" style={{
           width: '100%', textAlign: 'center',
-          padding: '40px 20px 24px',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           background: 'rgba(14,14,14,0.4)',
           position: 'sticky', top: 0, zIndex: 10,
         }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#f0f0f0', marginBottom: 4 }}>
-            {selectedUniversity.name}
-          </h2>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+          {/* 학교명 pill — 코드 입력 페이지와 동일 */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              padding: '8px 16px', borderRadius: 99,
+              border: '1px solid rgba(255,96,0,0.35)',
+              background: 'linear-gradient(180deg, rgba(255,96,0,0) 30%, rgba(255,96,0,0.12) 100%)',
+            }}>
+              <span style={{ fontSize: 12, color: '#9e9e9e', letterSpacing: '0.03em', fontWeight: 500 }}>
+                선택된 학교
+              </span>
+              <div style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.25)' }} />
+              <span style={{ fontSize: 14, color: '#fff', letterSpacing: '0.02em', fontWeight: 700 }}>
+                {selectedUniversity.name}
+              </span>
+            </div>
+          </div>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: '0 0 14px',
+            letterSpacing: '0.02em', lineHeight: 1.3,
+            textShadow: '0px 2px 8px rgba(214,81,0,0.3)' }}>
             카드를 골라 캐릭터를 뽑아보세요!
+          </h2>
+          <p className="carousel-hint" style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0,
+            lineHeight: 1.6, letterSpacing: '0.02em' }}>
+            <span className="hint-pc">스크롤하거나 드래그해서 카드를 돌려보세요</span>
+            <span className="hint-mo">버튼을 누르거나 드래그해서 카드를 돌려보세요</span>
           </p>
         </div>
-        <CardCarousel onComplete={handleCapsulePick} isLoading={isLoading} />
+        <style>{`
+          .carousel-wrap { width: 100%; align-self: stretch; }
+          .hint-mo { display: none; }
+          .pick-header { padding: 40px 40px 24px; }
+          @media (max-width: 768px) {
+            .hint-pc { display: none; }
+            .hint-mo { display: inline; }
+            .pick-header { padding: 40px 16px 24px; }
+          }
+          @media (max-width: 768px) {
+            .carousel-wrap {
+              transform: scale(0.78);
+              transform-origin: top center;
+              margin-bottom: calc(620px * -0.22);
+            }
+          }
+        `}</style>
+        <div className="carousel-wrap">
+          <CardCarousel onComplete={handleCapsulePick} isLoading={isLoading} />
+        </div>
       </main>
     );
   }

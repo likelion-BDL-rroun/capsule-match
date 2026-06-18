@@ -51,9 +51,11 @@ export default function HomePage() {
             50%      { transform: translateX(-50%) translateY(-14px); }
           }
           .hero-cards-mobile { display: none; }
+          .hero-inner { padding: 0 40px; }
           @media (max-width: 768px) {
             .hero-cards-pc { display: none; }
             .hero-cards-mobile { display: block; }
+            .hero-inner { padding: 0 20px; }
           }
         `}</style>
 
@@ -134,7 +136,7 @@ export default function HomePage() {
         />
 
         {/* 텍스트 + 버튼 */}
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1232, margin: '0 auto', padding: '0 40px' }}>
+        <div className="hero-inner" style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1232, margin: '0 auto' }}>
           <h1 style={{
             fontFamily: "'Anton', sans-serif",
             fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 400,

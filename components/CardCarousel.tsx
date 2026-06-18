@@ -187,6 +187,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     const bottomAnchorOffset = isFront ? CARD_H * (scale - 1) : 0;
     const ty = isPickedCard ? 110 : cy - CARD_H / 2 - bottomAnchorOffset;
 
+    const dimFilter = !picked && !isFront ? 'brightness(0.4) blur(1px)' : 'none';
+
     return {
       position: 'absolute',
       left: '50%',
@@ -196,6 +198,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
       borderRadius: 16,
       transform: `translate(calc(-50% + ${fadedOut ? cx : isPickedCard ? 0 : cx}px), ${ty}px) rotate(${isPickedCard ? 0 : a}deg) scale(${fadedOut ? 0.6 : scale})`,
       opacity: fadedOut ? 0 : 1,
+      filter: dimFilter,
       zIndex: isPickedCard ? 200 : zIndex,
       boxShadow: isPickedCard
         ? '0 30px 90px rgba(0,0,0,0.7), 0 0 0 2px rgba(255,255,255,0.25), 0 0 70px 10px rgba(255,96,0,0.55)'
@@ -217,6 +220,16 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   // 선택된 카드 중심 좌표 (오버레이 정렬용)
   const BURST_TOP = 110 + (CARD_H * 1.18) / 2;
 
+  const moveCard = useCallback((dir: 1 | -1) => {
+    if (picked || isLoading) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    isAnimating.current = false;
+    velRef.current = 0;
+    const next = Math.round(rotRef.current / STEP) * STEP + STEP * dir;
+    rotRef.current = next;
+    setRotation(next);
+  }, [picked, isLoading]);
+
   return (
     <div className="flex flex-col items-center w-full select-none">
       <style>{`
@@ -235,6 +248,32 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           70%  { opacity: 1; }
           100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.1); }
         }
+        .carousel-arrow { display: none; }
+        .carousel-container { overflow: hidden; }
+        @media (max-width: 768px) {
+          .carousel-container { overflow: visible; }
+          .carousel-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.7);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 220;
+            transition: background 0.15s;
+          }
+          .carousel-arrow:active { background: rgba(255,96,0,0.25); }
+          .carousel-arrow-left { left: 8px; }
+          .carousel-arrow-right { right: 8px; }
+        }
         @keyframes card-shine {
           0%   { transform: translateX(-120%) rotate(8deg); opacity: 0; }
           25%  { opacity: 0.9; }
@@ -242,14 +281,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           100% { transform: translateX(120%) rotate(8deg); opacity: 0; }
         }
       `}</style>
-      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 12 }}>
-        {picked ? '캐릭터를 배정하는 중...' : '스크롤하거나 드래그해서 카드를 돌려보세요'}
-      </p>
 
       <div
         ref={containerRef}
-        className="relative w-full"
-        style={{ height: 620, overflow: 'hidden', touchAction: 'pan-y' }}
+        className="relative w-full carousel-container"
+        style={{ height: 620, touchAction: 'pan-y' }}
         onMouseDown={e => onPointerDown(e.clientX)}
         onMouseMove={e => { if (dragStartX.current !== null) onPointerMove(e.clientX); }}
         onMouseUp={onPointerUp}
@@ -306,6 +342,14 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
               }} />
             ))}
           </div>
+        )}
+
+        {/* 모바일 좌우 화살표 */}
+        {!picked && (
+          <>
+            <button className="carousel-arrow carousel-arrow-left" onClick={() => moveCard(1)}>‹</button>
+            <button className="carousel-arrow carousel-arrow-right" onClick={() => moveCard(-1)}>›</button>
+          </>
         )}
 
         {/* 하단 블러 오버레이 */}
