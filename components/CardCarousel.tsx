@@ -259,7 +259,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             align-items: center;
             justify-content: center;
             position: absolute;
-            top: 50%;
+            top: 40%;
             transform: translateY(-50%);
             width: 44px;
             height: 44px;
@@ -275,6 +275,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           .carousel-arrow:active { background: rgba(255,96,0,0.25); }
           .carousel-arrow-left { left: 8px; }
           .carousel-arrow-right { right: 8px; }
+          /* 모바일 0.78 축소를 버튼만 역보정 → 코드 입력 버튼과 동일 크기 */
+          .pick-btn-wrap { transform: scale(1.282); transform-origin: center bottom; }
         }
         @keyframes card-shine {
           0%   { transform: translateX(-120%) rotate(8deg); opacity: 0; }
@@ -375,7 +377,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         {!picked && (
           <>
 
-          <div style={{
+          <div className="pick-btn-wrap" style={{
             position: 'absolute', bottom: 32, left: 16, right: 16,
             display: 'flex', justifyContent: 'center', zIndex: 200,
           }}>
@@ -397,6 +399,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
               disabled={isLoading}
               style={{
                 width: '100%',
+                maxWidth: 320,
                 background: '#FF6000', color: '#fff',
                 fontWeight: 800, fontSize: 16,
                 padding: '17px 10px', borderRadius: 14,
