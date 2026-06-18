@@ -65,7 +65,7 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
           transform: translate(-50%, -50%);
           width: 460px;
           height: 460px;
-          background: radial-gradient(circle, #0b0b0b 0%, #0b0b0b 38%, rgba(11,11,11,0) 72%);
+          background: radial-gradient(circle, #0e0e0e 0%, #0e0e0e 38%, rgba(14,14,14,0) 72%);
           pointer-events: none;
           z-index: 0;
         }
@@ -110,7 +110,11 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
         }
         @media (min-width: 769px) {
           .ti-lion { max-height: min(70vh, 520px); }
-          .ti-lion-wrap::before { width: 860px; height: 1060px; }
+          .ti-lion-wrap::before {
+            width: 860px;
+            height: 1060px;
+            background: radial-gradient(circle, #0b0b0b 0%, #0b0b0b 38%, rgba(11,11,11,0) 72%);
+          }
         }
         .ti-next {
           width: 100%;
