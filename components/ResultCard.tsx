@@ -38,12 +38,12 @@ export default function ResultCard({ universityName, characterName, characterIma
   const spawnTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const cursorRef = useRef({ x: 50, y: 50 });
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const updateFromPoint = (clientX: number, clientY: number) => {
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
+    const x = (clientX - rect.left) / rect.width;
+    const y = (clientY - rect.top) / rect.height;
 
     card.style.setProperty('--rx', `${(y - 0.5) * -18}deg`);
     card.style.setProperty('--ry', `${(x - 0.5) * 18}deg`);
@@ -52,6 +52,30 @@ export default function ResultCard({ universityName, characterName, characterIma
 
     cursorRef.current = { x: x * 100, y: y * 100 };
     setCursorPos({ x: x * 100, y: y * 100 });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    updateFromPoint(e.clientX, e.clientY);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setIsHovered(true);
+    const t = e.touches[0];
+    if (t) updateFromPoint(t.clientX, t.clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const t = e.touches[0];
+    if (t) updateFromPoint(t.clientX, t.clientY);
+  };
+
+  const handleTouchEnd = () => {
+    const card = cardRef.current;
+    if (card) {
+      card.style.setProperty('--rx', '0deg');
+      card.style.setProperty('--ry', '0deg');
+    }
+    setIsHovered(false);
   };
 
   const spawnSparks = useCallback(() => {
@@ -102,6 +126,9 @@ export default function ResultCard({ universityName, characterName, characterIma
           onMouseEnter={() => setIsHovered(true)}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           className="relative w-full rounded-2xl overflow-hidden shadow-2xl"
           style={{
             aspectRatio: '2 / 3',
@@ -109,6 +136,7 @@ export default function ResultCard({ universityName, characterName, characterIma
             transition: 'transform 0.08s ease-out',
             transformStyle: 'preserve-3d',
             willChange: 'transform',
+            touchAction: 'none',
           }}
         >
           {/* 카드 이미지 */}
