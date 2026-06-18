@@ -104,7 +104,8 @@ export default function SelectPage() {
   // 카드 뽑기
   if (step === 'pickCapsule' && selectedUniversity) {
     return (
-      <main className="min-h-screen flex flex-col items-center" style={{ background: 'var(--bg)', overflowX: 'hidden' }}>
+      <main className="min-h-screen flex flex-col items-center pick-noscroll" style={{ background: 'var(--bg)', overflowX: 'hidden' }}>
+        <style>{`.pick-noscroll { overflow: hidden; height: 100dvh; } @media (min-width: 769px) { .pick-noscroll { overflow: unset; height: auto; min-height: 100vh; } }`}</style>
         {isLoading && <LoadingOverlay message="캐릭터를 배정하는 중..." />}
         <div className="pick-header" style={{
           width: '100%', textAlign: 'center',
