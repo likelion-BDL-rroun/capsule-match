@@ -153,7 +153,7 @@ export default function HomePage() {
             letterSpacing: '0.03em', lineHeight: 1.25,
             textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
           }}>
-            카드를 선택하고 대표 캐릭터를 매칭해주세요
+            카드 뽑기 게임으로 대표 캐릭터를 매칭해주세요
           </p>
           <button
             onClick={() => router.push('/select')}
