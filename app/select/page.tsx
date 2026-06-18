@@ -121,10 +121,6 @@ export default function SelectPage() {
               border: '1px solid rgba(255,96,0,0.35)',
               background: 'linear-gradient(180deg, rgba(255,96,0,0) 30%, rgba(255,96,0,0.12) 100%)',
             }}>
-              <span style={{ fontSize: 12, color: '#9e9e9e', letterSpacing: '0.03em', fontWeight: 500 }}>
-                선택된 학교
-              </span>
-              <div style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.25)' }} />
               <span style={{ fontSize: 14, color: '#fff', letterSpacing: '0.02em', fontWeight: 700 }}>
                 {selectedUniversity.name}
               </span>
@@ -135,10 +131,10 @@ export default function SelectPage() {
             textShadow: '0px 2px 8px rgba(214,81,0,0.3)' }}>
             카드를 골라 캐릭터를 뽑아보세요!
           </h2>
-          <p className="carousel-hint" style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0,
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0,
             lineHeight: 1.6, letterSpacing: '0.02em' }}>
             <span className="hint-pc">스크롤하거나 드래그해서 카드를 돌려보세요</span>
-            <span className="hint-mo">버튼을 누르거나 드래그해서 카드를 돌려보세요</span>
+            <span className="hint-mo">‹ › 버튼으로 넘기고, 원하는 카드를 선택하세요</span>
           </p>
         </div>
         <style>{`
@@ -148,7 +144,7 @@ export default function SelectPage() {
           @media (max-width: 768px) {
             .hint-pc { display: none; }
             .hint-mo { display: inline; }
-            .pick-header { padding: 40px 16px 24px; }
+            .pick-header { padding: 20px 16px 16px; }
           }
           @media (max-width: 768px) {
             .carousel-wrap {

@@ -110,6 +110,9 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
         }
         .ti-next:active { transform: scale(0.985); }
 
+        @keyframes ti-spin {
+          to { transform: rotate(360deg); }
+        }
         @keyframes ti-glow-anim {
           0%, 100% { box-shadow: 0 0 24px 4px rgba(255,96,0,0.18); }
           50%      { box-shadow: 0 0 40px 10px rgba(255,96,0,0.28); }
@@ -151,7 +154,14 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
       <div className="ti-stage">
         {/* 사자 GIF */}
         <div className="ti-lion-wrap">
-          <img src="/검표원 사자_1.gif" alt="티켓 검사관" className="ti-lion" />
+          <video
+            src="/검표 영상.mp4"
+            className="ti-lion"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
         </div>
 
         <div className="ti-group">

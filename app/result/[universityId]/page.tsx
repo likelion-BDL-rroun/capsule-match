@@ -107,54 +107,81 @@ export default function ResultPage() {
 
   return (
     <main style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ width: '100%', maxWidth: 1280, margin: '0 auto', display: 'flex', flexDirection: 'column', padding: '32px 24px' }}>
       <CornerGlow />
-
-      <button onClick={() => router.push('/')} style={{ color: 'rgba(255,255,255,0.3)', fontSize: 13, marginBottom: 28, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
-        ← 처음으로
-      </button>
-
-      <div style={{ textAlign: 'center', marginBottom: 20 }}>
-        <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 12 }}>
-          {result?.assignedAt && new Date(result.assignedAt).toLocaleString('ko-KR')} 배정
-        </p>
-      </div>
-
-      {result && (
-        <ResultCard
-          universityName={result.universityName}
-          characterName={result.characterName}
-          characterImageUrl={result.characterImageUrl}
-        />
-      )}
-
-      <div style={{ display: 'flex', gap: 10, width: '100%', maxWidth: 320, margin: '24px auto 0' }}>
-        <button
-          onClick={handleShare}
-          disabled={isSharing}
-          style={{
-            flex: 1, background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.12)', color: '#fff',
-            fontWeight: 700, fontSize: 15, padding: '15px 0', borderRadius: 16,
-            cursor: isSharing ? 'wait' : 'pointer', opacity: isSharing ? 0.5 : 1,
-            transition: 'opacity 0.2s',
-          }}
-        >
-          공유하기
+      <style>{`
+        .result-inner { width: 100%; maxWidth: 480px; margin: 0 auto; display: flex; flex-direction: column; padding: 20px 16px 80px; position: relative; z-index: 1; }
+        .result-back { color: rgba(255,255,255,0.3); font-size: 14px; font-weight: 500; margin-bottom: 28px; background: none; border: none; cursor: pointer; text-align: left; letter-spacing: 0.03em; }
+        .result-back:hover { color: rgba(255,255,255,0.7); }
+        .result-pill-row { display: flex; justify-content: center; margin-bottom: 20px; }
+        .result-pill { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,96,0,0.35); background: linear-gradient(180deg, rgba(255,96,0,0) 30%, rgba(255,96,0,0.12) 100%); }
+        .result-title { font-size: 24px; font-weight: 800; color: #fff; text-align: center; margin: 0 0 24px; letter-spacing: 0.02em; line-height: 1.3; text-shadow: 0px 2px 8px rgba(214,81,0,0.3); }
+        .result-buttons { display: flex; gap: 10px; width: 100%; max-width: 320px; margin: 24px auto 0; }
+        .result-time { font-size: 13px; color: rgba(255,255,255,0.45); text-align: center; margin-top: 32px; }
+        @media (min-width: 769px) {
+          .result-inner { max-width: 1232px; padding: 28px 40px 60px; }
+          .result-title { font-size: 36px; margin-bottom: 32px; }
+          .result-buttons { max-width: 400px; }
+          .result-time { font-size: 13px; margin-top: 20px; }
+        }
+      `}</style>
+      <div className="result-inner">
+        <button onClick={() => router.push('/')} className="result-back">
+          ‹ 돌아가기
         </button>
-        <button
-          onClick={handleDownload}
-          disabled={isSharing}
-          style={{
-            flex: 1, background: '#FF6000', border: 'none', color: '#fff',
-            fontWeight: 700, fontSize: 15, padding: '15px 0', borderRadius: 16,
-            cursor: isSharing ? 'wait' : 'pointer', opacity: isSharing ? 0.5 : 1,
-            transition: 'opacity 0.2s',
-          }}
-        >
-          다운로드
-        </button>
-      </div>
+
+        <div className="result-pill-row">
+          <div className="result-pill">
+            <span style={{ fontSize: 14, color: '#fff', letterSpacing: '0.02em', fontWeight: 700 }}>{result?.universityName}</span>
+          </div>
+        </div>
+        <h2 className="result-title">캐릭터가 결정되었습니다!</h2>
+
+        {result && (
+          <ResultCard
+            universityName={result.universityName}
+            characterName={result.characterName}
+            characterImageUrl={result.characterImageUrl}
+          />
+        )}
+
+        <div className="result-buttons">
+          <button
+            onClick={handleShare}
+            disabled={isSharing}
+            style={{
+              flex: 1, background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.12)', color: '#fff',
+              fontWeight: 700, fontSize: 15, padding: '15px 0', borderRadius: 16,
+              cursor: isSharing ? 'wait' : 'pointer', opacity: isSharing ? 0.5 : 1,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            공유하기
+          </button>
+          <button
+            onClick={handleDownload}
+            disabled={isSharing}
+            style={{
+              flex: 1, background: '#FF6000', border: 'none', color: '#fff',
+              fontWeight: 700, fontSize: 15, padding: '15px 0', borderRadius: 16,
+              cursor: isSharing ? 'wait' : 'pointer', opacity: isSharing ? 0.5 : 1,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            다운로드
+          </button>
+        </div>
+
+        {result?.assignedAt && (
+          <p className="result-time">
+            {new Date(result.assignedAt).toLocaleString('ko-KR')} 배정
+          </p>
+        )}
+        {result && (
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textAlign: 'center', marginTop: 8 }}>
+            이 캐릭터는 이제 {result.universityName}에만 배정됩니다.
+          </p>
+        )}
       </div>
     </main>
   );

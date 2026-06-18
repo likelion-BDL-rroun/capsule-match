@@ -95,10 +95,7 @@ export default function ResultCard({ universityName, characterName, characterIma
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-xs mx-auto">
-      <p style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.5)', marginBottom: 2 }}>{universityName}</p>
-      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginBottom: 20 }}>의 캐릭터가 결정되었습니다</p>
-
+    <div className="flex flex-col items-center w-full max-w-xs mx-auto" style={{ position: 'relative', zIndex: 1 }}>
       <div style={{ perspective: '900px' }} className="w-full">
         <div
           ref={cardRef}
@@ -176,7 +173,6 @@ export default function ResultCard({ universityName, characterName, characterIma
       `}</style>
 
       <p style={{ fontSize: 24, fontWeight: 800, color: '#f0f0f0', marginTop: 24, marginBottom: 4 }}>{characterName}</p>
-      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', margin: 0 }}>이 캐릭터는 이제 {universityName}에만 배정됩니다.</p>
 
       {onShare && (
         <button

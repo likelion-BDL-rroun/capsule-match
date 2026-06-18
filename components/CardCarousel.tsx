@@ -249,9 +249,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.1); }
         }
         .carousel-arrow { display: none; }
+        .carousel-hint-img { display: none; }
         .carousel-container { overflow: hidden; }
         @media (max-width: 768px) {
           .carousel-container { overflow: visible; }
+          .carousel-hint-img { display: flex; }
           .carousel-arrow {
             display: flex;
             align-items: center;
@@ -371,20 +373,19 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
 
         {/* 선택 버튼 — 카드 위에 얹힘 */}
         {!picked && (
+          <>
+
           <div style={{
-            position: 'absolute', bottom: 32, left: 0, right: 0,
+            position: 'absolute', bottom: 32, left: 16, right: 16,
             display: 'flex', justifyContent: 'center', zIndex: 200,
           }}>
             <button
               onClick={() => {
                 if (isLoading) return;
-                // 진행 중인 관성 애니메이션 중단
                 if (rafRef.current) cancelAnimationFrame(rafRef.current);
                 isAnimating.current = false;
                 velRef.current = 0;
-                // 화면에 하이라이트된 카드(frontCard)를 그대로 선택 — 보이는 그대로 보장
                 const target = frontCard;
-                // frontCard가 정확히 가운데 오도록 회전값 스냅 (frontCard는 불변)
                 const snapped = Math.round(rotation / STEP) * STEP;
                 rotRef.current = snapped;
                 setRotation(snapped);
@@ -395,17 +396,22 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
               }}
               disabled={isLoading}
               style={{
+                width: '100%',
                 background: '#FF6000', color: '#fff',
-                fontWeight: 700, fontSize: 15,
-                padding: '15px 48px', borderRadius: 16,
+                fontWeight: 800, fontSize: 16,
+                padding: '17px 10px', borderRadius: 14,
                 border: 'none', cursor: isLoading ? 'wait' : 'pointer',
                 opacity: isLoading ? 0.5 : 1,
+                letterSpacing: '0.03em',
+                textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
+                boxShadow: '0 8px 28px rgba(255,96,0,0.35)',
                 transition: 'opacity 0.2s',
               }}
             >
               이 카드 선택하기
             </button>
           </div>
+          </>
         )}
       </div>
     </div>

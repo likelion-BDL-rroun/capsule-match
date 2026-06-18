@@ -189,10 +189,6 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           <h1 className="ci-title">티켓 코드를 입력해주세요</h1>
           <div className="ci-pill-row">
             <div className="ci-pill">
-              <span style={{ fontSize: 12, color: '#9e9e9e', letterSpacing: '0.03em', fontWeight: 500 }}>
-                선택된 학교
-              </span>
-              <div style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.25)' }} />
               <span style={{ fontSize: 14, color: '#fff', letterSpacing: '0.02em', fontWeight: 700 }}>
                 {universityName}
               </span>
@@ -207,10 +203,6 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           <h1 className="ci-title">티켓 코드를 입력해주세요</h1>
           <div className="ci-pill-row">
             <div className="ci-pill">
-              <span style={{ fontSize: 12, color: '#9e9e9e', letterSpacing: '0.03em', fontWeight: 500 }}>
-                선택된 학교
-              </span>
-              <div style={{ width: 1, height: 14, background: 'rgba(255,255,255,0.25)' }} />
               <span style={{ fontSize: 14, color: '#fff', letterSpacing: '0.02em', fontWeight: 700 }}>
                 {universityName}
               </span>
