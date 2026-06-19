@@ -38,6 +38,35 @@ export default function ResultCard({ universityName, characterName, characterIma
   const spawnTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const cursorRef = useRef({ x: 50, y: 50 });
 
+  // 기울기만 스프링 보간 — 목표값으로 매 프레임 부드럽게 따라감 (나간 방향 머물다 복귀)
+  const targetRef = useRef({ rx: 0, ry: 0 });
+  const animRef = useRef({ rx: 0, ry: 0 });
+  const rafRef = useRef<number | null>(null);
+  const leaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const HOLD_MS = 300; // 마우스가 나간 뒤 그 각도로 머무는 시간
+
+  const tick = useCallback(() => {
+    const t = targetRef.current;
+    const a = animRef.current;
+    const k = 0.06; // 스프링 강도(작을수록 더 무겁게 트레일링)
+    a.rx += (t.rx - a.rx) * k;
+    a.ry += (t.ry - a.ry) * k;
+    const card = cardRef.current;
+    if (card) {
+      card.style.setProperty('--rx', `${a.rx}deg`);
+      card.style.setProperty('--ry', `${a.ry}deg`);
+    }
+    if (Math.abs(t.rx - a.rx) < 0.02 && Math.abs(t.ry - a.ry) < 0.02) {
+      rafRef.current = null;
+      return;
+    }
+    rafRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  const startTick = useCallback(() => {
+    if (rafRef.current == null) rafRef.current = requestAnimationFrame(tick);
+  }, [tick]);
+
   const updateFromPoint = (clientX: number, clientY: number) => {
     const card = cardRef.current;
     if (!card) return;
@@ -45,11 +74,16 @@ export default function ResultCard({ universityName, characterName, characterIma
     const x = (clientX - rect.left) / rect.width;
     const y = (clientY - rect.top) / rect.height;
 
-    card.style.setProperty('--rx', `${(y - 0.5) * -18}deg`);
-    card.style.setProperty('--ry', `${(x - 0.5) * 18}deg`);
+    // 다시 들어오면 복귀 hold 타이머 취소
+    if (leaveTimerRef.current) { clearTimeout(leaveTimerRef.current); leaveTimerRef.current = null; }
+
+    // 커서 아래 지점이 앞으로 떠오르게 (CSS는 Y축이 아래 방향이라 부호 주의)
+    targetRef.current = { rx: (y - 0.5) * 32, ry: (x - 0.5) * -32 };
+    startTick();
+
+    // 하이라이트/반짝임은 즉시 반응 (스프링 없음)
     card.style.setProperty('--mx', `${x * 100}%`);
     card.style.setProperty('--my', `${y * 100}%`);
-
     cursorRef.current = { x: x * 100, y: y * 100 };
     setCursorPos({ x: x * 100, y: y * 100 });
   };
@@ -70,11 +104,13 @@ export default function ResultCard({ universityName, characterName, characterIma
   };
 
   const handleTouchEnd = () => {
-    const card = cardRef.current;
-    if (card) {
-      card.style.setProperty('--rx', '0deg');
-      card.style.setProperty('--ry', '0deg');
-    }
+    // 나간 방향으로 잠깐 머물렀다가(HOLD_MS) 스프링으로 부드럽게 복귀
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+    leaveTimerRef.current = setTimeout(() => {
+      targetRef.current = { rx: 0, ry: 0 };
+      startTick();
+      leaveTimerRef.current = null;
+    }, HOLD_MS);
     setIsHovered(false);
   };
 
@@ -111,12 +147,20 @@ export default function ResultCard({ universityName, characterName, characterIma
   }, [isHovered, spawnSparks]);
 
   const handleMouseLeave = () => {
-    const card = cardRef.current;
-    if (!card) return;
-    card.style.setProperty('--rx', '0deg');
-    card.style.setProperty('--ry', '0deg');
+    // 나간 방향으로 잠깐 머물렀다가(HOLD_MS) 스프링으로 부드럽게 복귀
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+    leaveTimerRef.current = setTimeout(() => {
+      targetRef.current = { rx: 0, ry: 0 };
+      startTick();
+      leaveTimerRef.current = null;
+    }, HOLD_MS);
     setIsHovered(false);
   };
+
+  useEffect(() => () => {
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    if (leaveTimerRef.current) clearTimeout(leaveTimerRef.current);
+  }, []);
 
   return (
     <div className="flex flex-col items-center w-full max-w-xs mx-auto" style={{ position: 'relative', zIndex: 1 }}>
@@ -133,7 +177,6 @@ export default function ResultCard({ universityName, characterName, characterIma
           style={{
             aspectRatio: '2 / 3',
             transform: 'rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))',
-            transition: 'transform 0.08s ease-out',
             transformStyle: 'preserve-3d',
             willChange: 'transform',
             touchAction: 'none',
