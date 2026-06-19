@@ -13,8 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "캐릭터 카드 뽑기 | LIKELION",
+  title: "character-pick-2026univ",
   description: "80개 대학, 80종 캐릭터. 우리 학교의 캐릭터를 직접 뽑아보세요.",
+  openGraph: {
+    title: "캐릭터 카드 뽑기 | LIKELION",
+    description: "80개 대학, 80종 캐릭터. 우리 학교의 캐릭터를 직접 뽑아보세요.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "캐릭터 카드 뽑기 | LIKELION",
+    description: "80개 대학, 80종 캐릭터. 우리 학교의 캐릭터를 직접 뽑아보세요.",
+  },
 };
 
 export default function RootLayout({
