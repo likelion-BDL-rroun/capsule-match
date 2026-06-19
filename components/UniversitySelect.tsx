@@ -60,7 +60,7 @@ export default function UniversitySelect({ universities, onSelect }: Props) {
                     gap: 8, position: 'relative', overflow: 'hidden', transition: 'border-color 0.15s',
                   }}
                 >
-                  <div style={{ width: '45%', aspectRatio: '1/1', borderRadius: '50%', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+                  <div style={{ width: '45%', aspectRatio: '1/1', borderRadius: '50%', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
                     {logoUrl ? (
                       <Image src={logoUrl} alt={uni.name} fill style={{ objectFit: 'contain' }} />
                     ) : (
