@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "캐릭터 캡슐 뽑기 | LIKELION",
+  title: "캐릭터 카드 뽑기 | LIKELION",
   description: "80개 대학, 80종 캐릭터. 우리 학교의 캐릭터를 직접 뽑아보세요.",
 };
 
