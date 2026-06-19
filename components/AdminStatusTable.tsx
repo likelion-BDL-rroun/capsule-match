@@ -52,7 +52,7 @@ export default function AdminStatusTable({ universities, assigned, total, remain
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              {uni.assigned_at && (
+              {uni.characters && uni.assigned_at && (
                 <p className="text-xs text-gray-400 hidden sm:block">
                   {new Date(uni.assigned_at).toLocaleString('ko-KR', {
                     month: 'numeric', day: 'numeric',
