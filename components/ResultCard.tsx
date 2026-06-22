@@ -77,8 +77,8 @@ export default function ResultCard({ universityName, characterName, characterIma
     // 다시 들어오면 복귀 hold 타이머 취소
     if (leaveTimerRef.current) { clearTimeout(leaveTimerRef.current); leaveTimerRef.current = null; }
 
-    // 커서 아래 지점이 앞으로 떠오르게 (CSS는 Y축이 아래 방향이라 부호 주의)
-    targetRef.current = { rx: (y - 0.5) * 32, ry: (x - 0.5) * -32 };
+    // 커서 아래 지점이 눌리듯 뒤로 밀리게
+    targetRef.current = { rx: (y - 0.5) * -32, ry: (x - 0.5) * 32 };
     startTick();
 
     // 하이라이트/반짝임은 즉시 반응 (스프링 없음)
