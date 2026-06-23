@@ -192,7 +192,7 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
         <div className="ti-group">
           {/* 텍스트 */}
           <div className="ti-text">
-            <h1 className="ti-title">잠시 티켓 확인하겠습니다!</h1>
+            <h1 className="ti-title">티켓을 먼저 확인할게요!</h1>
             <div className="ti-pill-row">
               <div className="ti-pill">
                 <span style={{ fontSize: 12, color: '#9e9e9e', letterSpacing: '0.03em', fontWeight: 500 }}>
@@ -205,9 +205,9 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
               </div>
             </div>
             <p className="ti-subtitle">
-              티켓은 각 대학교당 1매만 발급됩니다.
+              티켓은 학교별로 하나씩 발급돼요
               <br />
-              해당 대학교 대표자만 티켓 코드를 입력해주세요
+              학교 대표에게 전달된 티켓 코드를 준비해주세요
             </p>
           </div>
 

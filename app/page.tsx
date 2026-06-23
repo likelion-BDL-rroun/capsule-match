@@ -145,7 +145,7 @@ export default function HomePage() {
             color: '#fff',
             textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
           }}>
-            Animal League<br />Hackathon 2026
+            Animal League<br />Character Match
           </h1>
           <p style={{
             fontSize: 'clamp(17px, 3vw, 32px)', fontWeight: 700,
@@ -153,7 +153,7 @@ export default function HomePage() {
             letterSpacing: '0.03em', lineHeight: 1.25,
             textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
           }}>
-            카드 뽑기 게임으로 대표 캐릭터를 매칭해주세요
+            학교를 선택하고 캐릭터 카드 매칭을 시작해요
           </p>
           <button
             onClick={() => router.push('/select')}

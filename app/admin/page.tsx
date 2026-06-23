@@ -78,7 +78,7 @@ export default function AdminPage() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-extrabold text-gray-900">관리자 현황판</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900">캐릭터 매칭 현황판</h1>
             <p className="text-sm text-gray-500 mt-1">캐릭터 배정 현황 및 초기화 관리</p>
           </div>
           <div className="flex gap-2">
