@@ -291,17 +291,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             left: 50%;
             top: 56px;
             transform: translateX(-50%);
-            padding: 6px 13px;
-            border-radius: 99px;
-            background: rgba(255,96,0,0.16);
-            border: 1px solid rgba(255,96,0,0.4);
-            color: rgba(255,255,255,0.92);
+            color: #ff6000;
             font-size: 12px;
             font-weight: 600;
             letter-spacing: 0.02em;
             white-space: nowrap;
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
             z-index: 215;
             pointer-events: none;
             animation: dblclick-hint-in 0.4s ease both;
@@ -429,7 +423,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
 
         {/* 더블클릭 선택 힌트 (PC) */}
         {!picked && (
-          <div className="dblclick-hint">✨ 가운데 카드를 더블클릭하면 바로 선택돼요</div>
+          <div className="dblclick-hint">double click!</div>
         )}
 
         {/* 모바일 좌우 화살표 */}
