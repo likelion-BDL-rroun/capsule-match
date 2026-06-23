@@ -134,7 +134,6 @@ export default function SelectPage() {
           </h2>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0,
             lineHeight: 1.6, letterSpacing: '0.02em' }}>
-            <span className="hint-pc">스크롤하거나 드래그해서 카드를 돌려보세요</span>
             <span className="hint-mo">‹ › 버튼으로 넘기고, 원하는 카드를 선택하세요</span>
           </p>
         </div>

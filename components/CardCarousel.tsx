@@ -421,11 +421,6 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           </div>
         )}
 
-        {/* 더블클릭 선택 힌트 (PC) */}
-        {!picked && (
-          <div className="dblclick-hint">double click!</div>
-        )}
-
         {/* 모바일 좌우 화살표 */}
         {!picked && (
           <>
