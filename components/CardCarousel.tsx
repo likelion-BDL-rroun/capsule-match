@@ -58,6 +58,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   const dragStartX = useRef<number | null>(null);
   const dragStartRot = useRef(0);
   const didDrag = useRef(false);
+  const lastMoveTime = useRef(0);  // 클릭으로 카드를 가운데로 끌어온 마지막 시각
   const containerRef = useRef<HTMLDivElement>(null);
   const [isScrolling, setIsScrolling] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -161,6 +162,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     const next = rotRef.current - short;
     rotRef.current = next;
     setRotation(next);
+    lastMoveTime.current = Date.now();  // 방금 가운데로 끌어옴 → 더블클릭 선택 방지
   };
 
   const getStyle = (i: number): React.CSSProperties => {
@@ -242,6 +244,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     if (i !== frontCard) return;
     // 마우스(PC)에서만 동작 — 터치/모바일 제외
     if (!window.matchMedia('(pointer: fine)').matches) return;
+    // 방금 클릭으로 가운데에 끌려온 카드는 제외 — 처음부터 가운데 있던 카드만 선택
+    if (Date.now() - lastMoveTime.current < 400) return;
     handleSelect();
   }, [frontCard, handleSelect]);
 
@@ -276,6 +280,37 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         .carousel-arrow { display: none; }
         .carousel-hint-img { display: none; }
         .carousel-container { overflow: hidden; }
+        /* 더블클릭 선택 힌트 — 마우스(PC)에서만 노출 */
+        .dblclick-hint { display: none; }
+        @media (pointer: fine) {
+          .dblclick-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            position: absolute;
+            left: 50%;
+            top: 56px;
+            transform: translateX(-50%);
+            padding: 6px 13px;
+            border-radius: 99px;
+            background: rgba(255,96,0,0.16);
+            border: 1px solid rgba(255,96,0,0.4);
+            color: rgba(255,255,255,0.92);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 215;
+            pointer-events: none;
+            animation: dblclick-hint-in 0.4s ease both;
+          }
+        }
+        @keyframes dblclick-hint-in {
+          from { opacity: 0; transform: translate(-50%, -4px); }
+          to   { opacity: 1; transform: translate(-50%, 0); }
+        }
         @media (max-width: 768px) {
           .carousel-container { overflow: visible; }
           .carousel-hint-img { display: flex; }
@@ -390,6 +425,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
               }} />
             ))}
           </div>
+        )}
+
+        {/* 더블클릭 선택 힌트 (PC) */}
+        {!picked && (
+          <div className="dblclick-hint">✨ 가운데 카드를 더블클릭하면 바로 선택돼요</div>
         )}
 
         {/* 모바일 좌우 화살표 */}
