@@ -130,12 +130,11 @@ export default function SelectPage() {
           <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: '0 0 14px',
             letterSpacing: '0.02em', lineHeight: 1.3,
             textShadow: '0px 2px 8px rgba(214,81,0,0.3)' }}>
-            카드를 골라 캐릭터를 뽑아보세요!
+            마음에 드는 카드를 골라주세요
           </h2>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0,
             lineHeight: 1.6, letterSpacing: '0.02em' }}>
-            <span className="hint-pc">스크롤하거나 드래그해서 카드를 돌려보세요</span>
-            <span className="hint-mo">‹ › 버튼으로 넘기고, 원하는 카드를 선택하세요</span>
+            카드마다 다른 캐릭터를 만날 수 있어요
           </p>
         </div>
         <style>{`
@@ -183,10 +182,12 @@ export default function SelectPage() {
           ‹ 돌아가기
         </button>
         <h2 className="univ-title">
-          학교를 선택해주세요.
+        안녕하세요!
+        <br />
+        학교를 확인하고 골라주세요
         </h2>
         <p className="univ-subtitle">
-          학교별로 단 하나의 캐릭터가 배정됩니다.
+        학교별 캐릭터 카드는 한 번만 매칭할 수 있어요
         </p>
         {universities.length === 0 ? (
           <div className="flex items-center justify-center" style={{ paddingTop: 60 }}>
