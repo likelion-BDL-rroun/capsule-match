@@ -67,6 +67,18 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   const velRef = useRef(0);       // 현재 속도 (deg/frame)
   const rafRef = useRef<number | null>(null);
   const isAnimating = useRef(false);
+  const introActive = useRef(false);
+
+  // 진입 인트로 애니메이션 즉시 중단 (사용자 조작 시)
+  const cancelIntro = useCallback(() => {
+    if (!introActive.current) return;
+    introActive.current = false;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    isAnimating.current = false;
+    const snapped = Math.round(rotRef.current / STEP) * STEP;
+    rotRef.current = snapped;
+    setRotation(snapped);
+  }, []);
 
   const startRAF = useCallback(() => {
     if (isAnimating.current) return;
@@ -96,6 +108,33 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
+  // 진입 시 부드럽게 반 바퀴 돌며 "돌릴 수 있다"는 힌트
+  useEffect(() => {
+    introActive.current = true;
+    isAnimating.current = true;
+    const totalDeg = STEP * Math.round(N / 2);  // ≈ 반 바퀴
+    const duration = 1700;
+    const start = performance.now();
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);  // easeOutCubic
+    const tick = (now: number) => {
+      if (!introActive.current) return;
+      const p = Math.min((now - start) / duration, 1);
+      rotRef.current = totalDeg * ease(p);
+      setRotation(rotRef.current);
+      if (p < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        const snapped = Math.round(rotRef.current / STEP) * STEP;
+        rotRef.current = snapped;
+        setRotation(snapped);
+        introActive.current = false;
+        isAnimating.current = false;
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, []);
+
   // 스크롤로 회전 (스크롤 다운 = 반시계, 스크롤 업 = 시계)
   useEffect(() => {
     const el = containerRef.current;
@@ -103,6 +142,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     const handleWheel = (e: WheelEvent) => {
       if (picked) return;
       e.preventDefault();
+      cancelIntro();
       setIsScrolling(true);
       // deltaY → 속도 누적 (감도 조절: 0.04)
       velRef.current -= e.deltaY * 0.04;
@@ -117,18 +157,19 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
       el.removeEventListener('wheel', handleWheel);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [picked, startRAF]);
+  }, [picked, startRAF, cancelIntro]);
 
   // 현재 앞에 있는 카드 (각도 0에 가장 가까운 카드)
   const frontCard = ((Math.round(-rotation / STEP) % N) + N) % N;
 
   const onPointerDown = useCallback((clientX: number) => {
     if (picked) return;
+    cancelIntro();
     dragStartX.current = clientX;
-    dragStartRot.current = rotation;
+    dragStartRot.current = rotRef.current;
     didDrag.current = false;
     setIsDragging(true);
-  }, [picked, rotation]);
+  }, [picked, cancelIntro]);
 
   const onPointerMove = useCallback((clientX: number) => {
     if (dragStartX.current === null || picked) return;
@@ -251,6 +292,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
 
   const moveCard = useCallback((dir: 1 | -1) => {
     if (picked || isLoading) return;
+    introActive.current = false;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     isAnimating.current = false;
     velRef.current = 0;
