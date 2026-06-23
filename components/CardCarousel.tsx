@@ -292,7 +292,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             top: 56px;
             transform: translateX(-50%);
             color: #ff6000;
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 600;
             letter-spacing: 0.02em;
             white-space: nowrap;
