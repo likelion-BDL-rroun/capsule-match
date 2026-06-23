@@ -223,6 +223,28 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   // 선택된 카드 중심 좌표 (오버레이 정렬용)
   const BURST_TOP = 110 + (CARD_H * 1.18) / 2;
 
+  const handleSelect = useCallback(() => {
+    if (isLoading || picked) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    isAnimating.current = false;
+    velRef.current = 0;
+    const target = frontCard;
+    const snapped = Math.round(rotRef.current / STEP) * STEP;
+    rotRef.current = snapped;
+    setRotation(snapped);
+    setPicked(true);
+    setPickedCard(target);
+    setParticles(makeParticles(28));
+    setTimeout(() => onComplete(), 1700);
+  }, [isLoading, picked, frontCard, onComplete]);
+
+  const handleFrontCardDoubleClick = useCallback((i: number) => {
+    if (i !== frontCard) return;
+    // 마우스(PC)에서만 동작 — 터치/모바일 제외
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    handleSelect();
+  }, [frontCard, handleSelect]);
+
   const moveCard = useCallback((dir: 1 | -1) => {
     if (picked || isLoading) return;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -331,7 +353,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         )}
 
         {Array.from({ length: N }).map((_, i) => (
-          <div key={i} style={getStyle(i)} onClick={() => handleCardClick(i)}>
+          <div key={i} style={getStyle(i)} onClick={() => handleCardClick(i)} onDoubleClick={() => handleFrontCardDoubleClick(i)}>
             <CardFace isPicked={picked && pickedCard === i} />
           </div>
         ))}
@@ -401,20 +423,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
       {mounted && !picked && createPortal(
         <div className="pick-cta">
           <button
-            onClick={() => {
-              if (isLoading) return;
-              if (rafRef.current) cancelAnimationFrame(rafRef.current);
-              isAnimating.current = false;
-              velRef.current = 0;
-              const target = frontCard;
-              const snapped = Math.round(rotation / STEP) * STEP;
-              rotRef.current = snapped;
-              setRotation(snapped);
-              setPicked(true);
-              setPickedCard(target);
-              setParticles(makeParticles(28));
-              setTimeout(() => onComplete(), 1700);
-            }}
+            onClick={handleSelect}
             disabled={isLoading}
             style={{
               width: '100%',
