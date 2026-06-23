@@ -127,10 +127,10 @@ export default function SelectPage() {
               </span>
             </div>
           </div>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: '0 0 14px',
+          <h2 style={{ fontSize: 36, fontWeight: 800, color: '#fff', margin: '0 0 14px',
             letterSpacing: '0.02em', lineHeight: 1.5,
             textShadow: '0px 2px 8px rgba(214,81,0,0.3)' }}>
-            마음에 드는 카드를 골라주세요<br />카드마다 다른 캐릭터가 기다리고 있어요
+            마음에 드는 카드를 골라<br />함께할 캐릭터를 만나보세요!
           </h2>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0,
             lineHeight: 1.6, letterSpacing: '0.02em' }}>
