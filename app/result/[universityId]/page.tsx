@@ -172,16 +172,6 @@ export default function ResultPage() {
           </button>
         </div>
 
-        {result?.assignedAt && (
-          <p className="result-time">
-            {new Date(result.assignedAt).toLocaleString('ko-KR')} 배정
-          </p>
-        )}
-        {result && (
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textAlign: 'center', marginTop: 8 }}>
-            이 캐릭터는 이제 {result.universityName}에만 배정됩니다.
-          </p>
-        )}
       </div>
     </main>
   );
