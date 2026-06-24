@@ -6,8 +6,9 @@ import Image from 'next/image';
 
 const N = 17;
 const STEP = 360 / N;   // ~21.2° per card
-const RADIUS = 620;     // 원 반지름 (클수록 옆 카드가 바깥으로 벌어짐)
-const CENTER_Y = 1010;  // 원의 중심 y — RADIUS와 같은 값만큼 올려 가운데 카드 위치 고정
+const RADIUS = 490;     // 원 반지름
+const CENTER_Y = 880;   // 원의 중심 y (컨테이너 상단 기준 px)
+const SIDE_GAP = 46;    // 가운데 바로 옆(±1) 카드만 추가로 벌리는 가로 간격(px)
 const CARD_W = 180;
 const CARD_H = 270;  // 카드 이미지 2:3 비율에 맞춤 (180 × 1.5)
 const BORDER_RADIUS = 14;  // 가운데 카드 곡률 (주위 카드는 scale에 따라 비례 축소)
@@ -221,7 +222,10 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
 
     // 원 위에 카드 배치
     const R_center = RADIUS + CARD_H / 2;
-    const cx = Math.sin(aRad) * R_center;
+    // 가운데 바로 옆(±1) 카드만 바깥으로 추가로 벌림 (그 바깥 카드는 원래 간격 유지)
+    const stepDist = Math.round(a / STEP);
+    const sideGap = Math.abs(stepDist) === 1 ? Math.sign(stepDist) * SIDE_GAP : 0;
+    const cx = Math.sin(aRad) * R_center + sideGap;
     const cy = CENTER_Y - Math.cos(aRad) * R_center;
 
     const zIndex = Math.round(50 + 50 * cosA);
