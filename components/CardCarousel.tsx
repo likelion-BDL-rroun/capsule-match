@@ -10,6 +10,7 @@ const RADIUS = 490;     // 원 반지름
 const CENTER_Y = 880;   // 원의 중심 y (컨테이너 상단 기준 px)
 const CARD_W = 180;
 const CARD_H = 270;  // 카드 이미지 2:3 비율에 맞춤 (180 × 1.5)
+const BORDER_RADIUS = 14;  // 가운데 카드 곡률 (주위 카드는 scale에 따라 비례 축소)
 const DRAG_PX_PER_STEP = 60;  // 카드 한 칸 이동에 필요한 드래그 px
 const SCROLL_PX_PER_STEP = 200; // 카드 한 칸 이동에 필요한 스크롤 px
 
@@ -242,7 +243,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
       top: 0,
       width: CARD_W,
       height: CARD_H,
-      borderRadius: 16,
+      borderRadius: BORDER_RADIUS,
       transform: `translate(calc(-50% + ${fadedOut ? cx : isPickedCard ? 0 : cx}px), ${ty}px) rotate(${isPickedCard ? 0 : a}deg) scale(${fadedOut ? 0.6 : scale})`,
       opacity: fadedOut ? 0 : 1,
       filter: dimFilter,
@@ -380,9 +381,9 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             align-items: center;
             justify-content: center;
             position: absolute;
-            top: 200px;
-            width: 56px;
-            height: 56px;
+            top: 215px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.15);
@@ -397,8 +398,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             border-color: rgba(255,96,0,0.5);
             color: #fff;
           }
-          .carousel-arrow-left  { left: calc(50% - 250px); }
-          .carousel-arrow-right { right: calc(50% - 250px); }
+          .carousel-arrow-left  { left: calc(50% - 175px); }
+          .carousel-arrow-right { right: calc(50% - 175px); }
         }
         /* 선택 버튼 — 화면 하단 고정 (다른 페이지 버튼과 동일 위치) */
         .pick-cta {
@@ -548,7 +549,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
 
 function CardFace({ isPicked }: { isPicked: boolean }) {
   return (
-    <div className="w-full h-full relative overflow-hidden rounded-2xl">
+    <div className="w-full h-full relative overflow-hidden" style={{ borderRadius: BORDER_RADIUS }}>
       <Image
         src="/card-back-0624.png"
         alt="카드"
