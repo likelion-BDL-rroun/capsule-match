@@ -20,6 +20,7 @@ export default function ResultPage() {
   const [result, setResult] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSharing, setIsSharing] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -73,18 +74,19 @@ export default function ResultPage() {
   };
 
   const handleShare = async () => {
-    if (!result?.characterImageUrl || isSharing) return;
-    setIsSharing(true);
+    const url = window.location.href;
+    const title = result ? `${result.universityName} 파트너` : '캡슐 매치';
     try {
-      const blob = await fetchBlob();
-      const file = new File([blob], `${result.characterName ?? 'character'}.png`, { type: blob.type });
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: `${result.universityName} 캐릭터` });
+      if (navigator.share) {
+        await navigator.share({ title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setLinkCopied(true);
+        setTimeout(() => setLinkCopied(false), 2000);
       }
     } catch (e) {
+      // 사용자가 공유 시트를 닫은 경우 등은 무시
       console.error(e);
-    } finally {
-      setIsSharing(false);
     }
   };
 
@@ -149,26 +151,37 @@ export default function ResultPage() {
             onClick={handleShare}
             disabled={isSharing}
             style={{
-              flex: 1, background: 'rgba(255,255,255,0.05)',
+              flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+              background: 'rgba(255,255,255,0.05)',
               border: '1px solid rgba(255,255,255,0.12)', color: '#fff',
               fontWeight: 700, fontSize: 15, padding: '15px 0', borderRadius: 16,
               cursor: isSharing ? 'wait' : 'pointer', opacity: isSharing ? 0.5 : 1,
               transition: 'opacity 0.2s',
             }}
           >
-            공유하기
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
+            {linkCopied ? '링크 복사됨' : '공유하기'}
           </button>
           <button
             onClick={handleDownload}
             disabled={isSharing}
             style={{
-              flex: 1, background: '#FF6000', border: 'none', color: '#fff',
+              flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+              background: '#FF6000', border: 'none', color: '#fff',
               fontWeight: 700, fontSize: 15, padding: '15px 0', borderRadius: 16,
               cursor: isSharing ? 'wait' : 'pointer', opacity: isSharing ? 0.5 : 1,
               transition: 'opacity 0.2s',
             }}
           >
-            다운로드
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            이미지 저장
           </button>
         </div>
 
