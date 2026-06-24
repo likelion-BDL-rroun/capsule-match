@@ -185,7 +185,7 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
             loop
             muted
             playsInline
-            poster="/더미 배경 투명.webp"
+            poster="/검표원_더미이미지0624.png"
           />
         </div>
 
