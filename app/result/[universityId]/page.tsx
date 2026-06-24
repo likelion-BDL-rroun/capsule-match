@@ -152,8 +152,8 @@ export default function ResultPage() {
             disabled={isSharing}
             style={{
               flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.12)', color: '#fff',
+              background: 'rgba(255,255,255,0.12)',
+              border: 'none', color: 'rgba(255,255,255,0.85)',
               fontWeight: 700, fontSize: 15, padding: '15px 0', borderRadius: 16,
               cursor: isSharing ? 'wait' : 'pointer', opacity: isSharing ? 0.5 : 1,
               transition: 'opacity 0.2s',
