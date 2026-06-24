@@ -218,10 +218,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     const norm = ((visualAngleDeg % 360) + 360) % 360;
     const aBase = norm > 180 ? norm - 360 : norm;
 
-    // 가운데 바로 옆(±1) 카드를 같은 원호 위에서 더 벌림 — 각도 자체를 키워 호를 따라감.
-    // ±STEP에서 최대, 0과 ±2STEP에서 0이 되도록 부드럽게(회전 중 끊김 없음).
-    const spreadF = Math.max(0, 1 - Math.abs(Math.abs(aBase) - STEP) / STEP);
-    const a = aBase + Math.sign(aBase) * SIDE_SPREAD_DEG * spreadF;
+    // 중앙↔양옆 사이만 벌리고, 그 바깥 카드들끼리는 원래 간격 유지.
+    // 옆 카드 묶음 전체를 같은 각도만큼 바깥으로 밀되, 0→±STEP 구간만
+    // 부드럽게 차올라(회전 중 끊김 없음) ±STEP부터는 일정하게 적용.
+    const offset = Math.sign(aBase) * SIDE_SPREAD_DEG * Math.min(1, Math.abs(aBase) / STEP);
+    const a = aBase + offset;
 
     const aRad = (a * Math.PI) / 180;
     const cosA = Math.cos(aRad);
