@@ -607,7 +607,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
               이 친구와 함께할까요?
             </p>
             <p className="confirm-desc" style={{ color: 'rgba(255,255,255,0.6)', margin: '0 0 22px', lineHeight: 1.55 }}>
-              이번 해커톤을 함께할 파트너예요!<br />선택하면 바로 만나러 가요
+              이번 해커톤을 함께할 친구예요.<br />한 번 정하면 끝까지 함께해요.
             </p>
             <div style={{ display: 'flex', gap: 10 }}>
               <button
@@ -615,8 +615,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
                 onClick={() => setConfirming(false)}
                 style={{
                   flex: 1, padding: '14px 0', borderRadius: 12,
-                  background: 'transparent', color: 'rgba(255,255,255,0.7)',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.85)',
+                  border: 'none',
                   fontWeight: 700, cursor: 'pointer',
                 }}
               >
