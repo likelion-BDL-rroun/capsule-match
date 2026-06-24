@@ -6,8 +6,8 @@ import Image from 'next/image';
 
 const N = 17;
 const STEP = 360 / N;   // ~21.2° per card
-const RADIUS = 490;     // 원 반지름
-const CENTER_Y = 880;   // 원의 중심 y (컨테이너 상단 기준 px)
+const RADIUS = 620;     // 원 반지름 (클수록 옆 카드가 바깥으로 벌어짐)
+const CENTER_Y = 1010;  // 원의 중심 y — RADIUS와 같은 값만큼 올려 가운데 카드 위치 고정
 const CARD_W = 180;
 const CARD_H = 270;  // 카드 이미지 2:3 비율에 맞춤 (180 × 1.5)
 const BORDER_RADIUS = 14;  // 가운데 카드 곡률 (주위 카드는 scale에 따라 비례 축소)
