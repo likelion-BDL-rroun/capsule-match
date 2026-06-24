@@ -38,7 +38,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <link rel="preload" as="image" href="/검표원_더미이미지0624.png" />
+        <link rel="preload" as="image" href="/검표원_더미이미지0624.webp" />
         <link rel="preload" as="image" href="/card-back.png" />
         <link rel="preload" as="video" href="/검표원 사자 배경보정.mp4" type="video/mp4" />
       </head>
