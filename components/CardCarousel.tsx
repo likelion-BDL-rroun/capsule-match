@@ -578,7 +578,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
               transition: 'opacity 0.2s',
             }}
           >
-            이 카드 선택하기
+            이 카드로 정하기
           </button>
         </div>,
         document.body
