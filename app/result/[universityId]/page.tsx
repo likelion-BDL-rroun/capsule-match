@@ -34,7 +34,7 @@ export default function ResultPage() {
       .eq('id', universityId)
       .single();
 
-    if (dbError || !data) { setError('결과를 불러올 수 없어요.'); setIsLoading(false); return; }
+    if (dbError || !data) { setError('결과를 불러오지 못했어요. 잠시 후 다시 시도해요.'); setIsLoading(false); return; }
 
     const character = (Array.isArray(data.characters) ? data.characters[0] : data.characters) as { name: string; image_url: string | null } | null;
 
@@ -134,7 +134,7 @@ export default function ResultPage() {
             <span style={{ fontSize: 14, color: '#fff', letterSpacing: '0.02em', fontWeight: 700 }}>{result?.universityName}</span>
           </div>
         </div>
-        <h2 className="result-title">캐릭터가 결정되었습니다!</h2>
+        <h2 className="result-title">운명의 파트너를 만났어요!</h2>
 
         {result && (
           <ResultCard

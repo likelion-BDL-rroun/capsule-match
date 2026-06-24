@@ -64,12 +64,12 @@ export default function AdminPage() {
 
     if (result.success) {
       showToast(
-        `${resetTarget.name} 배정이 초기화되었습니다. (${result.action === 'retired' ? '캐릭터 retired' : '캐릭터 후보 복귀'})`,
+        `${resetTarget.name} 배정을 초기화했어요. (${result.action === 'retired' ? '캐릭터 retired' : '캐릭터 후보 복귀'})`,
         'success'
       );
       loadStatus();
     } else {
-      showToast(result.error ?? '초기화에 실패했습니다.', 'error');
+      showToast(result.error ?? '초기화하지 못했어요.', 'error');
     }
   };
 
@@ -113,7 +113,7 @@ export default function AdminPage() {
             onResetClick={setResetTarget}
           />
         ) : (
-          <p className="text-center text-gray-400 py-10">데이터를 불러올 수 없어요.</p>
+          <p className="text-center text-gray-400 py-10">데이터를 불러오지 못했어요.</p>
         )}
 
         {/* 테스트 전용 초기화 SQL 안내 */}

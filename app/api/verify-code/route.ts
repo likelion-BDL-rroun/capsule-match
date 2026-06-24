@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: false,
         alreadyAssigned: true,
-        error: '이미 캐릭터가 배정된 학교입니다. 결과를 확인해주세요.',
+        error: '이미 캐릭터를 만난 학교예요. 결과를 확인해요.',
       });
     }
 

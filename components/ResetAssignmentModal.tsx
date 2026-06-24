@@ -92,7 +92,7 @@ export default function ResetAssignmentModal({
               disabled={isLoading}
               className="flex-1 border-2 border-gray-200 text-gray-600 font-semibold py-3 rounded-xl text-sm disabled:opacity-50"
             >
-              취소
+              닫기
             </button>
             <button
               onClick={() => onConfirm(retireCharacter, reason)}
