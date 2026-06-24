@@ -54,6 +54,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [picked, setPicked] = useState(false);
   const [pickedCard, setPickedCard] = useState<number | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const pendingTarget = useRef<number>(0);
   const [particles, setParticles] = useState<Particle[]>([]);
 
   const dragStartX = useRef<number | null>(null);
@@ -268,20 +270,27 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   // 선택된 카드 중심 좌표 (오버레이 정렬용)
   const BURST_TOP = 110 + (CARD_H * 1.18) / 2;
 
-  const handleSelect = useCallback(() => {
-    if (isLoading || picked) return;
+  // 선택 요청 → 확인 팝업 먼저 띄움 (실수 방지)
+  const requestSelect = useCallback(() => {
+    if (isLoading || picked || confirming) return;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     isAnimating.current = false;
     velRef.current = 0;
-    const target = frontCard;
     const snapped = Math.round(rotRef.current / STEP) * STEP;
     rotRef.current = snapped;
     setRotation(snapped);
+    pendingTarget.current = frontCard;  // 확정 시점 카드 고정
+    setConfirming(true);
+  }, [isLoading, picked, confirming, frontCard]);
+
+  // 확인 팝업에서 "선택" 누름 → 실제 선택 확정
+  const confirmSelect = useCallback(() => {
+    setConfirming(false);
     setPicked(true);
-    setPickedCard(target);
+    setPickedCard(pendingTarget.current);
     setParticles(makeParticles(28));
     setTimeout(() => onComplete(), 1700);
-  }, [isLoading, picked, frontCard, onComplete]);
+  }, [onComplete]);
 
   const handleFrontCardDoubleClick = useCallback((i: number) => {
     if (i !== frontCard) return;
@@ -289,8 +298,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     if (!window.matchMedia('(pointer: fine)').matches) return;
     // 방금 클릭으로 가운데에 끌려온 카드는 제외 — 처음부터 가운데 있던 카드만 선택
     if (Date.now() - lastMoveTime.current < 400) return;
-    handleSelect();
-  }, [frontCard, handleSelect]);
+    requestSelect();
+  }, [frontCard, requestSelect]);
 
   const moveCard = useCallback((dir: 1 | -1) => {
     if (picked || isLoading) return;
@@ -344,6 +353,13 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             pointer-events: none;
             animation: dblclick-hint-in 0.4s ease both;
           }
+        }
+        @keyframes confirm-fade {
+          from { opacity: 0; } to { opacity: 1; }
+        }
+        @keyframes confirm-pop {
+          from { opacity: 0; transform: translateY(8px) scale(0.96); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
         }
         @keyframes dblclick-hint-in {
           from { opacity: 0; transform: translate(-50%, -4px); }
@@ -523,7 +539,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
       {mounted && !picked && createPortal(
         <div className="pick-cta">
           <button
-            onClick={handleSelect}
+            onClick={requestSelect}
             disabled={isLoading}
             style={{
               width: '100%',
@@ -540,6 +556,67 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           >
             이 카드 선택하기
           </button>
+        </div>,
+        document.body
+      )}
+
+      {/* 선택 확인 팝업 */}
+      {mounted && confirming && createPortal(
+        <div
+          onClick={() => setConfirming(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 300,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: 24,
+            background: 'rgba(0,0,0,0.6)',
+            backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
+            animation: 'confirm-fade 0.18s ease both',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%', maxWidth: 360,
+              background: '#1a1a1a',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 20,
+              padding: '28px 22px 22px',
+              textAlign: 'center',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+              animation: 'confirm-pop 0.22s cubic-bezier(0.34,1.4,0.64,1) both',
+            }}
+          >
+            <p style={{ fontSize: 18, fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>
+              이 카드를 선택하시겠어요?
+            </p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: '0 0 22px', lineHeight: 1.5 }}>
+              선택하면 캐릭터가 배정되고<br />다시 바꿀 수 없어요.
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={() => setConfirming(false)}
+                style={{
+                  flex: 1, padding: '14px 0', borderRadius: 12,
+                  background: 'transparent', color: 'rgba(255,255,255,0.7)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  fontWeight: 700, fontSize: 15, cursor: 'pointer',
+                }}
+              >
+                취소
+              </button>
+              <button
+                onClick={confirmSelect}
+                style={{
+                  flex: 1, padding: '14px 0', borderRadius: 12,
+                  background: '#FF6000', color: '#fff', border: 'none',
+                  fontWeight: 800, fontSize: 15, cursor: 'pointer',
+                  boxShadow: '0 6px 18px rgba(255,96,0,0.25)',
+                }}
+              >
+                선택
+              </button>
+            </div>
+          </div>
         </div>,
         document.body
       )}
