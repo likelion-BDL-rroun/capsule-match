@@ -113,10 +113,10 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     introActive.current = true;
     isAnimating.current = true;
     const totalDeg = -STEP * Math.round(N / 3);  // ≈ 1/3 바퀴, 반대 방향
-    const duration = 2000;
+    const duration = 2100;
     const start = performance.now();
-    // easeInOutCubic — 시작·끝 모두 부드럽게 (전체적으로 매끄러운 가감속)
-    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    // easeInOutQuad — 시작·끝 부드럽되 가감속(탄성감)은 약하게
+    const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
     const tick = (now: number) => {
       if (!introActive.current) return;
       const p = Math.min((now - start) / duration, 1);
