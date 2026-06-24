@@ -112,8 +112,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
   useEffect(() => {
     introActive.current = true;
     isAnimating.current = true;
-    const totalDeg = STEP * Math.round(N / 2);  // ≈ 반 바퀴
-    const duration = 1700;
+    const totalDeg = -STEP * Math.round(N / 3);  // ≈ 1/3 바퀴, 반대 방향
+    const duration = 2600;
     const start = performance.now();
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);  // easeOutCubic
     const tick = (now: number) => {
