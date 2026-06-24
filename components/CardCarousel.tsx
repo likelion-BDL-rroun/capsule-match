@@ -8,7 +8,7 @@ const N = 17;
 const STEP = 360 / N;   // ~21.2° per card
 const RADIUS = 490;     // 원 반지름
 const CENTER_Y = 880;   // 원의 중심 y (컨테이너 상단 기준 px)
-const SIDE_GAP = 46;    // 가운데 바로 옆(±1) 카드만 추가로 벌리는 가로 간격(px)
+const SIDE_SPREAD_DEG = 5;  // 가운데 바로 옆(±1) 카드를 같은 원호 위에서 더 벌리는 각도
 const CARD_W = 180;
 const CARD_H = 270;  // 카드 이미지 2:3 비율에 맞춤 (180 × 1.5)
 const BORDER_RADIUS = 14;  // 가운데 카드 곡률 (주위 카드는 scale에 따라 비례 축소)
@@ -216,16 +216,19 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
 
     // -180..180 정규화
     const norm = ((visualAngleDeg % 360) + 360) % 360;
-    const a = norm > 180 ? norm - 360 : norm;
+    const aBase = norm > 180 ? norm - 360 : norm;
+
+    // 가운데 바로 옆(±1) 카드를 같은 원호 위에서 더 벌림 — 각도 자체를 키워 호를 따라감.
+    // ±STEP에서 최대, 0과 ±2STEP에서 0이 되도록 부드럽게(회전 중 끊김 없음).
+    const spreadF = Math.max(0, 1 - Math.abs(Math.abs(aBase) - STEP) / STEP);
+    const a = aBase + Math.sign(aBase) * SIDE_SPREAD_DEG * spreadF;
+
     const aRad = (a * Math.PI) / 180;
     const cosA = Math.cos(aRad);
 
-    // 원 위에 카드 배치
+    // 원 위에 카드 배치 (x·y·기울기 모두 같은 원호를 따름)
     const R_center = RADIUS + CARD_H / 2;
-    // 가운데 바로 옆(±1) 카드만 바깥으로 추가로 벌림 (그 바깥 카드는 원래 간격 유지)
-    const stepDist = Math.round(a / STEP);
-    const sideGap = Math.abs(stepDist) === 1 ? Math.sign(stepDist) * SIDE_GAP : 0;
-    const cx = Math.sin(aRad) * R_center + sideGap;
+    const cx = Math.sin(aRad) * R_center;
     const cy = CENTER_Y - Math.cos(aRad) * R_center;
 
     const zIndex = Math.round(50 + 50 * cosA);
