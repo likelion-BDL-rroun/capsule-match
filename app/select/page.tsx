@@ -127,7 +127,7 @@ export default function SelectPage() {
               </span>
             </div>
           </div>
-          <h2 style={{ fontSize: 36, fontWeight: 800, color: '#fff', margin: '0 0 14px',
+          <h2 className="pick-title" style={{ fontWeight: 800, color: '#fff', margin: '0 0 14px',
             letterSpacing: '0.02em', lineHeight: 1.5,
             textShadow: '0px 2px 8px rgba(214,81,0,0.3)' }}>
             두근두근, 어떤 파트너를 만날까요?<br />마음에 드는 카드를 골라보세요
@@ -141,10 +141,12 @@ export default function SelectPage() {
           .carousel-wrap { width: 100%; align-self: stretch; }
           .hint-mo { display: none; }
           .pick-header { padding: 40px 40px 24px; }
+          .pick-title { font-size: 36px; }
           @media (max-width: 768px) {
             .hint-pc { display: none; }
             .hint-mo { display: inline; }
             .pick-header { padding: 20px 16px 16px; }
+            .pick-title { font-size: 28px; }
           }
           @media (max-width: 768px) {
             .carousel-wrap {
@@ -168,7 +170,7 @@ export default function SelectPage() {
         .univ-section-inner { padding: 20px 16px 120px; }
         .univ-back { color: rgba(255,255,255,0.3); font-size: 14px; font-weight: 500; letter-spacing: 0.03em; background: none; border: none; cursor: pointer; display: block; transition: color 0.15s; }
         .univ-back:hover { color: rgba(255,255,255,0.7); }
-        .univ-title { font-size: 24px; font-weight: 800; color: #fff; text-align: center; margin: 36px 0 14px; }
+        .univ-title { font-size: 28px; font-weight: 800; color: #fff; text-align: center; margin: 36px 0 14px; }
         .univ-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); text-align: center; line-height: 1.6; margin: 0 0 40px; }
         @media (min-width: 769px) {
           .univ-section-inner { padding: 28px 40px 120px; }

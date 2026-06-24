@@ -88,7 +88,7 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
         .ci-cta { flex: 0 0 auto; z-index: 1; }
 
         .ci-title {
-          font-size: 24px;
+          font-size: 28px;
           font-weight: 800;
           color: #fff;
           text-align: center;
