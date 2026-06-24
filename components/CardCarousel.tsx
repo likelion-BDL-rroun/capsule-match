@@ -373,6 +373,33 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           .carousel-arrow-left { left: 8px; }
           .carousel-arrow-right { right: 8px; }
         }
+        /* PC: 가운데 카드 양옆에 화살표 (모바일과 위치 무관) */
+        @media (min-width: 769px) {
+          .carousel-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 200px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.7);
+            font-size: 26px;
+            cursor: pointer;
+            z-index: 220;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+          }
+          .carousel-arrow:hover {
+            background: rgba(255,96,0,0.2);
+            border-color: rgba(255,96,0,0.5);
+            color: #fff;
+          }
+          .carousel-arrow-left  { left: calc(50% - 250px); }
+          .carousel-arrow-right { right: calc(50% - 250px); }
+        }
         /* 선택 버튼 — 화면 하단 고정 (다른 페이지 버튼과 동일 위치) */
         .pick-cta {
           position: fixed;
