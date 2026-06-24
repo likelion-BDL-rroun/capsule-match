@@ -365,18 +365,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         @keyframes confirm-fade {
           from { opacity: 0; } to { opacity: 1; }
         }
-        @keyframes confirm-emoji-pop {
-          0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
-          60%  { transform: scale(1.25) rotate(8deg); opacity: 1; }
-          100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
         /* 확인 팝업 텍스트 — 기본(모바일) 크기, PC에서 확대 */
-        .confirm-emoji { font-size: 40px; margin: 0 0 6px; animation: confirm-emoji-pop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.05s both; }
         .confirm-title { font-size: 19px; }
         .confirm-desc  { font-size: 13px; }
         .confirm-btn   { font-size: 15px; }
         @media (min-width: 769px) {
-          .confirm-emoji { font-size: 52px; }
           .confirm-title { font-size: 24px; }
           .confirm-desc  { font-size: 15px; }
           .confirm-btn   { font-size: 17px; padding: 16px 0; }
@@ -610,12 +603,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
               animation: 'confirm-pop 0.22s cubic-bezier(0.34,1.4,0.64,1) both',
             }}
           >
-            <p className="confirm-emoji">🎉</p>
             <p className="confirm-title" style={{ fontWeight: 800, color: '#fff', margin: '0 0 8px' }}>
               이 친구와 함께할까요?
             </p>
             <p className="confirm-desc" style={{ color: 'rgba(255,255,255,0.6)', margin: '0 0 22px', lineHeight: 1.55 }}>
-              이번 해커톤을 함께할 파트너예요!<br />선택하면 바로 만나러 가요 ✨
+              이번 해커톤을 함께할 파트너예요!<br />선택하면 바로 만나러 가요
             </p>
             <div style={{ display: 'flex', gap: 10 }}>
               <button
