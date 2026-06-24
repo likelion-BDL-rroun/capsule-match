@@ -9,7 +9,7 @@ const STEP = 360 / N;   // ~21.2° per card
 const RADIUS = 490;     // 원 반지름
 const CENTER_Y = 880;   // 원의 중심 y (컨테이너 상단 기준 px)
 const CARD_W = 180;
-const CARD_H = 256;
+const CARD_H = 270;  // 카드 이미지 2:3 비율에 맞춤 (180 × 1.5)
 const DRAG_PX_PER_STEP = 60;  // 카드 한 칸 이동에 필요한 드래그 px
 const SCROLL_PX_PER_STEP = 200; // 카드 한 칸 이동에 필요한 스크롤 px
 
