@@ -207,7 +207,7 @@ export default function TicketIntro({ universityName, onContinue, onBack }: Prop
             <p className="ti-subtitle">
               티켓은 학교마다 하나씩 있어요
               <br />
-              학교 대표가 받은 티켓 코드를 준비해요
+              학교 대표가 받은 티켓 코드를 준비해 주세요
             </p>
           </div>
 
