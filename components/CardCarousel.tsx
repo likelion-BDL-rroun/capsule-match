@@ -522,7 +522,7 @@ function CardFace({ isPicked }: { isPicked: boolean }) {
   return (
     <div className="w-full h-full relative overflow-hidden rounded-2xl">
       <Image
-        src="/card-back.png"
+        src="/card-back-0624.png"
         alt="카드"
         fill
         sizes="200px"
