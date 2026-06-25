@@ -62,10 +62,14 @@ export default function HomePage() {
           .spin-face {
             position: absolute; inset: 0; border-radius: 16px; overflow: hidden;
             backface-visibility: hidden; -webkit-backface-visibility: hidden;
-            box-shadow: 0 24px 60px rgba(49,20,11,0.5), 0 0 0 1px rgba(255,255,255,0.06);
           }
           .spin-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
-          .spin-face.back { transform: rotateY(180deg); }
+          /* 두께 — 여러 겹을 Z축으로 쌓아 옆면을 채움 */
+          .spin-edge {
+            position: absolute; inset: 0; border-radius: 16px;
+            background: linear-gradient(180deg, #4a4036 0%, #2a221b 100%);
+          }
+          .spin-face.front { box-shadow: 0 0 0 1px rgba(255,255,255,0.08); }
           .spin-shadow {
             position: absolute; left: 50%; bottom: -34px;
             width: 60%; height: 26px; border-radius: 50%;
@@ -125,8 +129,18 @@ export default function HomePage() {
         <div className="spin-stage" style={{ position: 'relative', zIndex: 2 }}>
           <div className="spin-bob">
             <div className="spin-card">
-              <div className="spin-face front"><img src="/char_00.png" alt="Animal League 캐릭터 카드" /></div>
-              <div className="spin-face back"><img src="/card-back-0624.png" alt="" /></div>
+              {/* 두께 레이어 (앞·뒤 사이를 Z축으로 채움) */}
+              {Array.from({ length: 14 }).map((_, i) => {
+                const T = 16; // 카드 두께(px)
+                const z = -T / 2 + (T / 13) * i;
+                return <div key={i} className="spin-edge" style={{ transform: `translateZ(${z}px)` }} />;
+              })}
+              <div className="spin-face front" style={{ transform: 'translateZ(8px)' }}>
+                <img src="/char_00.png" alt="Animal League 캐릭터 카드" />
+              </div>
+              <div className="spin-face back" style={{ transform: 'rotateY(180deg) translateZ(8px)' }}>
+                <img src="/card-back-0624.png" alt="" />
+              </div>
             </div>
             <div className="spin-shadow" />
           </div>
