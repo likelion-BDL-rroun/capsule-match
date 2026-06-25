@@ -138,8 +138,8 @@ export default function HomePage() {
         {/* 텍스트 + 버튼 */}
         <div className="hero-inner" style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1232, margin: '0 auto' }}>
           <h1 style={{
-            fontFamily: "'Anton', sans-serif",
-            fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 400,
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 800,
             lineHeight: 1.25, margin: '0 0 16px',
             letterSpacing: '0.03em',
             color: '#fff',
