@@ -75,19 +75,19 @@ export default function ResultPage() {
 
   const handleShare = async () => {
     const url = window.location.href;
-    const title = result ? `${result.universityName} 파트너` : '캡슐 매치';
     try {
-      if (navigator.share) {
-        await navigator.share({ title, url });
-      } else {
-        await navigator.clipboard.writeText(url);
-        setLinkCopied(true);
-        setTimeout(() => setLinkCopied(false), 2000);
-      }
-    } catch (e) {
-      // 사용자가 공유 시트를 닫은 경우 등은 무시
-      console.error(e);
+      await navigator.clipboard.writeText(url);
+    } catch {
+      // 클립보드 API가 막힌 환경 폴백
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
     }
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
   };
 
   if (isLoading) {
