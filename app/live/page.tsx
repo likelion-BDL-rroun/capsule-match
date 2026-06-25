@@ -73,7 +73,7 @@ export default function LivePage() {
         .live-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         @media (min-width: 600px)  { .live-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 900px)  { .live-grid { grid-template-columns: repeat(4, 1fr); } }
-        @media (min-width: 1200px) { .live-grid { grid-template-columns: repeat(5, 1fr); gap: 7px; } }
+        @media (min-width: 1200px) { .live-grid { grid-template-columns: repeat(6, 1fr); gap: 7px; } }
 
         .live-cell { display: flex; align-items: center; gap: 8px; padding: 5px 9px; border-radius: 9px;
           background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); min-width: 0; transition: background 0.3s, border-color 0.3s; }
