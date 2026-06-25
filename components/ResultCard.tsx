@@ -163,8 +163,14 @@ export default function ResultCard({ universityName, characterName, characterIma
   }, []);
 
   return (
-    <div className="flex flex-col items-center w-full max-w-xs mx-auto" style={{ position: 'relative', zIndex: 1 }}>
-      <div style={{ perspective: '900px' }} className="w-full">
+    <div className="flex flex-col items-center mx-auto" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 320 }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .result-card-wrap { max-width: 280px !important; }
+        }
+      `}</style>
+      <div className="result-card-wrap" style={{ width: '100%', maxWidth: 320 }}>
+        <div style={{ perspective: '900px' }} className="w-full">
         <div
           ref={cardRef}
           onMouseEnter={() => setIsHovered(true)}
@@ -231,6 +237,7 @@ export default function ResultCard({ universityName, characterName, characterIma
               }}
             />
           ))}
+        </div>
         </div>
       </div>
 
