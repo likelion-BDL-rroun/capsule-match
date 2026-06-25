@@ -10,7 +10,7 @@ import CodeInput from '@/components/CodeInput';
 import TicketIntro from '@/components/TicketIntro';
 import CardCarousel from '@/components/CardCarousel';
 
-type Step = 'select' | 'ticketIntro' | 'enterCode' | 'pickCapsule';
+type Step = 'select' | 'ticketIntro' | 'enterCode' | 'pickCard';
 
 export default function SelectPage() {
   const router = useRouter();
@@ -54,10 +54,10 @@ export default function SelectPage() {
     if (data.alreadyAssigned) { router.push(`/result/${selectedUniversity.id}`); return; }
     if (!data.success) { setCodeError(data.error); return; }
     setVerifiedCode(code);
-    setStep('pickCapsule');
+    setStep('pickCard');
   };
 
-  const handleCapsulePick = async () => {
+  const handleCardPick = async () => {
     if (!selectedUniversity || !verifiedCode) return;
     setIsLoading(true);
     const res = await fetch('/api/assign-character', {
@@ -102,7 +102,7 @@ export default function SelectPage() {
   }
 
   // 카드 뽑기
-  if (step === 'pickCapsule' && selectedUniversity) {
+  if (step === 'pickCard' && selectedUniversity) {
     return (
       <main className="min-h-screen flex flex-col items-center pick-noscroll" style={{ background: 'var(--bg)', overflowX: 'hidden' }}>
         <style>{`.pick-noscroll { overflow: hidden; height: 100dvh; } @media (min-width: 769px) { .pick-noscroll { overflow: unset; height: auto; min-height: 100vh; } }`}</style>
@@ -157,7 +157,7 @@ export default function SelectPage() {
           }
         `}</style>
         <div className="carousel-wrap">
-          <CardCarousel onComplete={handleCapsulePick} isLoading={isLoading} />
+          <CardCarousel onComplete={handleCardPick} isLoading={isLoading} />
         </div>
       </main>
     );

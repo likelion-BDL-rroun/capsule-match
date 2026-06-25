@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-sm overflow-hidden">
         <div className="bg-[#FF6000] px-6 py-5 text-center">
           <p className="text-white font-bold text-lg">관리자 로그인</p>
-          <p className="text-orange-100 text-xs mt-1">캡슐 매칭 관리자 전용</p>
+          <p className="text-orange-100 text-xs mt-1">카드 뽑기 관리자 전용</p>
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-6 flex flex-col gap-4">

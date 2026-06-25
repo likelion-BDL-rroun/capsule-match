@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     // 코드 해시 비교
     const inputHash = hashOpenCode(code);
     if (inputHash !== university.open_code_hash) {
-      return NextResponse.json({ success: false, error: '선택한 학교와 캡슐 오픈 코드가 일치하지 않아요.' }, { status: 401 });
+      return NextResponse.json({ success: false, error: '선택한 학교와 티켓 코드가 일치하지 않아요.' }, { status: 401 });
     }
 
     return NextResponse.json({ success: true, universityName: university.name });
