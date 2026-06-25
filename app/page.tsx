@@ -102,7 +102,7 @@ export default function HomePage() {
 
         {/* 카드 3장 — PC */}
         <img
-          src="/카드3장.png"
+          src="/카드3장-ver2.png"
           alt="Animal League 카드"
           className="hero-cards hero-cards-pc"
           style={{
