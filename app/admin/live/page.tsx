@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -13,6 +14,7 @@ type Row = {
 };
 
 export default function LivePage() {
+  const router = useRouter();
   const [rows, setRows] = useState<Row[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [flash, setFlash] = useState<Record<string, number>>({});
@@ -64,7 +66,9 @@ export default function LivePage() {
   return (
     <main style={{ minHeight: '100dvh', background: '#0e0e0e', color: '#fff' }}>
       <style>{`
-        .live-wrap { max-width: 1232px; margin: 0 auto; padding: 40px 16px 80px; }
+        .live-wrap { max-width: 1232px; margin: 0 auto; padding: 28px 16px 80px; }
+        .live-menu { color: rgba(255,255,255,0.4); font-size: 14px; font-weight: 500; background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 16px; letter-spacing: 0.02em; transition: color 0.15s; }
+        .live-menu:hover { color: rgba(255,255,255,0.8); }
         .live-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
         .live-title { font-size: 22px; font-weight: 800; letter-spacing: 0.02em; margin: 0; }
         .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2bd575; margin-right: 8px; vertical-align: middle; animation: live-pulse 1.4s ease-in-out infinite; }
@@ -109,6 +113,7 @@ export default function LivePage() {
       `}</style>
 
       <div className="live-wrap">
+        <button className="live-menu" onClick={() => router.push('/admin')}>‹ 메뉴</button>
         <div className="live-head">
           <h1 className="live-title"><span className="live-dot" />실시간 배정 현황</h1>
           <p className="live-stat"><b>{assignedCount}</b> / {total}개 학교 배정 완료</p>

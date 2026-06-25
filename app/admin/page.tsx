@@ -1,160 +1,70 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import AdminStatusTable from '@/components/AdminStatusTable';
-import ResetAssignmentModal from '@/components/ResetAssignmentModal';
 
-type UniversityRow = {
-  id: string;
-  name: string;
-  assigned_character_id: string | null;
-  assigned_at: string | null;
-  characters: { id: string; name: string; image_url: string | null } | null;
-};
-
-type StatusData = {
-  universities: UniversityRow[];
-  assigned: number;
-  total: number;
-  remaining: number;
-};
-
-export default function AdminPage() {
-  const [data, setData] = useState<StatusData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export default function AdminHubPage() {
   const router = useRouter();
-  const [resetTarget, setResetTarget] = useState<UniversityRow | null>(null);
-  const [isResetting, setIsResetting] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  const loadStatus = useCallback(async () => {
-    setIsLoading(true);
-    const res = await fetch('/api/status');
-    const json = await res.json();
-    setData(json);
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    loadStatus();
-  }, [loadStatus]);
-
-  const showToast = (message: string, type: 'success' | 'error') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
-
-  const handleResetConfirm = async (retireCharacter: boolean, reason: string) => {
-    if (!resetTarget) return;
-    setIsResetting(true);
-
-    const res = await fetch('/api/admin/reset-assignment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        universityId: resetTarget.id,
-        retireCharacter,
-        reason,
-      }),
-    });
-    const result = await res.json();
-    setIsResetting(false);
-    setResetTarget(null);
-
-    if (result.success) {
-      showToast(
-        `${resetTarget.name} 배정을 초기화했어요. (${result.action === 'retired' ? '캐릭터 retired' : '캐릭터 후보 복귀'})`,
-        'success'
-      );
-      loadStatus();
-    } else {
-      showToast(result.error ?? '초기화하지 못했어요.', 'error');
-    }
-  };
+  const cards = [
+    {
+      key: 'live',
+      title: '실시간 배정 현황',
+      desc: '학교별 배정 상황을 실시간으로 봐요',
+      href: '/admin/live',
+    },
+    {
+      key: 'manage',
+      title: '매칭 관리',
+      desc: '배정 현황 확인 및 초기화를 해요',
+      href: '/admin/manage',
+    },
+  ];
 
   return (
-    <main className="min-h-screen bg-gray-50 px-5 py-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-extrabold text-gray-900">캐릭터 매칭 현황판</h1>
-            <p className="text-sm text-gray-500 mt-1">캐릭터 배정 현황 및 초기화 관리</p>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={loadStatus}
-              className="text-sm text-[#FF6000] font-medium border border-orange-200 px-3 py-2 rounded-xl"
-            >
-              새로고침
+    <main style={{ minHeight: '100dvh', background: '#0e0e0e', color: '#fff', display: 'flex', flexDirection: 'column' }}>
+      <style>{`
+        .hub-wrap { width: 100%; max-width: 760px; margin: 0 auto; padding: 64px 20px 40px; flex: 1; display: flex; flex-direction: column; }
+        .hub-title { font-size: 26px; font-weight: 800; margin: 0 0 6px; letter-spacing: 0.02em; }
+        .hub-sub { font-size: 14px; color: rgba(255,255,255,0.5); margin: 0 0 36px; }
+        .hub-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        @media (min-width: 700px) { .hub-grid { grid-template-columns: 1fr 1fr; } }
+        .hub-card { text-align: left; cursor: pointer; padding: 28px 24px; border-radius: 18px;
+          background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+          border: 1px solid rgba(255,255,255,0.1); transition: border-color 0.15s, transform 0.08s, background 0.15s; }
+        .hub-card:hover { border-color: rgba(255,96,0,0.6); background: rgba(255,96,0,0.08); }
+        .hub-card:active { transform: scale(0.99); }
+        .hub-card h2 { font-size: 19px; font-weight: 800; margin: 0 0 8px; color: #fff; }
+        .hub-card p { font-size: 13.5px; color: rgba(255,255,255,0.55); margin: 0; line-height: 1.5; }
+        .hub-card .hub-arrow { color: #FF6000; font-weight: 800; font-size: 15px; margin-top: 16px; display: inline-block; }
+        .hub-logout { margin-top: auto; align-self: flex-start; color: rgba(255,255,255,0.35); font-size: 13px; font-weight: 500;
+          background: none; border: none; cursor: pointer; padding: 8px 0; transition: color 0.15s; }
+        .hub-logout:hover { color: rgba(255,255,255,0.7); }
+      `}</style>
+
+      <div className="hub-wrap">
+        <h1 className="hub-title">관리자 메뉴</h1>
+        <p className="hub-sub">이동할 페이지를 선택해요</p>
+
+        <div className="hub-grid">
+          {cards.map((c) => (
+            <button key={c.key} className="hub-card" onClick={() => router.push(c.href)}>
+              <h2>{c.title}</h2>
+              <p>{c.desc}</p>
+              <span className="hub-arrow">들어가기 ›</span>
             </button>
-            <button
-              onClick={async () => {
-                await fetch('/api/admin/auth', { method: 'DELETE' });
-                router.push('/admin/login');
-              }}
-              className="text-sm text-gray-500 font-medium border border-gray-200 px-3 py-2 rounded-xl"
-            >
-              로그아웃
-            </button>
-          </div>
+          ))}
         </div>
 
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-4 border-orange-200 border-t-[#FF6000] rounded-full animate-spin" />
-          </div>
-        ) : data ? (
-          <AdminStatusTable
-            universities={data.universities}
-            assigned={data.assigned}
-            total={data.total}
-            remaining={data.remaining}
-            onResetClick={setResetTarget}
-          />
-        ) : (
-          <p className="text-center text-gray-400 py-10">데이터를 불러오지 못했어요.</p>
-        )}
-
-        {/* 테스트 전용 초기화 SQL 안내 */}
-        {/* ⚠️ 실제 운영 배포 전에는 이 섹션을 제거하거나 강력한 인증으로 보호하세요. */}
-        <div className="mt-10 border-t border-dashed border-gray-200 pt-6">
-          <p className="text-xs text-gray-400 font-semibold uppercase mb-2">⚠️ 테스트 전용 구역</p>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-            <p className="text-sm font-semibold text-yellow-800 mb-2">전체 데이터 초기화 SQL</p>
-            <p className="text-xs text-yellow-700 mb-3">
-              아래 SQL을 Supabase SQL Editor에서 실행하면 모든 배정 데이터가 초기화됩니다.<br />
-              <strong>운영 배포 전에는 절대 사용하지 마세요.</strong>
-            </p>
-            <pre className="bg-yellow-100 rounded-lg p-3 text-xs text-yellow-900 overflow-x-auto whitespace-pre-wrap">
-{`UPDATE universities SET assigned_character_id = NULL, assigned_at = NULL;
-UPDATE characters SET status = 'available', assigned_university_id = NULL, assigned_at = NULL;
-DELETE FROM assignment_logs;`}
-            </pre>
-          </div>
-        </div>
+        <button
+          className="hub-logout"
+          onClick={async () => {
+            await fetch('/api/admin/auth', { method: 'DELETE' });
+            router.push('/admin/login');
+          }}
+        >
+          로그아웃
+        </button>
       </div>
-
-      {/* 배정 초기화 모달 */}
-      {resetTarget && (
-        <ResetAssignmentModal
-          universityName={resetTarget.name}
-          characterName={resetTarget.characters?.name ?? ''}
-          onConfirm={handleResetConfirm}
-          onCancel={() => setResetTarget(null)}
-          isLoading={isResetting}
-        />
-      )}
-
-      {/* 토스트 알림 */}
-      {toast && (
-        <div className={`
-          fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl shadow-lg text-sm font-medium text-white
-          ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'}
-        `}>
-          {toast.message}
-        </div>
-      )}
     </main>
   );
 }
