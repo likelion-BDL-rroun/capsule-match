@@ -7,10 +7,10 @@ const HERO_PARTICLES = [
   { left: '78%', top: '18%', size: 7, opacity: 0.45, dur: 12, delay: 1.5, color: 'rgba(255,96,0,0.85)' },
   { left: '32%', top: '62%', size: 4, opacity: 0.4, dur: 10, delay: 0.8, color: 'rgba(255,210,150,0.9)' },
   { left: '88%', top: '55%', size: 6, opacity: 0.5, dur: 13, delay: 2.2, color: 'rgba(255,120,40,0.8)' },
-  { left: '55%', top: '30%', size: 3, opacity: 0.55, dur: 8, delay: 0.4, color: 'rgba(255,255,255,0.8)' },
+  { left: '55%', top: '14%', size: 3, opacity: 0.55, dur: 8, delay: 0.4, color: 'rgba(255,255,255,0.8)' },
   { left: '20%', top: '78%', size: 5, opacity: 0.4, dur: 11, delay: 1.1, color: 'rgba(255,180,90,0.85)' },
-  { left: '68%', top: '72%', size: 4, opacity: 0.45, dur: 9.5, delay: 1.8, color: 'rgba(255,255,255,0.7)' },
-  { left: '45%', top: '12%', size: 6, opacity: 0.4, dur: 14, delay: 0.6, color: 'rgba(255,96,0,0.8)' },
+  { left: '68%', top: '74%', size: 4, opacity: 0.45, dur: 9.5, delay: 1.8, color: 'rgba(255,255,255,0.7)' },
+  { left: '45%', top: '10%', size: 6, opacity: 0.4, dur: 14, delay: 0.6, color: 'rgba(255,96,0,0.8)' },
   { left: '8%', top: '48%', size: 4, opacity: 0.5, dur: 10.5, delay: 2.5, color: 'rgba(255,200,130,0.85)' },
   { left: '92%', top: '35%', size: 5, opacity: 0.45, dur: 12.5, delay: 1.3, color: 'rgba(255,140,50,0.85)' },
 ];
@@ -26,8 +26,9 @@ export default function HomePage() {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-end',
-        padding: '0 0 72px 0',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '64px 20px 56px',
       }}>
         <style>{`
           @keyframes hero-float {
@@ -46,16 +47,40 @@ export default function HomePage() {
             0%, 100% { box-shadow: 0 0 28px rgba(255,96,0,0.45); }
             50%      { box-shadow: 0 0 48px 6px rgba(255,96,0,0.6); }
           }
-          @keyframes hero-cards-float {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50%      { transform: translateX(-50%) translateY(-14px); }
+          /* 카드 3D 회전 */
+          @keyframes card-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+          @keyframes card-bob  { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+          @keyframes card-shadow { 0%,100% { transform: translateX(-50%) scale(1); opacity: 0.45; } 50% { transform: translateX(-50%) scale(0.82); opacity: 0.28; } }
+
+          .spin-stage { perspective: 1200px; width: clamp(190px, 42vw, 260px); }
+          .spin-bob { animation: card-bob 5s ease-in-out infinite; }
+          .spin-card {
+            position: relative; width: 100%; aspect-ratio: 2 / 3;
+            transform-style: preserve-3d;
+            animation: card-spin 8s linear infinite;
           }
-          .hero-cards-mobile { display: none; }
-          .hero-inner { padding: 0 40px; }
-          @media (max-width: 768px) {
-            .hero-cards-pc { display: none; }
-            .hero-cards-mobile { display: block; }
-            .hero-inner { padding: 0 20px; }
+          .spin-face {
+            position: absolute; inset: 0; border-radius: 16px; overflow: hidden;
+            backface-visibility: hidden; -webkit-backface-visibility: hidden;
+            box-shadow: 0 24px 60px rgba(49,20,11,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+          }
+          .spin-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+          .spin-face.back { transform: rotateY(180deg); }
+          .spin-shadow {
+            position: absolute; left: 50%; bottom: -34px;
+            width: 60%; height: 26px; border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.55) 0%, transparent 70%);
+            filter: blur(6px); animation: card-shadow 5s ease-in-out infinite; pointer-events: none;
+          }
+
+          .hero-copy { text-align: center; margin-top: 56px; max-width: 560px; }
+          .hero-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; color: #FF8a3d; margin: 0 0 14px; text-transform: uppercase; }
+          .hero-title { font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(34px, 7vw, 56px); line-height: 1.05; letter-spacing: 0.03em; color: #fff; margin: 0 0 18px; text-shadow: 0px 2px 4px rgba(214,81,0,0.25); }
+          .hero-desc { font-size: clamp(14px, 2.4vw, 17px); font-weight: 500; line-height: 1.65; color: rgba(255,255,255,0.62); margin: 0 0 32px; }
+          .hero-cta {
+            background: #FF6000; color: #fff; font-weight: 700; font-size: 16px;
+            padding: 16px 34px; border-radius: 16px; border: none; cursor: pointer;
+            animation: hero-btn-pulse 2.6s ease-in-out infinite;
           }
         `}</style>
 
@@ -65,20 +90,20 @@ export default function HomePage() {
             position: 'absolute', inset: 0,
             backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
             backgroundSize: '64px 64px',
-            maskImage: 'radial-gradient(ellipse 90% 70% at 70% 30%, black 20%, transparent 80%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 90% 70% at 70% 30%, black 20%, transparent 80%)',
+            maskImage: 'radial-gradient(ellipse 80% 70% at 50% 38%, black 20%, transparent 80%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 38%, black 20%, transparent 80%)',
           }} />
           <div style={{
-            position: 'absolute', top: '-10%', right: '-5%',
-            width: 700, height: 700, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,96,0,0.42) 0%, rgba(255,96,0,0.12) 40%, transparent 70%)',
-            filter: 'blur(20px)',
+            position: 'absolute', top: '8%', left: '50%', transform: 'translateX(-50%)',
+            width: 640, height: 640, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(255,96,0,0.34) 0%, rgba(255,96,0,0.10) 42%, transparent 70%)',
+            filter: 'blur(24px)',
             animation: 'hero-glow-a 11s ease-in-out infinite',
           }} />
           <div style={{
-            position: 'absolute', bottom: '5%', left: '-10%',
-            width: 560, height: 560, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,150,40,0.22) 0%, transparent 65%)',
+            position: 'absolute', bottom: '2%', left: '-10%',
+            width: 520, height: 520, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(255,150,40,0.18) 0%, transparent 65%)',
             filter: 'blur(30px)',
             animation: 'hero-glow-b 14s ease-in-out infinite',
           }} />
@@ -94,81 +119,32 @@ export default function HomePage() {
               animation: `hero-float ${p.dur}s ease-in-out ${p.delay}s infinite`,
             }} />
           ))}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(to bottom, transparent 50%, rgba(14,14,14,0.6) 100%)',
-          }} />
         </div>
 
-        {/* 카드 3장 — PC */}
-        <img
-          src="/카드3장-ver2.png"
-          alt="Animal League 카드"
-          className="hero-cards hero-cards-pc"
-          style={{
-            position: 'absolute',
-            top: '1%', left: '56%',
-            transform: 'translateX(-50%)',
-            width: 'min(94%, 1056px)',
-            height: 'auto',
-            zIndex: 1,
-            pointerEvents: 'none',
-            filter: 'drop-shadow(0 24px 60px rgba(49,20,11,0.45))',
-            animation: 'hero-cards-float 6s ease-in-out infinite',
-          }}
-        />
-        {/* 카드 3장 — 모바일 */}
-        <img
-          src="/모바일 메인페이지.png"
-          alt="Animal League 카드"
-          className="hero-cards hero-cards-mobile"
-          style={{
-            position: 'absolute',
-            top: '15%', left: '50%',
-            transform: 'translateX(-50%)',
-            width: '100%',
-            height: 'auto',
-            zIndex: 1,
-            pointerEvents: 'none',
-            filter: 'drop-shadow(0 24px 60px rgba(49,20,11,0.45))',
-            animation: 'hero-cards-float 6s ease-in-out infinite',
-          }}
-        />
+        {/* 회전하는 카드 */}
+        <div className="spin-stage" style={{ position: 'relative', zIndex: 2 }}>
+          <div className="spin-bob">
+            <div className="spin-card">
+              <div className="spin-face front"><img src="/card-back-0624.png" alt="Animal League 카드" /></div>
+              <div className="spin-face back"><img src="/card-back-0624.png" alt="" /></div>
+            </div>
+            <div className="spin-shadow" />
+          </div>
+        </div>
 
-        {/* 텍스트 + 버튼 */}
-        <div className="hero-inner" style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1232, margin: '0 auto' }}>
-          <h1 style={{
-            fontFamily: "'Anton', sans-serif",
-            fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 400,
-            lineHeight: 1.15, margin: '0 0 16px',
-            letterSpacing: '0.03em',
-            color: '#fff',
-            textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
-          }}>
-            ANIMAL LEAGUE<br />CHARACTER MATCH
-          </h1>
-          <p style={{
-            fontSize: 'clamp(17px, 3vw, 32px)', fontWeight: 700,
-            color: '#fff', margin: '0 0 32px',
-            letterSpacing: '0.03em', lineHeight: 1.25,
-            textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
-          }}>
-            학교를 선택하고 캐릭터 카드 매칭을 시작해요
+        {/* 설명 + 버튼 */}
+        <div className="hero-copy" style={{ position: 'relative', zIndex: 2 }}>
+          <p className="hero-eyebrow">LIKELION UNIV.</p>
+          <h1 className="hero-title">ANIMAL LEAGUE<br />CHARACTER MATCH</h1>
+          <p className="hero-desc">
+            80개 대학, 80개의 캐릭터.<br />
+            우리 학교에 어떤 동물 파트너가 찾아올까요?<br />
+            카드를 골라 나만의 캐릭터를 만나보세요.
           </p>
-          <button
-            onClick={() => router.push('/select')}
-            style={{
-              background: '#FF6000', color: '#fff',
-              fontWeight: 700, fontSize: 16,
-              padding: '15px 32px', borderRadius: 16,
-              border: 'none', cursor: 'pointer',
-              animation: 'hero-btn-pulse 2.6s ease-in-out infinite',
-            }}
-          >
+          <button className="hero-cta" onClick={() => router.push('/select')}>
             학교 선택하기 →
           </button>
         </div>
-
       </section>
     </main>
   );
