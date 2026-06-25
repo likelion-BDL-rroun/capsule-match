@@ -125,7 +125,7 @@ export default function HomePage() {
         <div className="spin-stage" style={{ position: 'relative', zIndex: 2 }}>
           <div className="spin-bob">
             <div className="spin-card">
-              <div className="spin-face front"><img src="/card-back-0624.png" alt="Animal League 카드" /></div>
+              <div className="spin-face front"><img src="/char_00.png" alt="Animal League 캐릭터 카드" /></div>
               <div className="spin-face back"><img src="/card-back-0624.png" alt="" /></div>
             </div>
             <div className="spin-shadow" />
