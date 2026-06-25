@@ -35,7 +35,7 @@ function Card() {
 export default function SpinningCard3D() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 6], fov: 30 }}
+      camera={{ position: [0, 0, 7.4], fov: 30 }}
       gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
       style={{ width: '100%', height: '100%' }}
