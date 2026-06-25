@@ -1,6 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+const SpinningCard3D = dynamic(() => import('@/components/SpinningCard3D'), { ssr: false });
 
 const HERO_PARTICLES = [
   { left: '12%', top: '22%', size: 5, opacity: 0.5, dur: 9, delay: 0, color: 'rgba(255,150,60,0.9)' },
@@ -50,31 +53,16 @@ export default function HomePage() {
           /* 카드 3D 회전 */
           @keyframes card-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
           @keyframes card-bob  { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-          @keyframes card-shadow { 0%,100% { transform: translateX(-50%) scale(1); opacity: 0.45; } 50% { transform: translateX(-50%) scale(0.82); opacity: 0.28; } }
+          @keyframes card-shadow { 0%,100% { transform: translateX(-50%) scale(1); opacity: 0.4; } 50% { transform: translateX(-50%) scale(0.88); opacity: 0.28; } }
 
-          .spin-stage { perspective: 1200px; width: clamp(190px, 42vw, 260px); }
-          .spin-bob { animation: card-bob 5s ease-in-out infinite; }
-          .spin-card {
-            position: relative; width: 100%; aspect-ratio: 2 / 3;
-            transform-style: preserve-3d;
-            animation: card-spin 8s linear infinite;
-          }
-          .spin-face {
-            position: absolute; inset: 0; border-radius: 16px; overflow: hidden;
-            backface-visibility: hidden; -webkit-backface-visibility: hidden;
-          }
-          .spin-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
-          /* 두께 — 여러 겹을 Z축으로 쌓아 옆면을 채움 */
-          .spin-edge {
-            position: absolute; inset: 0; border-radius: 16px;
-            background: linear-gradient(180deg, #d9d9dd 0%, #6f6f76 18%, #f4f4f6 38%, #5c5c63 58%, #c8c8cd 78%, #74747b 100%);
-          }
-          .spin-face.front { box-shadow: 0 0 0 1px rgba(255,255,255,0.08); }
+          .spin-stage { width: clamp(240px, 50vw, 340px); }
+          .spin-bob { position: relative; animation: card-bob 5s ease-in-out infinite; }
+          .spin-canvas { width: 100%; aspect-ratio: 3 / 4; }
           .spin-shadow {
-            position: absolute; left: 50%; bottom: -34px;
-            width: 60%; height: 26px; border-radius: 50%;
+            position: absolute; left: 50%; bottom: -10px;
+            width: 52%; height: 24px; border-radius: 50%;
             background: radial-gradient(ellipse, rgba(0,0,0,0.55) 0%, transparent 70%);
-            filter: blur(6px); animation: card-shadow 5s ease-in-out infinite; pointer-events: none;
+            filter: blur(7px); animation: card-shadow 5s ease-in-out infinite; pointer-events: none;
           }
 
           .hero-copy { text-align: center; margin-top: 56px; max-width: 560px; }
@@ -125,23 +113,10 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* 회전하는 카드 */}
+        {/* 회전하는 카드 — 진짜 3D (Three.js) */}
         <div className="spin-stage" style={{ position: 'relative', zIndex: 2 }}>
           <div className="spin-bob">
-            <div className="spin-card">
-              {/* 두께 레이어 (앞·뒤 사이를 Z축으로 채움) — 얇은 카드 */}
-              {Array.from({ length: 7 }).map((_, i) => {
-                const T = 3.5; // 카드 두께(px)
-                const z = -T / 2 + (T / 6) * i;
-                return <div key={i} className="spin-edge" style={{ transform: `translateZ(${z}px)` }} />;
-              })}
-              <div className="spin-face front" style={{ transform: 'translateZ(1.75px)' }}>
-                <img src="/char_00.png" alt="Animal League 캐릭터 카드" />
-              </div>
-              <div className="spin-face back" style={{ transform: 'rotateY(180deg) translateZ(1.75px)' }}>
-                <img src="/card-back-0624.png" alt="" />
-              </div>
-            </div>
+            <div className="spin-canvas"><SpinningCard3D /></div>
             <div className="spin-shadow" />
           </div>
         </div>
