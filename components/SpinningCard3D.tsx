@@ -5,30 +5,85 @@ import { useTexture, Environment, Lightformer } from '@react-three/drei';
 import { useRef, useMemo, Suspense } from 'react';
 import * as THREE from 'three';
 
+const W = 2;       // 카드 가로
+const H = 3;       // 카드 세로
+const R = 0.14;    // 모서리 곡률
+const DEPTH = 0.03; // 두께(얇게)
+
+function roundedRectShape(w: number, h: number, r: number) {
+  const s = new THREE.Shape();
+  const x = -w / 2;
+  const y = -h / 2;
+  s.moveTo(x + r, y);
+  s.lineTo(x + w - r, y);
+  s.quadraticCurveTo(x + w, y, x + w, y + r);
+  s.lineTo(x + w, y + h - r);
+  s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  s.lineTo(x + r, y + h);
+  s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r);
+  s.quadraticCurveTo(x, y, x + r, y);
+  return s;
+}
+
+// ShapeGeometry의 UV를 0..1로 정규화 (텍스처가 카드에 꽉 차게)
+function faceGeometry(shape: THREE.Shape) {
+  const geo = new THREE.ShapeGeometry(shape, 24);
+  geo.computeBoundingBox();
+  const bb = geo.boundingBox!;
+  const sizeX = bb.max.x - bb.min.x;
+  const sizeY = bb.max.y - bb.min.y;
+  const pos = geo.attributes.position;
+  const uv: number[] = [];
+  for (let i = 0; i < pos.count; i++) {
+    uv.push((pos.getX(i) - bb.min.x) / sizeX, (pos.getY(i) - bb.min.y) / sizeY);
+  }
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  return geo;
+}
+
 function Card() {
-  const ref = useRef<THREE.Mesh>(null);
+  const ref = useRef<THREE.Group>(null);
   const [front, back] = useTexture(['/char_00.png', '/card-back-0624.png']);
 
-  const materials = useMemo(() => {
-    [front, back].forEach((t) => {
-      t.colorSpace = THREE.SRGBColorSpace;
-      t.anisotropy = 8;
-    });
-    const edge = new THREE.MeshStandardMaterial({ color: '#c7cad1', metalness: 1, roughness: 0.26 });
-    const frontMat = new THREE.MeshStandardMaterial({ map: front, metalness: 0.15, roughness: 0.5 });
-    const backMat = new THREE.MeshStandardMaterial({ map: back, metalness: 0.15, roughness: 0.5 });
-    // BoxGeometry 면 순서: [+x, -x, +y, -y, +z(앞), -z(뒤)]
-    return [edge, edge, edge, edge, frontMat, backMat];
+  const { bodyGeo, faceGeo, bodyMat, frontMat, backMat } = useMemo(() => {
+    const shape = roundedRectShape(W, H, R);
+
+    const body = new THREE.ExtrudeGeometry(shape, { depth: DEPTH, bevelEnabled: false });
+    body.translate(0, 0, -DEPTH / 2);
+
+    const face = faceGeometry(shape);
+
+    front.colorSpace = THREE.SRGBColorSpace;
+    back.colorSpace = THREE.SRGBColorSpace;
+    front.anisotropy = 8;
+    back.anisotropy = 8;
+    // 뒷면은 180도 돌리므로 좌우 반전 보정
+    back.center.set(0.5, 0.5);
+    back.wrapS = THREE.RepeatWrapping;
+    back.repeat.x = -1;
+
+    return {
+      bodyGeo: body,
+      faceGeo: face,
+      bodyMat: new THREE.MeshStandardMaterial({ color: '#c7cad1', metalness: 1, roughness: 0.24 }),
+      frontMat: new THREE.MeshStandardMaterial({ map: front, metalness: 0.15, roughness: 0.5 }),
+      backMat: new THREE.MeshStandardMaterial({ map: back, metalness: 0.15, roughness: 0.5 }),
+    };
   }, [front, back]);
 
   useFrame((_, delta) => {
     if (ref.current) ref.current.rotation.y += delta * 0.7;
   });
 
+  const eps = DEPTH / 2 + 0.002;
+
   return (
-    <mesh ref={ref} material={materials} rotation={[0.1, 0.4, 0]}>
-      <boxGeometry args={[2, 3, 0.06]} />
-    </mesh>
+    <group ref={ref} rotation={[0.1, 0.4, 0]}>
+      <mesh geometry={bodyGeo} material={bodyMat} />
+      <mesh geometry={faceGeo} material={frontMat} position={[0, 0, eps]} />
+      <mesh geometry={faceGeo} material={backMat} position={[0, 0, -eps]} rotation={[0, Math.PI, 0]} />
+    </group>
   );
 }
 
@@ -46,7 +101,6 @@ export default function SpinningCard3D() {
 
       <Suspense fallback={null}>
         <Card />
-        {/* 금속 반사를 위한 인메모리 환경광 (네트워크 불필요) */}
         <Environment resolution={128}>
           <Lightformer form="rect" intensity={3} position={[0, 2.5, 4]} scale={[8, 4, 1]} />
           <Lightformer form="rect" intensity={2} position={[-5, 0, 2]} scale={[3, 8, 1]} color="#ffd9b0" />
