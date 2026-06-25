@@ -16,6 +16,7 @@ export default function LivePage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [flash, setFlash] = useState<Record<string, number>>({});
+  const [hover, setHover] = useState<{ id: string; below: boolean } | null>(null);
   const prevAssigned = useRef<Record<string, boolean>>({});
 
   const load = useCallback(async () => {
@@ -81,12 +82,14 @@ export default function LivePage() {
         .live-cell.flash { animation: live-flash 1.6s ease; }
         .live-cell:hover { z-index: 20; border-color: rgba(255,96,0,0.5); }
 
-        .live-pop { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(5px);
+        .live-pop { position: absolute; left: 50%; transform: translateX(-50%);
           width: 184px; padding: 14px; border-radius: 14px; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.12);
           box-shadow: 0 18px 44px rgba(0,0,0,0.55); z-index: 60; pointer-events: none;
           display: flex; flex-direction: column; align-items: center; gap: 10px;
-          opacity: 0; visibility: hidden; transition: opacity 0.15s ease, transform 0.15s ease; }
-        .live-cell:hover .live-pop { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+          animation: live-pop-in 0.14s ease both; }
+        .live-pop.above { bottom: calc(100% + 8px); }
+        .live-pop.below { top: calc(100% + 8px); }
+        @keyframes live-pop-in { from { opacity: 0; transform: translateX(-50%) translateY(3px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
         .live-pop-img { width: 120px; height: 180px; border-radius: 10px; object-fit: cover; background: rgba(255,255,255,0.06); }
         .live-pop-empty { width: 120px; height: 180px; border-radius: 10px; background: rgba(255,255,255,0.05);
           display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.25); font-size: 30px; }
@@ -119,7 +122,15 @@ export default function LivePage() {
               const isAssigned = !!r.assigned_character_id;
               const isFlash = flash[r.id] && Date.now() - flash[r.id] < 1700;
               return (
-                <div key={r.id} className={`live-cell${isAssigned ? ' assigned' : ''}${isFlash ? ' flash' : ''}`}>
+                <div
+                  key={r.id}
+                  className={`live-cell${isAssigned ? ' assigned' : ''}${isFlash ? ' flash' : ''}`}
+                  onMouseEnter={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setHover({ id: r.id, below: rect.top < 250 });
+                  }}
+                  onMouseLeave={() => setHover((h) => (h?.id === r.id ? null : h))}
+                >
                   {isAssigned && r.characters?.image_url ? (
                     <Image src={r.characters.image_url} alt={r.characters.name} width={30} height={44} className="live-thumb" unoptimized />
                   ) : (
@@ -134,8 +145,9 @@ export default function LivePage() {
                     )}
                   </div>
 
-                  {/* hover 팝업 — 결과 카드 + 전체 학교명 */}
-                  <div className="live-pop">
+                  {/* hover 팝업 — 결과 카드 + 전체 학교명 (윗줄은 아래로) */}
+                  {hover?.id === r.id && (
+                  <div className={`live-pop ${hover.below ? 'below' : 'above'}`}>
                     {isAssigned && r.characters?.image_url ? (
                       <Image src={r.characters.image_url} alt={r.characters.name} width={120} height={180} className="live-pop-img" unoptimized />
                     ) : (
@@ -148,6 +160,7 @@ export default function LivePage() {
                       <div className="live-pop-wait">대기 중</div>
                     )}
                   </div>
+                  )}
                 </div>
               );
             })}
