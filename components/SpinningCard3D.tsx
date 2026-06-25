@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useTexture, Environment, Lightformer } from '@react-three/drei';
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, Suspense } from 'react';
 import * as THREE from 'three';
 
 function Card() {
@@ -44,13 +44,16 @@ export default function SpinningCard3D() {
       <directionalLight position={[3, 5, 4]} intensity={1.1} />
       <directionalLight position={[-4, -1, 2]} intensity={0.5} color="#ffd9b0" />
 
-      {/* 금속 반사를 위한 인메모리 환경광 (네트워크 불필요) */}
-      <Environment resolution={128}>
-        <Lightformer form="rect" intensity={3} position={[0, 2.5, 4]} scale={[8, 4, 1]} />
-        <Lightformer form="rect" intensity={2} position={[-5, 0, 2]} scale={[3, 8, 1]} color="#ffd9b0" />
-        <Lightformer form="rect" intensity={2} position={[5, 0, 2]} scale={[3, 8, 1]} color="#ffffff" />
-        <Lightformer form="rect" intensity={1.2} position={[0, -3, 2]} scale={[8, 3, 1]} color="#ff8a3d" />
-      </Environment>
+      <Suspense fallback={null}>
+        <Card />
+        {/* 금속 반사를 위한 인메모리 환경광 (네트워크 불필요) */}
+        <Environment resolution={128}>
+          <Lightformer form="rect" intensity={3} position={[0, 2.5, 4]} scale={[8, 4, 1]} />
+          <Lightformer form="rect" intensity={2} position={[-5, 0, 2]} scale={[3, 8, 1]} color="#ffd9b0" />
+          <Lightformer form="rect" intensity={2} position={[5, 0, 2]} scale={[3, 8, 1]} color="#ffffff" />
+          <Lightformer form="rect" intensity={1.2} position={[0, -3, 2]} scale={[8, 3, 1]} color="#ff8a3d" />
+        </Environment>
+      </Suspense>
     </Canvas>
   );
 }
