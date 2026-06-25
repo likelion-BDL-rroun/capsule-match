@@ -138,14 +138,14 @@ export default function HomePage() {
         {/* 텍스트 + 버튼 */}
         <div className="hero-inner" style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 1232, margin: '0 auto' }}>
           <h1 style={{
-            fontFamily: "'Inter', sans-serif",
-            fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 800,
+            fontFamily: "'Anton', sans-serif",
+            fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 400,
             lineHeight: 1.25, margin: '0 0 16px',
             letterSpacing: '0.03em',
             color: '#fff',
             textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
           }}>
-            Animal League<br />Character Match
+            ANIMAL LEAGUE<br />CHARACTER MATCH
           </h1>
           <p style={{
             fontSize: 'clamp(17px, 3vw, 32px)', fontWeight: 700,
