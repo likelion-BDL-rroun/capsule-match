@@ -119,7 +119,7 @@ export default function HomePage() {
         />
         {/* 카드 3장 — 모바일 */}
         <img
-          src="/모바일 카드3장.png"
+          src="/모바일 메인페이지.png"
           alt="Animal League 카드"
           className="hero-cards hero-cards-mobile"
           style={{
