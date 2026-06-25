@@ -63,29 +63,29 @@ export default function LivePage() {
   return (
     <main style={{ minHeight: '100dvh', background: '#0e0e0e', color: '#fff' }}>
       <style>{`
-        .live-wrap { max-width: 1232px; margin: 0 auto; padding: 16px 16px 16px; }
-        .live-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px; flex-wrap: wrap; }
+        .live-wrap { max-width: 1232px; margin: 0 auto; padding: 14px 16px; }
+        .live-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
         .live-title { font-size: 22px; font-weight: 800; letter-spacing: 0.02em; margin: 0; }
         .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2bd575; margin-right: 8px; vertical-align: middle; animation: live-pulse 1.4s ease-in-out infinite; }
         .live-stat { font-size: 14px; color: rgba(255,255,255,0.55); margin: 0; }
         .live-stat b { color: #FF6000; font-weight: 800; font-size: 16px; }
 
-        .live-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .live-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 600px)  { .live-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 900px)  { .live-grid { grid-template-columns: repeat(4, 1fr); } }
-        @media (min-width: 1200px) { .live-grid { grid-template-columns: repeat(6, 1fr); gap: 7px; } }
+        @media (min-width: 1200px) { .live-grid { grid-template-columns: repeat(6, 1fr); gap: 12px; } }
 
-        .live-cell { display: flex; align-items: center; gap: 8px; padding: 5px 9px; border-radius: 9px;
+        .live-cell { display: flex; align-items: center; gap: 11px; padding: 7px 14px; border-radius: 11px;
           background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); min-width: 0; transition: background 0.3s, border-color 0.3s; }
         .live-cell.assigned { background: rgba(255,96,0,0.09); border-color: rgba(255,96,0,0.28); }
         .live-cell.flash { animation: live-flash 1.6s ease; }
-        .live-thumb { width: 26px; height: 38px; border-radius: 5px; object-fit: cover; flex: 0 0 auto; background: rgba(255,255,255,0.06); }
-        .live-thumb-empty { width: 26px; height: 38px; border-radius: 5px; flex: 0 0 auto; background: rgba(255,255,255,0.05);
-          display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.22); font-size: 13px; }
+        .live-thumb { width: 30px; height: 44px; border-radius: 6px; object-fit: cover; flex: 0 0 auto; background: rgba(255,255,255,0.06); }
+        .live-thumb-empty { width: 30px; height: 44px; border-radius: 6px; flex: 0 0 auto; background: rgba(255,255,255,0.05);
+          display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.22); font-size: 15px; }
         .live-info { min-width: 0; flex: 1; }
-        .live-univ { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .live-char { font-size: 12px; color: #FF8a3d; font-weight: 700; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .live-wait { font-size: 12px; color: rgba(255,255,255,0.32); margin-top: 1px; }
+        .live-univ { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .live-char { font-size: 12.5px; color: #FF8a3d; font-weight: 700; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .live-wait { font-size: 12.5px; color: rgba(255,255,255,0.32); margin-top: 2px; }
 
         @keyframes live-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
         @keyframes live-flash { 0% { background: rgba(255,96,0,0.45); } 100% { background: rgba(255,96,0,0.09); } }
@@ -107,7 +107,7 @@ export default function LivePage() {
               return (
                 <div key={r.id} className={`live-cell${isAssigned ? ' assigned' : ''}${isFlash ? ' flash' : ''}`}>
                   {isAssigned && r.characters?.image_url ? (
-                    <Image src={r.characters.image_url} alt={r.characters.name} width={26} height={38} className="live-thumb" unoptimized />
+                    <Image src={r.characters.image_url} alt={r.characters.name} width={30} height={44} className="live-thumb" unoptimized />
                   ) : (
                     <div className="live-thumb-empty">·</div>
                   )}
