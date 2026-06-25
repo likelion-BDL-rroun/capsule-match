@@ -43,80 +43,75 @@ export default function LivePage() {
 
   useEffect(() => {
     load();
-
-    // 1) Supabase Realtime — 변경 즉시 반영
     const channel = supabase
       .channel('live-assignments')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'universities' }, () => load())
       .subscribe();
-
-    // 2) 폴링 폴백 — Realtime 미설정 환경에서도 동작 (3초)
     const timer = setInterval(load, 3000);
-
     return () => {
       supabase.removeChannel(channel);
       clearInterval(timer);
     };
   }, [load]);
 
-  const assignedRows = rows.filter((r) => r.assigned_character_id);
-  const assignedCount = assignedRows.length;
+  const assignedCount = rows.filter((r) => r.assigned_character_id).length;
   const total = rows.length;
 
-  // 배정된 학교를 최신순(assigned_at desc)으로, 미배정은 이름순으로 뒤에
-  const sorted = [...rows].sort((a, b) => {
-    const aa = !!a.assigned_character_id, bb = !!b.assigned_character_id;
-    if (aa && bb) return (b.assigned_at ?? '').localeCompare(a.assigned_at ?? '');
-    if (aa) return -1;
-    if (bb) return 1;
-    return a.name.localeCompare(b.name);
-  });
+  // 학교 선택 페이지와 동일하게 이름 가나다순 고정 정렬
+  const sorted = [...rows].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 
   return (
     <main style={{ minHeight: '100dvh', background: '#0e0e0e', color: '#fff' }}>
       <style>{`
-        .live-wrap { max-width: 720px; margin: 0 auto; padding: 28px 16px 80px; }
-        .live-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+        .live-wrap { max-width: 1232px; margin: 0 auto; padding: 20px 16px 28px; }
+        .live-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
         .live-title { font-size: 22px; font-weight: 800; letter-spacing: 0.02em; margin: 0; }
-        .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2bd575; margin-right: 7px; vertical-align: middle; animation: live-pulse 1.4s ease-in-out infinite; }
-        .live-stat { font-size: 13px; color: rgba(255,255,255,0.55); margin: 0 0 20px; }
-        .live-stat b { color: #FF6000; font-weight: 800; font-size: 15px; }
-        .live-list { display: flex; flex-direction: column; gap: 8px; }
-        .live-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); transition: background 0.3s; }
-        .live-row.assigned { background: rgba(255,96,0,0.08); border-color: rgba(255,96,0,0.25); }
-        .live-row.flash { animation: live-flash 1.6s ease; }
-        .live-thumb { width: 40px; height: 60px; border-radius: 7px; object-fit: cover; flex: 0 0 auto; background: rgba(255,255,255,0.06); }
-        .live-thumb-empty { width: 40px; height: 60px; border-radius: 7px; flex: 0 0 auto; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.25); font-size: 18px; }
-        .live-univ { font-size: 15px; font-weight: 700; }
-        .live-char { font-size: 13px; color: #FF8a3d; font-weight: 700; margin-top: 2px; }
-        .live-wait { font-size: 13px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+        .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2bd575; margin-right: 8px; vertical-align: middle; animation: live-pulse 1.4s ease-in-out infinite; }
+        .live-stat { font-size: 14px; color: rgba(255,255,255,0.55); margin: 0; }
+        .live-stat b { color: #FF6000; font-weight: 800; font-size: 16px; }
+
+        .live-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        @media (min-width: 600px)  { .live-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 900px)  { .live-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1200px) { .live-grid { grid-template-columns: repeat(5, 1fr); gap: 7px; } }
+
+        .live-cell { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 10px;
+          background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); min-width: 0; transition: background 0.3s, border-color 0.3s; }
+        .live-cell.assigned { background: rgba(255,96,0,0.09); border-color: rgba(255,96,0,0.28); }
+        .live-cell.flash { animation: live-flash 1.6s ease; }
+        .live-thumb { width: 30px; height: 44px; border-radius: 5px; object-fit: cover; flex: 0 0 auto; background: rgba(255,255,255,0.06); }
+        .live-thumb-empty { width: 30px; height: 44px; border-radius: 5px; flex: 0 0 auto; background: rgba(255,255,255,0.05);
+          display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.22); font-size: 14px; }
+        .live-info { min-width: 0; flex: 1; }
+        .live-univ { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .live-char { font-size: 12px; color: #FF8a3d; font-weight: 700; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .live-wait { font-size: 12px; color: rgba(255,255,255,0.32); margin-top: 1px; }
+
         @keyframes live-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @keyframes live-flash { 0% { background: rgba(255,96,0,0.45); } 100% { background: rgba(255,96,0,0.08); } }
+        @keyframes live-flash { 0% { background: rgba(255,96,0,0.45); } 100% { background: rgba(255,96,0,0.09); } }
       `}</style>
 
       <div className="live-wrap">
         <div className="live-head">
           <h1 className="live-title"><span className="live-dot" />실시간 배정 현황</h1>
+          <p className="live-stat"><b>{assignedCount}</b> / {total}개 학교 배정 완료</p>
         </div>
-        <p className="live-stat">
-          <b>{assignedCount}</b> / {total}개 학교 배정 완료
-        </p>
 
         {!loaded ? (
           <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '40px 0' }}>불러오는 중…</p>
         ) : (
-          <div className="live-list">
+          <div className="live-grid">
             {sorted.map((r) => {
               const isAssigned = !!r.assigned_character_id;
               const isFlash = flash[r.id] && Date.now() - flash[r.id] < 1700;
               return (
-                <div key={r.id} className={`live-row${isAssigned ? ' assigned' : ''}${isFlash ? ' flash' : ''}`}>
+                <div key={r.id} className={`live-cell${isAssigned ? ' assigned' : ''}${isFlash ? ' flash' : ''}`}>
                   {isAssigned && r.characters?.image_url ? (
-                    <Image src={r.characters.image_url} alt={r.characters.name} width={40} height={60} className="live-thumb" unoptimized />
+                    <Image src={r.characters.image_url} alt={r.characters.name} width={30} height={44} className="live-thumb" unoptimized />
                   ) : (
                     <div className="live-thumb-empty">·</div>
                   )}
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="live-info">
                     <div className="live-univ">{r.name}</div>
                     {isAssigned ? (
                       <div className="live-char">{r.characters?.name ?? '배정됨'}</div>
