@@ -73,9 +73,9 @@ export default function LivePage() {
         .live-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 600px)  { .live-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 900px)  { .live-grid { grid-template-columns: repeat(4, 1fr); } }
-        @media (min-width: 1200px) { .live-grid { grid-template-columns: repeat(6, 1fr); gap: 12px; } }
+        @media (min-width: 1200px) { .live-grid { grid-template-columns: repeat(7, 1fr); gap: 12px; } }
 
-        .live-cell { display: flex; align-items: center; gap: 11px; padding: 7px 14px; border-radius: 11px;
+        .live-cell { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 11px;
           background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); min-width: 0; transition: background 0.3s, border-color 0.3s; }
         .live-cell.assigned { background: rgba(255,96,0,0.09); border-color: rgba(255,96,0,0.28); }
         .live-cell.flash { animation: live-flash 1.6s ease; }
