@@ -87,8 +87,8 @@ export default function SpinningCard3D() {
   return (
     <Canvas
       camera={{ position: [0, 0, 7.4], fov: 30 }}
-      gl={{ antialias: true, alpha: true }}
-      dpr={[1, 2]}
+      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      dpr={[1, 1.5]}
       style={{ width: '100%', height: '100%' }}
     >
       <ambientLight intensity={0.45} />
@@ -97,7 +97,7 @@ export default function SpinningCard3D() {
 
       <Suspense fallback={null}>
         <Card />
-        <Environment resolution={128}>
+        <Environment resolution={64} frames={1}>
           <Lightformer form="rect" intensity={3} position={[0, 2.5, 4]} scale={[8, 4, 1]} />
           <Lightformer form="rect" intensity={2} position={[-5, 0, 2]} scale={[3, 8, 1]} color="#ffd9b0" />
           <Lightformer form="rect" intensity={2} position={[5, 0, 2]} scale={[3, 8, 1]} color="#ffffff" />
