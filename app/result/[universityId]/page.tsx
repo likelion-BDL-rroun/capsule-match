@@ -111,6 +111,7 @@ export default function ResultPage() {
     <main style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative', overflow: 'hidden' }}>
       <CornerGlow />
       <style>{`
+        @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
         .result-inner { width: 100%; maxWidth: 480px; margin: 0 auto; display: flex; flex-direction: column; padding: 20px 16px 80px; position: relative; z-index: 1; }
         .result-back { color: rgba(255,255,255,0.3); font-size: 14px; font-weight: 500; margin-bottom: 28px; background: none; border: none; cursor: pointer; text-align: left; letter-spacing: 0.03em; }
         .result-back:hover { color: rgba(255,255,255,0.7); }
@@ -163,7 +164,7 @@ export default function ResultPage() {
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
             </svg>
-            {linkCopied ? '링크 복사됨' : '공유하기'}
+            공유하기
           </button>
           <button
             onClick={handleDownload}
@@ -184,6 +185,21 @@ export default function ResultPage() {
             이미지 저장
           </button>
         </div>
+
+        {linkCopied && (
+          <div style={{
+            position: 'fixed', left: '50%', bottom: 40, transform: 'translateX(-50%)',
+            background: 'rgba(30,30,30,0.95)', color: '#fff',
+            fontSize: 14, fontWeight: 600, letterSpacing: '0.01em',
+            padding: '12px 20px', borderRadius: 99,
+            border: '1px solid rgba(255,255,255,0.12)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+            zIndex: 300, whiteSpace: 'nowrap', pointerEvents: 'none',
+            animation: 'toast-in 0.2s ease both',
+          }}>
+            링크가 복사되었습니다!
+          </div>
+        )}
 
       </div>
     </main>
