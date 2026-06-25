@@ -129,16 +129,16 @@ export default function HomePage() {
         <div className="spin-stage" style={{ position: 'relative', zIndex: 2 }}>
           <div className="spin-bob">
             <div className="spin-card">
-              {/* 두께 레이어 (앞·뒤 사이를 Z축으로 채움) */}
-              {Array.from({ length: 14 }).map((_, i) => {
-                const T = 16; // 카드 두께(px)
-                const z = -T / 2 + (T / 13) * i;
+              {/* 두께 레이어 (앞·뒤 사이를 Z축으로 채움) — 타로카드 정도로 얇게 */}
+              {Array.from({ length: 8 }).map((_, i) => {
+                const T = 6; // 카드 두께(px)
+                const z = -T / 2 + (T / 7) * i;
                 return <div key={i} className="spin-edge" style={{ transform: `translateZ(${z}px)` }} />;
               })}
-              <div className="spin-face front" style={{ transform: 'translateZ(8px)' }}>
+              <div className="spin-face front" style={{ transform: 'translateZ(3px)' }}>
                 <img src="/char_00.png" alt="Animal League 캐릭터 카드" />
               </div>
-              <div className="spin-face back" style={{ transform: 'rotateY(180deg) translateZ(8px)' }}>
+              <div className="spin-face back" style={{ transform: 'rotateY(180deg) translateZ(3px)' }}>
                 <img src="/card-back-0624.png" alt="" />
               </div>
             </div>
