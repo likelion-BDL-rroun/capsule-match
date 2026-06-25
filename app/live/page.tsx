@@ -63,7 +63,7 @@ export default function LivePage() {
   return (
     <main style={{ minHeight: '100dvh', background: '#0e0e0e', color: '#fff' }}>
       <style>{`
-        .live-wrap { max-width: 1232px; margin: 0 auto; padding: 14px 16px; }
+        .live-wrap { max-width: 1232px; margin: 0 auto; padding: 40px 16px 16px; }
         .live-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
         .live-title { font-size: 22px; font-weight: 800; letter-spacing: 0.02em; margin: 0; }
         .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2bd575; margin-right: 8px; vertical-align: middle; animation: live-pulse 1.4s ease-in-out infinite; }
@@ -75,10 +75,24 @@ export default function LivePage() {
         @media (min-width: 900px)  { .live-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (min-width: 1200px) { .live-grid { grid-template-columns: repeat(7, 1fr); gap: 12px; } }
 
-        .live-cell { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 11px;
-          background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); min-width: 0; transition: background 0.3s, border-color 0.3s; }
+        .live-cell { position: relative; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 11px;
+          background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); min-width: 0; cursor: default; transition: background 0.3s, border-color 0.3s; }
         .live-cell.assigned { background: rgba(255,96,0,0.09); border-color: rgba(255,96,0,0.28); }
         .live-cell.flash { animation: live-flash 1.6s ease; }
+        .live-cell:hover { z-index: 20; border-color: rgba(255,96,0,0.5); }
+
+        .live-pop { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(5px);
+          width: 184px; padding: 14px; border-radius: 14px; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.12);
+          box-shadow: 0 18px 44px rgba(0,0,0,0.55); z-index: 60; pointer-events: none;
+          display: flex; flex-direction: column; align-items: center; gap: 10px;
+          opacity: 0; visibility: hidden; transition: opacity 0.15s ease, transform 0.15s ease; }
+        .live-cell:hover .live-pop { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .live-pop-img { width: 120px; height: 180px; border-radius: 10px; object-fit: cover; background: rgba(255,255,255,0.06); }
+        .live-pop-empty { width: 120px; height: 180px; border-radius: 10px; background: rgba(255,255,255,0.05);
+          display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.25); font-size: 30px; }
+        .live-pop-univ { font-size: 14px; font-weight: 800; color: #fff; text-align: center; line-height: 1.35; }
+        .live-pop-char { font-size: 13px; font-weight: 700; color: #FF8a3d; }
+        .live-pop-wait { font-size: 13px; color: rgba(255,255,255,0.4); }
         .live-thumb { width: 30px; height: 44px; border-radius: 6px; object-fit: cover; flex: 0 0 auto; background: rgba(255,255,255,0.06); }
         .live-thumb-empty { width: 30px; height: 44px; border-radius: 6px; flex: 0 0 auto; background: rgba(255,255,255,0.05);
           display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.22); font-size: 15px; }
@@ -117,6 +131,21 @@ export default function LivePage() {
                       <div className="live-char">{r.characters?.name ?? '배정됨'}</div>
                     ) : (
                       <div className="live-wait">대기 중</div>
+                    )}
+                  </div>
+
+                  {/* hover 팝업 — 결과 카드 + 전체 학교명 */}
+                  <div className="live-pop">
+                    {isAssigned && r.characters?.image_url ? (
+                      <Image src={r.characters.image_url} alt={r.characters.name} width={120} height={180} className="live-pop-img" unoptimized />
+                    ) : (
+                      <div className="live-pop-empty">·</div>
+                    )}
+                    <div className="live-pop-univ">{r.name}</div>
+                    {isAssigned ? (
+                      <div className="live-pop-char">{r.characters?.name ?? '배정됨'}</div>
+                    ) : (
+                      <div className="live-pop-wait">대기 중</div>
                     )}
                   </div>
                 </div>
