@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, KeyboardEvent, ChangeEvent } from 'react';
+import { useRef, useState, KeyboardEvent, ChangeEvent, ClipboardEvent } from 'react';
 
 type Props = {
   universityName: string;
@@ -29,6 +29,22 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
     if (e.key === 'Backspace' && !chars[i] && i > 0) {
       inputRefs.current[i - 1]?.focus();
     }
+  };
+
+  // 코드 전체를 붙여넣으면 각 칸에 자동 분배
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pasted = e.clipboardData
+      .getData('text')
+      .toUpperCase()
+      .replace(/[^0-9A-Z]/g, '')
+      .slice(0, BOX_COUNT);
+    if (!pasted) return;
+    const next = Array(BOX_COUNT).fill('');
+    pasted.split('').forEach((c, idx) => { next[idx] = c; });
+    setChars(next);
+    const focusTarget = Math.min(pasted.length, BOX_COUNT - 1);
+    inputRefs.current[focusTarget]?.focus();
   };
 
   const handleSubmit = () => {
@@ -228,6 +244,7 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
                   value={ch}
                   onChange={(e) => handleChange(i, e)}
                   onKeyDown={(e) => handleKeyDown(i, e)}
+                  onPaste={handlePaste}
                   onFocus={() => setFocusIdx(i)}
                   onPointerDown={(e) => {
                     const firstEmpty = chars.findIndex((c) => c === '');
