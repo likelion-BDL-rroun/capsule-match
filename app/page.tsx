@@ -27,7 +27,7 @@ export default function HomePage() {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
-        padding: '0 0 52px 0',
+        padding: '0 0 72px 0',
       }}>
         <style>{`
           @keyframes hero-float {
@@ -140,7 +140,7 @@ export default function HomePage() {
           <h1 style={{
             fontFamily: "'Anton', sans-serif",
             fontSize: 'clamp(44px, 9vw, 82px)', fontWeight: 400,
-            lineHeight: 1.25, margin: '0 0 16px',
+            lineHeight: 1.15, margin: '0 0 16px',
             letterSpacing: '0.03em',
             color: '#fff',
             textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
