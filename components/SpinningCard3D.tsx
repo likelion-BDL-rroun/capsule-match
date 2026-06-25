@@ -58,10 +58,6 @@ function Card() {
     back.colorSpace = THREE.SRGBColorSpace;
     front.anisotropy = 8;
     back.anisotropy = 8;
-    // 뒷면은 180도 돌리므로 좌우 반전 보정
-    back.center.set(0.5, 0.5);
-    back.wrapS = THREE.RepeatWrapping;
-    back.repeat.x = -1;
 
     return {
       bodyGeo: body,
@@ -73,7 +69,7 @@ function Card() {
   }, [front, back]);
 
   useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.7;
+    if (ref.current) ref.current.rotation.y += delta * 0.45;
   });
 
   const eps = DEPTH / 2 + 0.002;
