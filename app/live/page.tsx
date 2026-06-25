@@ -64,7 +64,7 @@ export default function LivePage() {
     <main style={{ minHeight: '100dvh', background: '#0e0e0e', color: '#fff' }}>
       <style>{`
         .live-wrap { max-width: 1232px; margin: 0 auto; padding: 14px 16px; }
-        .live-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
+        .live-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
         .live-title { font-size: 22px; font-weight: 800; letter-spacing: 0.02em; margin: 0; }
         .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2bd575; margin-right: 8px; vertical-align: middle; animation: live-pulse 1.4s ease-in-out infinite; }
         .live-stat { font-size: 14px; color: rgba(255,255,255,0.55); margin: 0; }
