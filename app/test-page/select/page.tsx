@@ -14,6 +14,7 @@ import CardCarousel from '@/components/CardCarousel';
 const DEMO_UNIVERSITY: University = {
   id: 'demo-likelion',
   name: '멋사대학교',
+  open_code_hash: '',
   assigned_character_id: null,
   assigned_at: null,
   created_at: new Date().toISOString(),
