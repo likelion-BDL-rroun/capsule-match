@@ -431,11 +431,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            position: absolute;
-            bottom: -56px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
+            margin-top: 16px;
             pointer-events: none;
             animation: scroll-hint-fade 2.4s ease-in-out infinite;
           }
@@ -521,15 +517,6 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           </div>
         ))}
 
-        {/* 스크롤 힌트 — PC only, 카드 선택 전 */}
-        {!picked && (
-          <div className="scroll-hint" style={{ bottom: 12 }}>
-            <div className="scroll-hint-mouse">
-              <div className="scroll-hint-wheel" />
-            </div>
-            <span className="scroll-hint-label">SCROLL</span>
-          </div>
-        )}
 
         {/* 빛 폭발 — 확산 링 + 스파클 (카드 위) */}
         {picked && (
@@ -591,6 +578,16 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         }} />
 
       </div>
+
+      {/* 스크롤 힌트 — PC only, 카드 선택 전 */}
+      {!picked && (
+        <div className="scroll-hint">
+          <div className="scroll-hint-mouse">
+            <div className="scroll-hint-wheel" />
+          </div>
+          <span className="scroll-hint-label">SCROLL</span>
+        </div>
+      )}
 
       {/* 선택 버튼 — portal로 body에 직접 띄워 캐러셀 축소(transform) 영역을 벗어남 */}
       {mounted && !picked && createPortal(
