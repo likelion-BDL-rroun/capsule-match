@@ -431,7 +431,11 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            margin-top: 16px;
+            position: fixed;
+            bottom: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 190;
             pointer-events: none;
             animation: scroll-hint-fade 2.4s ease-in-out infinite;
           }
