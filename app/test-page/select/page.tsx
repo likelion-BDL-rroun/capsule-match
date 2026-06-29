@@ -55,6 +55,8 @@ export default function TestSelectPage() {
     setIsLoading(true);
     await new Promise(r => setTimeout(r, 800));
     setIsLoading(false);
+    // 플로우를 직접 거친 사람 표시 (공유 링크 진입 시 없음)
+    sessionStorage.setItem('test_result_from_flow', '1');
     router.push(`/test-page/result?uni=${encodeURIComponent(uniName)}`);
   };
 

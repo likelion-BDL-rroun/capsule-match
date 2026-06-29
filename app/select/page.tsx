@@ -85,7 +85,12 @@ export default function SelectPage() {
     });
     const data = await res.json();
     setIsLoading(false);
-    if (data.alreadyAssigned || data.success) { router.push(`/result/${selectedUniversity.id}`); return; }
+    if (data.alreadyAssigned || data.success) {
+      // 플로우를 직접 거친 사람 표시 — 공유 링크로 들어온 사람에겐 없음(돌아가기 버튼 노출 여부 판단용)
+      sessionStorage.setItem('result_from_flow', selectedUniversity.id);
+      router.push(`/result/${selectedUniversity.id}`);
+      return;
+    }
     alert(data.error ?? '오류가 발생했어요. 다시 시도해주세요.');
     router.push('/');
   };
