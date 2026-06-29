@@ -100,10 +100,10 @@ function Card({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number })
 export default function SpinningCard3D({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number }) {
   return (
     <Canvas
-      camera={{ position: [0, 0, 9.2], fov: 30 }}
+      camera={{ position: [0, 0, 7.4], fov: 30 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       dpr={[1, 1.5]}
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '140%', height: '140%', position: 'absolute', top: '-20%', left: '-20%' }}
     >
       <ambientLight intensity={0.45} />
       <directionalLight position={[3, 5, 4]} intensity={1.1} />

@@ -146,7 +146,7 @@ export default function HomePage() {
         }
         .card-stage {
           position: absolute; top: 50%; width: clamp(280px, 26vw, 400px); aspect-ratio: 2 / 3;
-          will-change: transform;
+          will-change: transform; overflow: visible;
         }
         .intro-copy { position: absolute; top: 50%; max-width: 380px; }
         .intro-title { font-size: clamp(26px, 2.6vw, 42px); font-weight: 800; color: #fff; line-height: 1.25; margin: 0 0 18px; letter-spacing: 0.01em; }
