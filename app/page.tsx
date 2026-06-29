@@ -36,6 +36,8 @@ export default function HomePage() {
   const [universities, setUniversities] = useState<University[]>([]);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [gridVisible, setGridVisible] = useState(false);
+  // 무거운 80개 학교 리스트는 화면에 가까워질 때까지 mount 보류 (첫 스크롤 끊김 방지)
+  const [mountList, setMountList] = useState(false);
 
   // DOM refs — 스크롤 애니메이션을 React state 없이 직접 업데이트
   const sceneRef      = useRef<HTMLDivElement>(null);
@@ -79,6 +81,23 @@ export default function HomePage() {
     );
     if (listHeaderRef.current) io.observe(listHeaderRef.current);
     if (listGridRef.current) io.observe(listGridRef.current);
+    return () => io.disconnect();
+  }, []);
+
+  // 리스트가 화면 ~2칸 앞까지 다가오면 그때 mount (첫 스크롤 구간 밖에서 렌더)
+  useEffect(() => {
+    const target = listSectionRef.current;
+    if (!target) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some(e => e.isIntersecting)) {
+          setMountList(true);
+          io.disconnect();
+        }
+      },
+      { root: null, rootMargin: '1500px 0px 1500px 0px', threshold: 0 }
+    );
+    io.observe(target);
     return () => io.disconnect();
   }, []);
 
@@ -359,7 +378,7 @@ export default function HomePage() {
             transition: 'opacity 0.65s ease 0.35s, transform 0.65s ease 0.35s',
           }}
         >
-          {universities.length === 0 ? (
+          {universities.length === 0 || !mountList ? (
             <div className="flex items-center justify-center" style={{ paddingTop: 60 }}>
               <div style={{ width: 32, height: 32, border: '4px solid rgba(255,96,0,0.2)', borderTop: '4px solid #FF6000', borderRadius: '50%' }} className="animate-spin" />
             </div>
