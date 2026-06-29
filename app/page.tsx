@@ -23,7 +23,7 @@ const HERO_PARTICLES = [
 ];
 
 // ─── 모바일 카드 좌우 위치(vw) — 숫자만 바꾸면 됨 ───
-const MOBILE_CARD_LEFT_SECTION1 = 300;  // 처음 보이는 화면(섹션1) 카드 위치
+const MOBILE_CARD_LEFT_SECTION1 = 50;  // 처음 보이는 화면(섹션1) 카드 위치 (50 = 정중앙)
 const MOBILE_CARD_LEFT_SECTION2 = 55;  // 스크롤 후(섹션2) 카드 위치
 
 // ─── PC(데스크탑) 카드 좌우 위치(%) — 숫자만 바꾸면 됨 ───
