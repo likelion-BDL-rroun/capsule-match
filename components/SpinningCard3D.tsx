@@ -43,8 +43,8 @@ function faceGeometry(shape: THREE.Shape) {
 }
 
 function Card({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number }) {
-  const ref = useRef<THREE.Group>(null);   // Y 스핀 (축 수직 유지)
-  const innerRef = useRef<THREE.Group>(null); // Z 기울기 (카드만 기울임)
+  const outerRef = useRef<THREE.Group>(null); // Z 기울기 (축 포함)
+  const ref = useRef<THREE.Group>(null);       // Y 스핀 + X 틸트
   const targetTilt = useRef(tilt);
   const targetZTilt = useRef(zTilt);
   useEffect(() => { targetTilt.current = tilt; }, [tilt]);
@@ -78,17 +78,17 @@ function Card({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number })
     ref.current.rotation.y += delta * 0.75;
     const cur = ref.current.rotation.x;
     ref.current.rotation.x = cur + (targetTilt.current - cur) * Math.min(1, delta * 6);
-    if (innerRef.current) {
-      const curZ = innerRef.current.rotation.z;
-      innerRef.current.rotation.z = curZ + (targetZTilt.current - curZ) * Math.min(1, delta * 6);
+    if (outerRef.current) {
+      const curZ = outerRef.current.rotation.z;
+      outerRef.current.rotation.z = curZ + (targetZTilt.current - curZ) * Math.min(1, delta * 6);
     }
   });
 
   const eps = DEPTH / 2 + 0.002;
 
   return (
-    <group ref={ref} rotation={[0.12, 0.4, 0]}>
-      <group ref={innerRef} rotation={[0, 0, -0.35]}>
+    <group ref={outerRef} rotation={[0, 0, -0.35]}>
+      <group ref={ref} rotation={[0.12, 0.4, 0]}>
         <mesh geometry={bodyGeo} material={bodyMat} />
         <mesh geometry={faceGeo} material={frontMat} position={[0, 0, eps]} />
         <mesh geometry={faceGeo} material={backMat} position={[0, 0, -eps]} rotation={[0, Math.PI, 0]} />
