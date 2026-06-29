@@ -414,9 +414,12 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
 
         /* 스크롤 힌트 애니메이션 (PC only) */
         @keyframes scroll-hint-wheel {
-          0%   { transform: translateY(0); opacity: 0.9; }
-          50%  { transform: translateY(6px); opacity: 0.4; }
-          100% { transform: translateY(0); opacity: 0.9; }
+          0%   { transform: translateY(0);   opacity: 0; }
+          12%  { transform: translateY(0);   opacity: 1; }
+          58%  { transform: translateY(6px); opacity: 1; }
+          72%  { transform: translateY(6px); opacity: 0; }
+          73%  { transform: translateY(0);   opacity: 0; }
+          100% { transform: translateY(0);   opacity: 0; }
         }
         @keyframes scroll-hint-fade {
           0%, 100% { opacity: 1; }
@@ -453,7 +456,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             height: 7px;
             background: rgba(255,255,255,0.6);
             border-radius: 2px;
-            animation: scroll-hint-wheel 1.6s ease-in-out infinite;
+            animation: scroll-hint-wheel 2s ease-in-out infinite;
           }
           .scroll-hint-label {
             font-size: 14px;
