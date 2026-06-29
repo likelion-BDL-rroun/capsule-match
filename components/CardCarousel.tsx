@@ -432,7 +432,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             align-items: center;
             gap: 8px;
             position: fixed;
-            bottom: 140px;
+            bottom: 148px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 210;
