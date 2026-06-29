@@ -144,9 +144,6 @@ export default function HomePage() {
         .bg-section2-img img {
           width: 100%; height: auto; display: block; flex-shrink: 0;
         }
-        @media (max-width: 768px) {
-          .bg-section2-img { align-items: flex-start; padding-top: calc(10% + 12px); }
-        }
         .card-stage {
           position: absolute; top: 50%; width: clamp(280px, 26vw, 400px); aspect-ratio: 3 / 4;
           will-change: transform; overflow: visible;
@@ -211,7 +208,7 @@ export default function HomePage() {
                 transform: `translateY(${lerp(80, 0, orangeIn)}px)`,
               }}
             >
-              <img src="/main.2_background_ver2.png" alt="" />
+              <img src="/main.2_background_ver2.png" alt="" style={isMobile ? { marginTop: '10%' } : undefined} />
             </div>
           </div>
 
