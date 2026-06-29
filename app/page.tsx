@@ -150,7 +150,7 @@ export default function HomePage() {
         }
         .intro-copy { position: absolute; top: 50%; max-width: 380px; }
         .intro-title { font-size: clamp(26px, 2.6vw, 42px); font-weight: 800; color: #fff; line-height: 1.25; margin: 0 0 18px; letter-spacing: 0.01em; }
-        .intro-body  { font-size: clamp(14px, 1.1vw, 18px); font-weight: 500; color: rgba(255,255,255,0.6); line-height: 1.7; margin: 0; }
+        .intro-body  { font-size: clamp(14px, 1.1vw, 18px); font-weight: 500; color: rgba(255,255,255,0.6); line-height: 1.45; margin: 0; }
         .scroll-ind { position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; animation: sd-fade 2.4s ease-in-out infinite; }
         .scroll-ind .mouse { width: 24px; height: 38px; border: 2px solid rgba(255,255,255,0.4); border-radius: 12px; display: flex; justify-content: center; padding-top: 6px; }
         .scroll-ind .wheel { width: 3px; height: 7px; background: rgba(255,255,255,0.7); border-radius: 2px; animation: sd-wheel 1.6s ease-in-out infinite; }
