@@ -112,26 +112,26 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
-  // 진입 시 부드럽게 반 바퀴 돌며 "돌릴 수 있다"는 힌트
+  // 진입 시 +1/3 바퀴 위치에서 기본(0)으로 회전해 들어오는 인트로
   useEffect(() => {
+    const startDeg = STEP * Math.round(N / 3);  // +1/3 바퀴에서 출발
+    rotRef.current = startDeg;
+    setRotation(startDeg);
     introActive.current = true;
     isAnimating.current = true;
-    const totalDeg = -STEP * Math.round(N / 3);  // ≈ 1/3 바퀴, 반대 방향
     const duration = 2100;
     const start = performance.now();
-    // easeInOutQuad — 시작·끝 부드럽되 가감속(탄성감)은 약하게
     const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
     const tick = (now: number) => {
       if (!introActive.current) return;
       const p = Math.min((now - start) / duration, 1);
-      rotRef.current = totalDeg * ease(p);
+      rotRef.current = startDeg * (1 - ease(p));  // startDeg → 0
       setRotation(rotRef.current);
       if (p < 1) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
-        const snapped = Math.round(rotRef.current / STEP) * STEP;
-        rotRef.current = snapped;
-        setRotation(snapped);
+        rotRef.current = 0;
+        setRotation(0);
         introActive.current = false;
         isAnimating.current = false;
       }
