@@ -24,7 +24,7 @@ const HERO_PARTICLES = [
 
 // ─── 모바일 카드 좌우 위치(vw) — 숫자만 바꾸면 됨 ───
 const MOBILE_CARD_LEFT_SECTION1 = 50;  // 처음 보이는 화면(섹션1) 카드 위치
-const MOBILE_CARD_LEFT_SECTION2 = 20;  // 스크롤 후(섹션2) 카드 위치
+const MOBILE_CARD_LEFT_SECTION2 = 55;  // 스크롤 후(섹션2) 카드 위치
 
 const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b);
 const range = (p: number, a: number, b: number) => clamp((p - a) / (b - a), 0, 1);
@@ -95,13 +95,33 @@ export default function HomePage() {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // 첫 스크롤 끊김 방지 — 2번 섹션 배경을 미리 디코딩해 GPU 레이어로 워밍업
+  // 첫 스크롤 끊김 방지 — 2번 섹션 배경을 미리 디코딩 + GPU 레이어 강제 합성 워밍업
   useEffect(() => {
     const img = bgSection2ImgRef.current;
-    if (!img) return;
-    const warm = () => { img.decode?.().catch(() => {}); };
+    const s2 = bgSection2Ref.current;
+    if (!img || !s2) return;
+
+    let raf1 = 0, raf2 = 0;
+    const warm = async () => {
+      // 1) CPU 디코딩
+      try { await img.decode?.(); } catch {}
+      // 2) 거의 안 보이게(opacity 0.01) 한 프레임 그려서 GPU 텍스처 업로드/래스터화 강제
+      s2.style.opacity = '0.01';
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => {
+          // 워밍업 끝 — 스크롤 핸들러가 곧 실제 값으로 덮어씀
+          s2.style.opacity = '0';
+        });
+      });
+    };
+
     if (img.complete) warm();
     else img.addEventListener('load', warm, { once: true });
+
+    return () => {
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+    };
   }, []);
 
   // 스크롤 → DOM 직접 업데이트 (React 리렌더 없음)
@@ -144,18 +164,18 @@ export default function HomePage() {
         }
       }
 
-      // 1번 섹션 배경
+      // 1번 섹션 배경 (translateZ(0)로 레이어 유지)
       if (bgHeroRef.current) {
         const s = bgHeroRef.current.style;
         s.opacity = String(grayOut);
-        s.transform = `translateY(${lerp(0, -140, 1 - grayOut)}px) scale(${lerp(1, 1.04, 1 - grayOut)})`;
+        s.transform = `translateY(${lerp(0, -140, 1 - grayOut)}px) scale(${lerp(1, 1.04, 1 - grayOut)}) translateZ(0)`;
       }
 
-      // 2번 섹션 배경
+      // 2번 섹션 배경 (translateZ(0)로 레이어 유지)
       if (bgSection2Ref.current) {
         const s = bgSection2Ref.current.style;
         s.opacity = String(orangeIn);
-        s.transform = `translateY(${lerp(80, -36, orangeIn)}px)`;
+        s.transform = `translateY(${lerp(80, -36, orangeIn)}px) translateZ(0)`;
       }
 
       // 2번 섹션 배경 이미지 모바일 marginTop
