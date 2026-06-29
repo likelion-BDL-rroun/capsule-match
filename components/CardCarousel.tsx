@@ -407,32 +407,64 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           .carousel-arrow-left { left: 8px; }
           .carousel-arrow-right { right: 8px; }
         }
-        /* PC: 가운데 카드 양옆에 화살표 (모바일과 위치 무관) */
+        /* PC: 화살표 숨김 */
         @media (min-width: 769px) {
-          .carousel-arrow {
+          .carousel-arrow { display: none !important; }
+        }
+
+        /* 스크롤 힌트 애니메이션 (PC only) */
+        @keyframes scroll-hint-wheel {
+          0%   { transform: translateY(0);   opacity: 0; }
+          12%  { transform: translateY(0);   opacity: 1; }
+          58%  { transform: translateY(6px); opacity: 1; }
+          72%  { transform: translateY(6px); opacity: 0; }
+          73%  { transform: translateY(0);   opacity: 0; }
+          100% { transform: translateY(0);   opacity: 0; }
+        }
+        @keyframes scroll-hint-fade {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.5; }
+        }
+        .scroll-hint {
+          display: none;
+        }
+        @media (min-width: 769px) {
+          .scroll-hint {
             display: flex;
+            flex-direction: column;
             align-items: center;
+            gap: 16px;
+            position: fixed;
+            bottom: 148px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 210;
+            pointer-events: none;
+          }
+          .scroll-hint-mouse {
+            width: 24px;
+            height: 38px;
+            border: 2px solid rgba(255,255,255,0.35);
+            border-radius: 12px;
+            position: relative;
+            display: flex;
             justify-content: center;
-            position: absolute;
-            top: 215px;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.15);
+            padding-top: 6px;
+          }
+          .scroll-hint-wheel {
+            width: 3px;
+            height: 7px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 2px;
+            animation: scroll-hint-wheel 2s ease-in-out infinite;
+          }
+          .scroll-hint-label {
+            font-size: 14px;
+            font-weight: 500;
             color: rgba(255,255,255,0.7);
-            font-size: 26px;
-            cursor: pointer;
-            z-index: 220;
-            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
           }
-          .carousel-arrow:hover {
-            background: rgba(255,96,0,0.2);
-            border-color: rgba(255,96,0,0.5);
-            color: #fff;
-          }
-          .carousel-arrow-left  { left: calc(50% - 175px); }
-          .carousel-arrow-right { right: calc(50% - 175px); }
         }
         /* 선택 버튼 — 화면 하단 고정 (다른 페이지 버튼과 동일 위치) */
         .pick-cta {
@@ -490,6 +522,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             <CardFace isPicked={picked && pickedCard === i} />
           </div>
         ))}
+
 
         {/* 빛 폭발 — 확산 링 + 스파클 (카드 위) */}
         {picked && (
@@ -551,6 +584,16 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         }} />
 
       </div>
+
+      {/* 스크롤 힌트 — PC only, 카드 선택 전 */}
+      {!picked && (
+        <div className="scroll-hint">
+          <div className="scroll-hint-mouse">
+            <div className="scroll-hint-wheel" />
+          </div>
+          <span className="scroll-hint-label">마우스 스크롤로 카드를 이동할 수 있어요</span>
+        </div>
+      )}
 
       {/* 선택 버튼 — portal로 body에 직접 띄워 캐러셀 축소(transform) 영역을 벗어남 */}
       {mounted && !picked && createPortal(

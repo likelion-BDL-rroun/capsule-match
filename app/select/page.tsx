@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { University } from '@/lib/types';
@@ -20,7 +20,6 @@ export default function SelectPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [codeError, setCodeError] = useState('');
   const [verifiedCode, setVerifiedCode] = useState('');
-  const deepLinked = useRef(false);
 
   useEffect(() => {
     loadUniversities();
@@ -40,17 +39,6 @@ export default function SelectPage() {
     setCodeError('');
     setStep('ticketIntro');
   };
-
-  // 메인 스크롤 페이지의 학교 카드에서 진입(?u=<id>) — 데이터 로드 후 1회만 자동 선택
-  useEffect(() => {
-    if (deepLinked.current || universities.length === 0) return;
-    const uid = new URLSearchParams(window.location.search).get('u');
-    if (!uid) return;
-    const uni = universities.find((u) => u.id === uid);
-    if (!uni) return;
-    deepLinked.current = true;
-    handleUniversitySelect(uni);
-  }, [universities]);
 
   const handleCodeSubmit = async (code: string) => {
     if (!selectedUniversity) return;
@@ -139,11 +127,13 @@ export default function SelectPage() {
               </span>
             </div>
           </div>
-          <h2 className="pick-title" style={{ fontWeight: 800, color: '#fff', margin: '0 0 14px',
+          <h2 className="pick-title" style={{ fontWeight: 800, color: '#fff', margin: '0 0 16px',
             letterSpacing: '0.02em', lineHeight: 1.5,
             textShadow: '0px 2px 8px rgba(214,81,0,0.3)' }}>
             두근두근, 어떤 파트너를 만날까요?<br />마음에 드는 카드를 골라보세요
           </h2>
+          {/* 서브타이틀 — PC 전용 */}
+          <p className="pick-subtitle">원하는 파트너 카드를 골라서 클릭해보세요</p>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0,
             lineHeight: 1.6, letterSpacing: '0.02em' }}>
             <span className="hint-mo">‹ › 버튼으로 넘기고, 원하는 카드를 선택하세요</span>
@@ -154,11 +144,13 @@ export default function SelectPage() {
           .hint-mo { display: none; }
           .pick-header { padding: 40px 40px 24px; }
           .pick-title { font-size: 36px; }
+          .pick-subtitle { font-size: 16px; color: rgba(255,255,255,0.55); margin: 0; letter-spacing: 0.02em; }
           @media (max-width: 768px) {
             .hint-pc { display: none; }
             .hint-mo { display: inline; }
             .pick-header { padding: 20px 16px 16px; }
             .pick-title { font-size: 28px; }
+            .pick-subtitle { display: none; }
           }
           @media (max-width: 768px) {
             .carousel-wrap {
