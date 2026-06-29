@@ -145,7 +145,7 @@ export default function HomePage() {
           width: 100%; height: auto; display: block; flex-shrink: 0;
         }
         @media (max-width: 768px) {
-          .bg-section2-img { align-items: flex-start; padding-top: 10%; }
+          .bg-section2-img { align-items: flex-start; padding-top: calc(10% + 12px); }
         }
         .card-stage {
           position: absolute; top: 50%; width: clamp(280px, 26vw, 400px); aspect-ratio: 3 / 4;
