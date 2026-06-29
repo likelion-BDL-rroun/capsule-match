@@ -217,7 +217,7 @@ export default function HomePage() {
         .nav-arrow-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.18); background: rgba(14,14,14,0.7); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.7); transition: border-color 0.2s, color 0.2s, background 0.2s; }
         .nav-arrow-btn:hover { border-color: #FF6000; color: #FF6000; background: rgba(255,96,0,0.1); }
         @media (max-width: 768px) {
-          .card-stage { width: clamp(260px, 72vw, 360px); left: 56vw !important; }
+          .card-stage { width: clamp(260px, 72vw, 360px); left: 50vw !important; }
           .intro-copy { left: 50vw !important; width: calc(100vw - 48px) !important; top: calc(68% - 36px) !important; text-align: center; }
           .nav-arrows { bottom: 20px; right: 20px; }
           .nav-arrow-btn { width: 32px; height: 32px; }
