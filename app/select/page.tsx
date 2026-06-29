@@ -130,8 +130,7 @@ export default function SelectPage() {
           <h2 className="pick-title" style={{ fontWeight: 800, color: '#fff', margin: '0 0 16px',
             letterSpacing: '0.02em', lineHeight: 1.5,
             textShadow: '0px 2px 8px rgba(214,81,0,0.3)' }}>
-            <span className="pick-title-pc">두근두근, 어떤 파트너를 만날까요?<br />마음에 드는 카드를 골라보세요</span>
-            <span className="pick-title-mo">두근두근,<br />어떤 파트너를 만날까요?<br />마음에 드는 카드를 골라보세요</span>
+어떤 파트너를 만날까요?<br />마음에 드는 카드를 골라보세요
           </h2>
           {/* 서브타이틀 — PC 전용 */}
           <p className="pick-subtitle">원하는 파트너 카드를 골라서 클릭해보세요</p>
@@ -146,15 +145,12 @@ export default function SelectPage() {
           .pick-header { padding: 40px 40px 24px; }
           .pick-title { font-size: 36px; }
           .pick-subtitle { font-size: 16px; color: rgba(255,255,255,0.55); margin: 0; letter-spacing: 0.02em; }
-          .pick-title-mo { display: none; }
           @media (max-width: 768px) {
             .hint-pc { display: none; }
             .hint-mo { display: inline; }
             .pick-header { padding: 20px 16px 16px; }
             .pick-title { font-size: 26px; }
             .pick-subtitle { display: none; }
-            .pick-title-pc { display: none; }
-            .pick-title-mo { display: inline; }
           }
           @media (max-width: 768px) {
             .carousel-wrap {
