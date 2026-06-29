@@ -197,7 +197,7 @@ export default function HomePage() {
             >
               <picture>
                 <source media="(max-width: 768px)" srcSet="/mo-background.png" />
-                <img src="/main.1_background.png" alt="" style={{ width: '100%', height: 'auto', display: 'block', flexShrink: 0 }} />
+                <img src="/main.1_background_ver2.png" alt="" style={{ width: '100%', height: 'auto', display: 'block', flexShrink: 0 }} />
               </picture>
             </div>
             <div
