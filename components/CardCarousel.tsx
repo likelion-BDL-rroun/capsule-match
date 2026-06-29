@@ -589,7 +589,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           <div className="scroll-hint-mouse">
             <div className="scroll-hint-wheel" />
           </div>
-          <span className="scroll-hint-label">SCROLL</span>
+          <span className="scroll-hint-label">마우스 스크롤로 카드를 이동할 수 있어요</span>
         </div>
       )}
 
