@@ -167,7 +167,7 @@ export default function HomePage() {
         .nav-arrow-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.18); background: rgba(14,14,14,0.7); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.7); transition: border-color 0.2s, color 0.2s, background 0.2s; }
         .nav-arrow-btn:hover { border-color: #FF6000; color: #FF6000; background: rgba(255,96,0,0.1); }
         @media (max-width: 768px) {
-          .card-stage { width: clamp(260px, 72vw, 360px); left: 50vw !important; }
+          .card-stage { width: clamp(260px, 72vw, 360px); left: 54vw !important; }
           .nav-arrows { bottom: 20px; right: 20px; }
           .nav-arrow-btn { width: 32px; height: 32px; }
           .bg-hero-img img { margin-top: -20px; }
@@ -205,7 +205,7 @@ export default function HomePage() {
               className="bg-section2-img"
               style={{
                 opacity: orangeIn,
-                transform: `translateY(${lerp(80, 0, orangeIn)}px)`,
+                transform: `translateY(${lerp(80, -36, orangeIn)}px)`,
               }}
             >
               <img src="/main.2_background_ver2.png" alt="" style={isMobile ? { marginTop: '-20%' } : undefined} />
@@ -221,7 +221,7 @@ export default function HomePage() {
                 /* ── 모바일 전용: 뷰포트 기준 정중앙 ── */
                 left: `${cardLeft}vw`,
                 top: `${cardTop}%`,
-                transform: `translate(-50%, -50%) scale(${cardScale})`,
+                transform: `translate(-50%, calc(-50% - 36px)) scale(${cardScale})`,
               } : {
                 /* ── 데스크탑 전용 ── */
                 left: `${cardLeft}%`,
@@ -240,7 +240,7 @@ export default function HomePage() {
                 zIndex: 4,
                 opacity: introIn,
                 position: 'absolute',
-                top: '68%',
+                top: 'calc(68% - 36px)',
                 left: '24px',
                 right: '24px',
                 textAlign: 'center',
