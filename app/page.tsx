@@ -266,6 +266,7 @@ export default function HomePage() {
           {/* 스크롤 유도 */}
           <div className="scroll-ind" style={{ zIndex: 5, opacity: scrollIcon, pointerEvents: 'none' }}>
             <div className="mouse"><div className="wheel" /></div>
+            <span style={{ fontSize: 11, fontWeight: 500, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em' }}>SCROLL</span>
           </div>
         </div>
       </div>
