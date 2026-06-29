@@ -24,13 +24,13 @@ export default function TestResultPage() {
       <CornerGlow />
       <style>{`
         @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
-        .result-inner { width: 100%; margin: 0 auto; display: flex; flex-direction: column; padding: 20px 16px 80px; position: relative; z-index: 1; }
+        .result-inner { width: 100%; margin: 0 auto; display: flex; flex-direction: column; padding: 64px 16px 80px; position: relative; z-index: 1; }
         .result-pill-row { display: flex; justify-content: center; margin-bottom: 20px; }
         .result-pill { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,96,0,0.35); background: linear-gradient(180deg, rgba(255,96,0,0) 30%, rgba(255,96,0,0.12) 100%); }
         .result-title { font-size: 28px; font-weight: 800; color: #fff; text-align: center; margin: 0 0 24px; letter-spacing: 0.02em; line-height: 1.3; text-shadow: 0px 2px 8px rgba(214,81,0,0.3); }
         .result-buttons { display: flex; gap: 10px; width: 100%; max-width: 320px; margin: 24px auto 0; }
         @media (min-width: 769px) {
-          .result-inner { max-width: 1232px; padding: 28px 40px 60px; }
+          .result-inner { max-width: 1232px; padding: 72px 40px 60px; }
           .result-title { font-size: 36px; margin-bottom: 32px; }
           .result-buttons { max-width: 400px; }
         }
