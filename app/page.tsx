@@ -102,7 +102,7 @@ export default function HomePage() {
 
         {/* 카드 3장 — PC */}
         <img
-          src="/카드3장-ver2.png"
+          src="/카드3장-ver3.png"
           alt="Animal League 카드"
           className="hero-cards hero-cards-pc"
           style={{
@@ -119,7 +119,7 @@ export default function HomePage() {
         />
         {/* 카드 3장 — 모바일 */}
         <img
-          src="/모바일 메인페이지.png"
+          src="/모바일 메인페이지_ver2.png"
           alt="Animal League 카드"
           className="hero-cards hero-cards-mobile"
           style={{
