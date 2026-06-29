@@ -207,7 +207,7 @@ export default function HomePage() {
                 transform: `translateY(${lerp(80, 0, orangeIn)}px)`,
               }}
             >
-              <img src="/main.2_background.png" alt="" />
+              <img src="/main.2_background_ver2.png" alt="" />
             </div>
           </div>
 
