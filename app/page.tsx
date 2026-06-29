@@ -26,6 +26,10 @@ const HERO_PARTICLES = [
 const MOBILE_CARD_LEFT_SECTION1 = 300;  // 처음 보이는 화면(섹션1) 카드 위치
 const MOBILE_CARD_LEFT_SECTION2 = 55;  // 스크롤 후(섹션2) 카드 위치
 
+// ─── PC(데스크탑) 카드 좌우 위치(%) — 숫자만 바꾸면 됨 ───
+const PC_CARD_LEFT_SECTION1 = 50;  // 처음 보이는 화면(섹션1) 카드 위치 (50 = 정중앙)
+const PC_CARD_LEFT_SECTION2 = 70;  // 스크롤 후(섹션2) 카드 위치 (숫자 ↑ = 오른쪽)
+
 const clamp = (v: number, a: number, b: number) => Math.min(Math.max(v, a), b);
 const range = (p: number, a: number, b: number) => clamp((p - a) / (b - a), 0, 1);
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -162,7 +166,7 @@ export default function HomePage() {
       const introIn   = ease(range(p, 0.52, 0.74));
       const cardScale      = lerp(1, 0.86, focus);
       const cardTop        = lerp(50, 45, focus);
-      const cardLeft       = lerp(20, 70, focus);        // 데스크탑용
+      const cardLeft       = lerp(PC_CARD_LEFT_SECTION1, PC_CARD_LEFT_SECTION2, focus);  // 데스크탑용
       const mobileCardLeft = lerp(MOBILE_CARD_LEFT_SECTION1, MOBILE_CARD_LEFT_SECTION2, focus);
 
       // Three.js ref 업데이트 (useFrame이 다음 프레임에 읽음)
@@ -312,7 +316,7 @@ export default function HomePage() {
               ref={cardStageRef}
               className="card-stage"
               style={{
-                left: isMobile ? `${MOBILE_CARD_LEFT_SECTION1}vw` : '50%',
+                left: isMobile ? `${MOBILE_CARD_LEFT_SECTION1}vw` : `${PC_CARD_LEFT_SECTION1}%`,
                 top: '50%',
                 transform: isMobile ? 'translate(-50%, calc(-50% - 36px)) scale(1)' : 'translate(-50%, -50%) scale(1)',
               }}
