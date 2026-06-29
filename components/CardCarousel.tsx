@@ -112,9 +112,14 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
-  // 진입 시 +1/3 바퀴 위치에서 기본(0)으로 회전해 들어오는 인트로
+  // 진입 인트로: 모바일은 CSS 페이드인, PC는 +1/3 바퀴 → 0 회전
   useEffect(() => {
-    const startDeg = STEP * Math.round(N / 3);  // +1/3 바퀴에서 출발
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      introActive.current = false;
+      isAnimating.current = false;
+      return;
+    }
+    const startDeg = STEP * Math.round(N / 3);
     rotRef.current = startDeg;
     setRotation(startDeg);
     introActive.current = true;
@@ -125,7 +130,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     const tick = (now: number) => {
       if (!introActive.current) return;
       const p = Math.min((now - start) / duration, 1);
-      rotRef.current = startDeg * (1 - ease(p));  // startDeg → 0
+      rotRef.current = startDeg * (1 - ease(p));
       setRotation(rotRef.current);
       if (p < 1) {
         rafRef.current = requestAnimationFrame(tick);
@@ -341,6 +346,10 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         .carousel-arrow { display: none; }
         .carousel-hint-img { display: none; }
         .carousel-container { overflow: hidden; }
+        @keyframes carousel-mo-fadein { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 768px) {
+          .carousel-container { animation: carousel-mo-fadein 0.8s ease both; }
+        }
         /* 더블클릭 선택 힌트 — 마우스(PC)에서만 노출 */
         .dblclick-hint { display: none; }
         @media (pointer: fine) {
