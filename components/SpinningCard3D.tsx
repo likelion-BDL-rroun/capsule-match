@@ -46,7 +46,7 @@ function Card({ tilt = 0.12 }: { tilt?: number }) {
   const ref = useRef<THREE.Group>(null);
   const targetTilt = useRef(tilt);
   useEffect(() => { targetTilt.current = tilt; }, [tilt]);
-  const [front, back] = useTexture(['/card-back-Q-ver2.png', '/card-back-0624.png']);
+  const [front, back] = useTexture(['/card-back-Q.png', '/card-back-0624.png']);
 
   const { bodyGeo, faceGeo, bodyMat, frontMat, backMat } = useMemo(() => {
     const shape = roundedRectShape(W, H, R);
@@ -81,10 +81,12 @@ function Card({ tilt = 0.12 }: { tilt?: number }) {
   const eps = DEPTH / 2 + 0.002;
 
   return (
-    <group ref={ref} rotation={[0.12, 0.4, 0]}>
-      <mesh geometry={bodyGeo} material={bodyMat} />
-      <mesh geometry={faceGeo} material={frontMat} position={[0, 0, eps]} />
-      <mesh geometry={faceGeo} material={backMat} position={[0, 0, -eps]} rotation={[0, Math.PI, 0]} />
+    <group rotation={[0, 0, -0.35]}>
+      <group ref={ref} rotation={[0.12, 0.4, 0]}>
+        <mesh geometry={bodyGeo} material={bodyMat} />
+        <mesh geometry={faceGeo} material={frontMat} position={[0, 0, eps]} />
+        <mesh geometry={faceGeo} material={backMat} position={[0, 0, -eps]} rotation={[0, Math.PI, 0]} />
+      </group>
     </group>
   );
 }
