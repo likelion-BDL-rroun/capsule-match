@@ -25,6 +25,10 @@ export default function SelectPage() {
     loadUniversities();
   }, []);
 
+  useEffect(() => {
+    if (step === 'pickCard') window.scrollTo(0, 0);
+  }, [step]);
+
   const loadUniversities = async () => {
     const { data } = await supabase
       .from('universities')
@@ -55,7 +59,6 @@ export default function SelectPage() {
     if (!data.success) { setCodeError(data.error); return; }
     setVerifiedCode(code);
     setStep('pickCard');
-    window.scrollTo(0, 0);
   };
 
   const handleCardPick = async () => {
