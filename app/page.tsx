@@ -108,9 +108,10 @@ export default function HomePage() {
       const grayOut   = 1 - ease(range(p, 0.08, 0.48));
       const orangeIn  = ease(range(p, 0.20, 0.44));
       const introIn   = ease(range(p, 0.52, 0.74));
-      const cardScale = lerp(1, 0.86, focus);
-      const cardTop   = lerp(50, 45, focus);
-      const cardLeft  = lerp(20, 70, focus); // 데스크탑용 (모바일은 CSS !important)
+      const cardScale      = lerp(1, 0.86, focus);
+      const cardTop        = lerp(50, 45, focus);
+      const cardLeft       = lerp(20, 70, focus);        // 데스크탑용
+      const mobileCardLeft = lerp(50, 56, focus);        // 모바일: 섹션1=50vw, 섹션2=56vw (각각 조절 가능)
 
       // Three.js ref 업데이트 (useFrame이 다음 프레임에 읽음)
       tiltRef.current  = lerp(0.12, 0, focus);
@@ -120,6 +121,7 @@ export default function HomePage() {
       if (cardStageRef.current) {
         const s = cardStageRef.current.style;
         if (mobile) {
+          s.left = `${mobileCardLeft}vw`;
           s.top = `${cardTop}%`;
           s.transform = `translate(-50%, calc(-50% - 36px)) scale(${cardScale})`;
         } else {
@@ -217,7 +219,7 @@ export default function HomePage() {
         .nav-arrow-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.18); background: rgba(14,14,14,0.7); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.7); transition: border-color 0.2s, color 0.2s, background 0.2s; }
         .nav-arrow-btn:hover { border-color: #FF6000; color: #FF6000; background: rgba(255,96,0,0.1); }
         @media (max-width: 768px) {
-          .card-stage { width: clamp(260px, 72vw, 360px); left: 50vw !important; }
+          .card-stage { width: clamp(260px, 72vw, 360px); }
           .intro-copy { left: 50vw !important; width: calc(100vw - 48px) !important; top: calc(68% - 36px) !important; text-align: center; }
           .nav-arrows { bottom: 20px; right: 20px; }
           .nav-arrow-btn { width: 32px; height: 32px; }
@@ -258,9 +260,9 @@ export default function HomePage() {
               ref={cardStageRef}
               className="card-stage"
               style={{
-                left: isMobile ? '56vw' : '50%',
+                left: isMobile ? '50vw' : '50%',
                 top: '50%',
-                transform: 'translate(-50%, -50%) scale(1)',
+                transform: isMobile ? 'translate(-50%, calc(-50% - 36px)) scale(1)' : 'translate(-50%, -50%) scale(1)',
               }}
             >
               <SpinningCard3D tiltRef={tiltRef} zTiltRef={zTiltRef} />
