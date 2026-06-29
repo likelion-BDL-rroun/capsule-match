@@ -101,7 +101,7 @@ export default function TestMainPage() {
         </div>
 
         <img
-          src="/카드3장-ver2.png"
+          src="/카드3장-ver3.png"
           alt="Animal League 카드"
           className="hero-cards hero-cards-pc"
           style={{
@@ -117,7 +117,7 @@ export default function TestMainPage() {
           }}
         />
         <img
-          src="/모바일 메인페이지.png"
+          src="/모바일 메인페이지_ver3.png"
           alt="Animal League 카드"
           className="hero-cards hero-cards-mobile"
           style={{
