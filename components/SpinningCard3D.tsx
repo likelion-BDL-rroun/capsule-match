@@ -46,7 +46,7 @@ function Card({ tilt = 0.12 }: { tilt?: number }) {
   const ref = useRef<THREE.Group>(null);
   const targetTilt = useRef(tilt);
   useEffect(() => { targetTilt.current = tilt; }, [tilt]);
-  const [front, back] = useTexture(['/char_00.png', '/card-back-0624.png']);
+  const [front, back] = useTexture(['/card-back-Q.png', '/card-back-0624.png']);
 
   const { bodyGeo, faceGeo, bodyMat, frontMat, backMat } = useMemo(() => {
     const shape = roundedRectShape(W, H, R);
