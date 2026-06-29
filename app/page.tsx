@@ -111,8 +111,8 @@ export default function HomePage() {
   const introIn = ease(range(p, 0.52, 0.74));
 
   const cardScale = lerp(1, 0.86, focus);
-  const cardLeft = isMobile ? 50 : lerp(50, 68, focus);   // 모바일: 중앙 고정
-  const cardTop  = isMobile ? lerp(50, 38, focus) : 50;   // 모바일: 위로 이동
+  const cardLeft = isMobile ? 50 : lerp(50, 55, focus);   // 모바일: 중앙 고정
+  const cardTop  = isMobile ? lerp(50, 45, focus) : 50;   // 모바일: 위로 이동
   const cardTilt = lerp(0.12, 0, focus);
 
   return (
@@ -218,8 +218,8 @@ export default function HomePage() {
             <div
               className="card-stage"
               style={isMobile ? {
-                /* ── 모바일 전용 ── */
-                left: `${cardLeft}%`,
+                /* ── 모바일 전용: 뷰포트 기준 정중앙 ── */
+                left: '50vw',
                 top: `${cardTop}%`,
                 transform: `translate(-50%, -50%) scale(${cardScale})`,
               } : {
