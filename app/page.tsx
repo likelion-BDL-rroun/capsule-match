@@ -383,7 +383,7 @@ export default function HomePage() {
               <div style={{ width: 32, height: 32, border: '4px solid rgba(255,96,0,0.2)', borderTop: '4px solid #FF6000', borderRadius: '50%' }} className="animate-spin" />
             </div>
           ) : (
-            <UniversitySelect universities={universities} onSelect={handleSelect} />
+            <UniversitySelect universities={universities} onSelect={handleSelect} isMobile={isMobile} />
           )}
         </div>
       </section>

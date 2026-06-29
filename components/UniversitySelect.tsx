@@ -7,9 +7,10 @@ import universityLogos from '@/lib/universityLogos';
 type Props = {
   universities: University[];
   onSelect: (university: University) => void;
+  isMobile?: boolean;
 };
 
-export default function UniversitySelect({ universities, onSelect }: Props) {
+export default function UniversitySelect({ universities, onSelect, isMobile = false }: Props) {
   return (
     <>
       <style>{`
@@ -49,6 +50,7 @@ export default function UniversitySelect({ universities, onSelect }: Props) {
             <div key={uni.id}>
 
               {/* ── PC 카드 ── */}
+              {!isMobile && (
               <button className="univ-card-pc" onClick={() => onSelect(uni)}>
                 <div
                   className="univ-box"
@@ -77,8 +79,10 @@ export default function UniversitySelect({ universities, onSelect }: Props) {
                   </div>
                 </div>
               </button>
+              )}
 
               {/* ── 모바일 리스트 ── */}
+              {isMobile && (
               <button className="univ-card-mobile" onClick={() => onSelect(uni)}>
                 <div
                   className="univ-box-mobile"
@@ -108,6 +112,7 @@ export default function UniversitySelect({ universities, onSelect }: Props) {
                   </div>
                 </div>
               </button>
+              )}
 
             </div>
           );
