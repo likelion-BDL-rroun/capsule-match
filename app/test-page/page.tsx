@@ -64,6 +64,12 @@ export default function TestHomePage() {
   // isMobile state는 초기 JSX 렌더링용으로만 사용
   const [isMobile, setIsMobile] = useState(false);
 
+  // 새로고침 시 브라우저가 직전 스크롤 위치를 복원하는 것 방지 — 항상 맨 위에서 시작
+  useEffect(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     supabase
       .from('universities')
