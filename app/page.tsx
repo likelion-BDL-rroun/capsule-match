@@ -144,6 +144,9 @@ export default function HomePage() {
         .bg-section2-img img {
           width: 100%; height: auto; display: block; flex-shrink: 0;
         }
+        @media (max-width: 768px) {
+          .bg-section2-img { align-items: flex-start; padding-top: 10%; }
+        }
         .card-stage {
           position: absolute; top: 50%; width: clamp(280px, 26vw, 400px); aspect-ratio: 2 / 3;
           will-change: transform; overflow: visible;
@@ -216,8 +219,12 @@ export default function HomePage() {
             {/* 3D 회전 카드 */}
             <div
               className="card-stage"
-              style={{
-                left: isMobile ? '50vw' : `${cardLeft}%`,
+              style={isMobile ? {
+                left: 0, right: 0, margin: '0 auto',
+                top: `${cardTop}%`,
+                transform: `translateY(-50%) scale(${cardScale})`,
+              } : {
+                left: `${cardLeft}%`,
                 top: `${cardTop}%`,
                 transform: `translate(-50%, -50%) scale(${cardScale})`,
               }}
