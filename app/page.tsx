@@ -226,7 +226,7 @@ export default function HomePage() {
         @keyframes hero-float  { 0%,100% { transform: translateY(0) translateX(0); opacity: var(--o); } 50% { transform: translateY(-26px) translateX(10px); opacity: calc(var(--o) * 1.6); } }
         @keyframes hero-glow-a { 0%,100% { transform: translate(0,0) scale(1); opacity: 0.85; } 50% { transform: translate(-40px,30px) scale(1.15); opacity: 1; } }
         @keyframes hero-glow-b { 0%,100% { transform: translate(0,0) scale(1); opacity: 0.6; }  50% { transform: translate(50px,-20px) scale(1.2); opacity: 0.9; } }
-        .scene-sticky { position: sticky; top: 0; height: 100dvh; overflow: hidden; }
+        .scene-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
         .stage-frame { position: relative; width: 100%; max-width: 1232px; height: 100%; margin: 0 auto; padding: 0 24px; }
         .bg-text-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
         .bg-hero-img { position: absolute; inset: 0; overflow: hidden; display: flex; align-items: center; will-change: opacity, transform; transform: translateZ(0); }
