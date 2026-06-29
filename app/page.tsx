@@ -91,6 +91,15 @@ export default function HomePage() {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
+  // 첫 스크롤 끊김 방지 — 2번 섹션 배경을 미리 디코딩해 GPU 레이어로 워밍업
+  useEffect(() => {
+    const img = bgSection2ImgRef.current;
+    if (!img) return;
+    const warm = () => { img.decode?.().catch(() => {}); };
+    if (img.complete) warm();
+    else img.addEventListener('load', warm, { once: true });
+  }, []);
+
   // 스크롤 → DOM 직접 업데이트 (React 리렌더 없음)
   useEffect(() => {
     let raf = 0;
@@ -111,7 +120,7 @@ export default function HomePage() {
       const cardScale      = lerp(1, 0.86, focus);
       const cardTop        = lerp(50, 45, focus);
       const cardLeft       = lerp(20, 70, focus);        // 데스크탑용
-      const mobileCardLeft = lerp(50, 56, focus);        // 모바일: 섹션1=50vw, 섹션2=56vw (각각 조절 가능)
+      const mobileCardLeft = lerp(50, 54, focus);        // 모바일: 섹션1=50vw, 섹션2=54vw (각각 조절 가능)
 
       // Three.js ref 업데이트 (useFrame이 다음 프레임에 읽음)
       tiltRef.current  = lerp(0.12, 0, focus);
@@ -196,9 +205,9 @@ export default function HomePage() {
         .scene-sticky { position: sticky; top: 0; height: 100dvh; overflow: hidden; }
         .stage-frame { position: relative; width: 100%; max-width: 1232px; height: 100%; margin: 0 auto; padding: 0 24px; }
         .bg-text-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
-        .bg-hero-img { position: absolute; inset: 0; overflow: hidden; display: flex; align-items: center; }
+        .bg-hero-img { position: absolute; inset: 0; overflow: hidden; display: flex; align-items: center; will-change: opacity, transform; transform: translateZ(0); }
         .bg-hero-img img { width: 100%; height: auto; display: block; flex-shrink: 0; }
-        .bg-section2-img { position: absolute; inset: 0; overflow: hidden; display: flex; align-items: center; }
+        .bg-section2-img { position: absolute; inset: 0; overflow: hidden; display: flex; align-items: center; will-change: opacity, transform; transform: translateZ(0); }
         .bg-section2-img img { width: 100%; height: auto; display: block; flex-shrink: 0; }
         .card-stage { position: absolute; top: 50%; width: clamp(280px, 26vw, 400px); aspect-ratio: 3 / 4; will-change: transform; overflow: visible; }
         .intro-copy { position: absolute; top: 50%; max-width: 380px; will-change: transform, opacity; }
