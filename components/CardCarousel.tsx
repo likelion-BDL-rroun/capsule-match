@@ -435,7 +435,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             bottom: 140px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 190;
+            z-index: 210;
             pointer-events: none;
             animation: scroll-hint-fade 2.4s ease-in-out infinite;
           }
@@ -593,28 +593,9 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         </div>
       )}
 
-      {/* 선택 버튼 — portal로 body에 직접 띄워 캐러셀 축소(transform) 영역을 벗어남 */}
+      {/* 하단 그라디언트 페이드 */}
       {mounted && !picked && createPortal(
-        <div className="pick-cta">
-          <button
-            onClick={requestSelect}
-            disabled={isLoading}
-            style={{
-              width: '100%',
-              background: '#FF6000', color: '#fff',
-              fontWeight: 800, fontSize: 16,
-              padding: '17px 10px', borderRadius: 14,
-              border: 'none', cursor: isLoading ? 'wait' : 'pointer',
-              opacity: isLoading ? 0.5 : 1,
-              letterSpacing: '0.03em',
-              textShadow: '0px 2px 4px rgba(214,81,0,0.25)',
-              boxShadow: '0 6px 18px rgba(255,96,0,0.18)',
-              transition: 'opacity 0.2s',
-            }}
-          >
-            이 카드로 정하기
-          </button>
-        </div>,
+        <div className="pick-cta" style={{ pointerEvents: 'none' }} />,
         document.body
       )}
 
