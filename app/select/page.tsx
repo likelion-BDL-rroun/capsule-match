@@ -55,6 +55,7 @@ export default function SelectPage() {
     if (!data.success) { setCodeError(data.error); return; }
     setVerifiedCode(code);
     setStep('pickCard');
+    window.scrollTo(0, 0);
   };
 
   const handleCardPick = async () => {

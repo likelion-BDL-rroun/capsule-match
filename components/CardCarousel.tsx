@@ -112,13 +112,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
-  // 진입 시 부드럽게 반 바퀴 돌며 "돌릴 수 있다"는 힌트 (모바일은 scale 축소와 충돌해 스킵)
+  // 진입 시 부드럽게 반 바퀴 돌며 "돌릴 수 있다"는 힌트
   useEffect(() => {
-    if (window.matchMedia('(max-width: 768px)').matches) {
-      introActive.current = false;
-      isAnimating.current = false;
-      return;
-    }
     introActive.current = true;
     isAnimating.current = true;
     const totalDeg = -STEP * Math.round(N / 3);  // ≈ 1/3 바퀴, 반대 방향
@@ -343,13 +338,9 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
           70%  { opacity: 1; }
           100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.1); }
         }
-        @keyframes carousel-fadein { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         .carousel-arrow { display: none; }
         .carousel-hint-img { display: none; }
         .carousel-container { overflow: hidden; }
-        @media (max-width: 768px) {
-          .carousel-container { animation: carousel-fadein 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
-        }
         /* 더블클릭 선택 힌트 — 마우스(PC)에서만 노출 */
         .dblclick-hint { display: none; }
         @media (pointer: fine) {
