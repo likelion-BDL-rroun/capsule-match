@@ -111,7 +111,7 @@ export default function HomePage() {
   const introIn = ease(range(p, 0.52, 0.74));
 
   const cardScale = lerp(1, 0.86, focus);
-  const cardLeft = isMobile ? 50 : lerp(20, 68, focus);   // 모바일: 중앙 고정
+  const cardLeft = isMobile ? 50 : lerp(50, 68, focus);   // 모바일: 중앙 고정
   const cardTop  = isMobile ? lerp(50, 38, focus) : 50;   // 모바일: 위로 이동
   const cardTilt = lerp(0.12, 0, focus);
 
@@ -208,7 +208,7 @@ export default function HomePage() {
                 transform: `translateY(${lerp(80, 0, orangeIn)}px)`,
               }}
             >
-              <img src="/main.2_background_ver2.png" alt="" style={isMobile ? { marginTop: '10%' } : undefined} />
+              <img src="/main.2_background_ver2.png" alt="" style={isMobile ? { marginTop: '-20%' } : undefined} />
             </div>
           </div>
 
