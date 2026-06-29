@@ -118,7 +118,7 @@ export default function HomePage() {
   return (
     <main style={{ background: 'var(--bg)' }}>
       <style>{`
-        @keyframes sd-wheel { 0%,100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(7px); opacity: 0.3; } }
+        @keyframes sd-wheel { 0% { transform: translateY(0); opacity: 0; } 12% { transform: translateY(0); opacity: 1; } 58% { transform: translateY(7px); opacity: 1; } 72% { transform: translateY(7px); opacity: 0; } 73% { transform: translateY(0); opacity: 0; } 100% { transform: translateY(0); opacity: 0; } }
         @keyframes sd-fade  { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
         @keyframes hero-float  { 0%,100% { transform: translateY(0) translateX(0); opacity: var(--o); } 50% { transform: translateY(-26px) translateX(10px); opacity: calc(var(--o) * 1.6); } }
         @keyframes hero-glow-a { 0%,100% { transform: translate(0,0) scale(1); opacity: 0.85; } 50% { transform: translate(-40px,30px) scale(1.15); opacity: 1; } }
