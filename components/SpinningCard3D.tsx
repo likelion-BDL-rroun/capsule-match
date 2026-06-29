@@ -2,13 +2,13 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useTexture, Environment, Lightformer } from '@react-three/drei';
-import { useRef, useMemo, Suspense, useEffect } from 'react';
+import { useRef, useMemo, Suspense, RefObject } from 'react';
 import * as THREE from 'three';
 
-const W = 2;       // 카드 가로
-const H = 3;       // 카드 세로
-const R = 0.14;    // 모서리 곡률
-const DEPTH = 0.02; // 두께(얇게)
+const W = 2;
+const H = 3;
+const R = 0.14;
+const DEPTH = 0.02;
 
 function roundedRectShape(w: number, h: number, r: number) {
   const s = new THREE.Shape();
@@ -26,7 +26,6 @@ function roundedRectShape(w: number, h: number, r: number) {
   return s;
 }
 
-// ShapeGeometry의 UV를 0..1로 정규화 (텍스처가 카드에 꽉 차게)
 function faceGeometry(shape: THREE.Shape) {
   const geo = new THREE.ShapeGeometry(shape, 24);
   geo.computeBoundingBox();
@@ -42,28 +41,21 @@ function faceGeometry(shape: THREE.Shape) {
   return geo;
 }
 
-function Card({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number }) {
-  const outerRef = useRef<THREE.Group>(null); // Z 기울기 (축 포함)
-  const ref = useRef<THREE.Group>(null);       // Y 스핀 + X 틸트
-  const targetTilt = useRef(tilt);
-  const targetZTilt = useRef(zTilt);
-  useEffect(() => { targetTilt.current = tilt; }, [tilt]);
-  useEffect(() => { targetZTilt.current = zTilt; }, [zTilt]);
+// Three.js가 useFrame에서 직접 ref를 읽음 — React re-render 없이 업데이트
+function Card({ tiltRef, zTiltRef }: { tiltRef: RefObject<number>; zTiltRef: RefObject<number> }) {
+  const outerRef = useRef<THREE.Group>(null);
+  const ref = useRef<THREE.Group>(null);
   const [front, back] = useTexture(['/card-back-Q.png', '/card-back-0624.png']);
 
   const { bodyGeo, faceGeo, bodyMat, frontMat, backMat } = useMemo(() => {
     const shape = roundedRectShape(W, H, R);
-
     const body = new THREE.ExtrudeGeometry(shape, { depth: DEPTH, bevelEnabled: false });
     body.translate(0, 0, -DEPTH / 2);
-
     const face = faceGeometry(shape);
-
     front.colorSpace = THREE.SRGBColorSpace;
     back.colorSpace = THREE.SRGBColorSpace;
     front.anisotropy = 8;
     back.anisotropy = 8;
-
     return {
       bodyGeo: body,
       faceGeo: face,
@@ -76,11 +68,11 @@ function Card({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number })
   useFrame((_, delta) => {
     if (!ref.current) return;
     ref.current.rotation.y += delta * 0.75;
-    const cur = ref.current.rotation.x;
-    ref.current.rotation.x = cur + (targetTilt.current - cur) * Math.min(1, delta * 6);
+    const curX = ref.current.rotation.x;
+    ref.current.rotation.x = curX + ((tiltRef.current ?? 0.12) - curX) * Math.min(1, delta * 6);
     if (outerRef.current) {
       const curZ = outerRef.current.rotation.z;
-      outerRef.current.rotation.z = curZ + (targetZTilt.current - curZ) * Math.min(1, delta * 6);
+      outerRef.current.rotation.z = curZ + ((zTiltRef.current ?? -0.35) - curZ) * Math.min(1, delta * 6);
     }
   });
 
@@ -97,7 +89,7 @@ function Card({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number })
   );
 }
 
-export default function SpinningCard3D({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number }) {
+export default function SpinningCard3D({ tiltRef, zTiltRef }: { tiltRef: RefObject<number>; zTiltRef: RefObject<number> }) {
   return (
     <Canvas
       camera={{ position: [0, 0, 7.4], fov: 30 }}
@@ -108,9 +100,8 @@ export default function SpinningCard3D({ tilt = 0.12, zTilt = -0.35 }: { tilt?: 
       <ambientLight intensity={0.45} />
       <directionalLight position={[3, 5, 4]} intensity={1.1} />
       <directionalLight position={[-4, -1, 2]} intensity={0.5} color="#ffd9b0" />
-
       <Suspense fallback={null}>
-        <Card tilt={tilt} zTilt={zTilt} />
+        <Card tiltRef={tiltRef} zTiltRef={zTiltRef} />
         <Environment resolution={64} frames={1}>
           <Lightformer form="rect" intensity={3} position={[0, 2.5, 4]} scale={[8, 4, 1]} />
           <Lightformer form="rect" intensity={2} position={[-5, 0, 2]} scale={[3, 8, 1]} color="#ffd9b0" />
