@@ -236,15 +236,15 @@ export default function HomePage() {
             <div
               className="intro-copy"
               style={isMobile ? {
-                // 모바일: 카드 아래 중앙 정렬
+                // 모바일: 뷰포트 정중앙 기준
                 zIndex: 4,
                 opacity: introIn,
                 position: 'absolute',
                 top: 'calc(68% - 36px)',
-                left: '24px',
-                right: '24px',
+                left: '50vw',
+                width: 'calc(100vw - 48px)',
                 textAlign: 'center',
-                transform: `translateY(${lerp(20, 0, introIn)}px)`,
+                transform: `translate(-50%, ${lerp(20, 0, introIn)}px)`,
                 pointerEvents: introIn > 0.5 ? 'auto' : 'none',
               } : {
                 // 데스크탑: 카드 왼쪽에 붙임
