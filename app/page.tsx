@@ -148,7 +148,7 @@ export default function HomePage() {
           .bg-section2-img { align-items: flex-start; padding-top: 10%; }
         }
         .card-stage {
-          position: absolute; top: 50%; width: clamp(280px, 26vw, 400px); aspect-ratio: 2 / 3;
+          position: absolute; top: 50%; width: clamp(280px, 26vw, 400px); aspect-ratio: 3 / 4;
           will-change: transform; overflow: visible;
         }
         .intro-copy { position: absolute; top: 50%; max-width: 380px; }
@@ -172,6 +172,7 @@ export default function HomePage() {
         @media (max-width: 768px) {
           .card-stage { width: clamp(260px, 72vw, 360px); }
           .nav-arrows { bottom: 20px; right: 20px; }
+          .nav-arrow-btn { width: 32px; height: 32px; }
           .bg-hero-img img { margin-top: -20px; }
         }
       `}</style>
@@ -229,7 +230,7 @@ export default function HomePage() {
                 transform: `translate(-50%, -50%) scale(${cardScale})`,
               }}
             >
-              <SpinningCard3D tilt={cardTilt} zTilt={isMobile ? 0 : lerp(-0.35, 0, focus)} />
+              <SpinningCard3D tilt={cardTilt} zTilt={lerp(-0.35, 0, focus)} />
             </div>
 
             {/* 안내 텍스트 */}
