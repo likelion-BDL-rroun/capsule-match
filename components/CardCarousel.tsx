@@ -561,8 +561,8 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
         {/* 모바일 좌우 화살표 */}
         {!picked && (
           <>
-            <button className="carousel-arrow carousel-arrow-left" onClick={() => moveCard(1)}>‹</button>
-            <button className="carousel-arrow carousel-arrow-right" onClick={() => moveCard(-1)}>›</button>
+            <button className="carousel-arrow carousel-arrow-left" onClick={() => moveCard(1)}><span style={{ position: 'relative', top: -2 }}>‹</span></button>
+            <button className="carousel-arrow carousel-arrow-right" onClick={() => moveCard(-1)}><span style={{ position: 'relative', top: -2 }}>›</span></button>
           </>
         )}
 
