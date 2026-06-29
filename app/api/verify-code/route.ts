@@ -33,6 +33,11 @@ export async function POST(req: NextRequest) {
     // 코드 해시 비교
     const inputHash = hashOpenCode(code);
     if (inputHash !== university.open_code_hash) {
+      const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? '';
+      const { createHash } = await import('crypto');
+      const ipHash = createHash('sha256').update(ip).digest('hex');
+      // fire-and-forget — 로그 실패가 사용자 응답에 영향 없도록
+      supabaseAdmin.from('code_failure_logs').insert({ university_id: universityId, ip_hash: ipHash });
       return NextResponse.json({ success: false, error: '선택한 학교와 티켓 코드가 일치하지 않아요.' }, { status: 401 });
     }
 
