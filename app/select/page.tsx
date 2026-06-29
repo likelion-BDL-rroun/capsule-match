@@ -149,7 +149,7 @@ export default function SelectPage() {
             .hint-pc { display: none; }
             .hint-mo { display: inline; }
             .pick-header { padding: 20px 16px 16px; }
-            .pick-title { font-size: 28px; }
+            .pick-title { font-size: 26px; }
             .pick-subtitle { display: none; }
           }
           @media (max-width: 768px) {
