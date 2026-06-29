@@ -39,7 +39,7 @@ export default function SelectPage() {
     if (uni) {
       handleUniversitySelect(uni);
     } else {
-      router.replace('/#school-list');
+      router.replace('/');
     }
   }, [universities]);
 
@@ -87,7 +87,7 @@ export default function SelectPage() {
     setIsLoading(false);
     if (data.alreadyAssigned || data.success) { router.push(`/result/${selectedUniversity.id}`); return; }
     alert(data.error ?? '오류가 발생했어요. 다시 시도해주세요.');
-    router.push('/#school-list');
+    router.push('/');
   };
 
   // 티켓 확인 인트로
@@ -97,7 +97,7 @@ export default function SelectPage() {
         <TicketIntro
           universityName={selectedUniversity.name}
           onContinue={() => setStep('enterCode')}
-          onBack={() => router.push('/#school-list')}
+          onBack={() => router.push('/')}
         />
       </main>
     );

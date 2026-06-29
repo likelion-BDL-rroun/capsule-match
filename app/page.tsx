@@ -362,7 +362,7 @@ export default function HomePage() {
       </div>
 
       {/* ───── 학교 리스트 ───── */}
-      <section ref={listSectionRef} id="school-list" className="list-section" style={{ scrollMarginTop: 0 }}>
+      <section ref={listSectionRef} className="list-section">
         <div
           ref={listHeaderRef}
           style={{
