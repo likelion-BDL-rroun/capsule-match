@@ -112,8 +112,13 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
-  // 진입 시 부드럽게 반 바퀴 돌며 "돌릴 수 있다"는 힌트
+  // 진입 시 부드럽게 반 바퀴 돌며 "돌릴 수 있다"는 힌트 (모바일은 scale 축소와 충돌해 스킵)
   useEffect(() => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      introActive.current = false;
+      isAnimating.current = false;
+      return;
+    }
     introActive.current = true;
     isAnimating.current = true;
     const totalDeg = -STEP * Math.round(N / 3);  // ≈ 1/3 바퀴, 반대 방향
