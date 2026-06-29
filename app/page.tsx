@@ -219,7 +219,7 @@ export default function HomePage() {
               className="card-stage"
               style={isMobile ? {
                 /* ── 모바일 전용: 뷰포트 기준 정중앙 ── */
-                left: '50vw',
+                left: `${cardLeft}vw`,
                 top: `${cardTop}%`,
                 transform: `translate(-50%, -50%) scale(${cardScale})`,
               } : {
