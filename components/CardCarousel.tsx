@@ -437,7 +437,6 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             transform: translateX(-50%);
             z-index: 210;
             pointer-events: none;
-            animation: scroll-hint-fade 2.4s ease-in-out infinite;
           }
           .scroll-hint-mouse {
             width: 24px;
@@ -457,10 +456,10 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             animation: scroll-hint-wheel 1.6s ease-in-out infinite;
           }
           .scroll-hint-label {
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 500;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 0.06em;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 0.02em;
             white-space: nowrap;
           }
         }
