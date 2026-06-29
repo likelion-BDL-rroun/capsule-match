@@ -430,7 +430,7 @@ export default function CardCarousel({ onComplete, isLoading }: Props) {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 16px;
             position: fixed;
             bottom: 148px;
             left: 50%;
