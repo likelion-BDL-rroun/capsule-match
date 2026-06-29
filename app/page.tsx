@@ -111,7 +111,7 @@ export default function HomePage() {
   const introIn = ease(range(p, 0.52, 0.74));
 
   const cardScale = lerp(1, 0.86, focus);
-  const cardLeft = isMobile ? 50 : lerp(50, 55, focus);   // 모바일: 중앙 고정
+  const cardLeft = isMobile ? 50 : lerp(20, 70, focus);   // 모바일: 중앙 고정
   const cardTop  = isMobile ? lerp(50, 45, focus) : 50;   // 모바일: 위로 이동
   const cardTilt = lerp(0.12, 0, focus);
 
@@ -167,7 +167,7 @@ export default function HomePage() {
         .nav-arrow-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.18); background: rgba(14,14,14,0.7); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.7); transition: border-color 0.2s, color 0.2s, background 0.2s; }
         .nav-arrow-btn:hover { border-color: #FF6000; color: #FF6000; background: rgba(255,96,0,0.1); }
         @media (max-width: 768px) {
-          .card-stage { width: clamp(260px, 72vw, 360px); }
+          .card-stage { width: clamp(260px, 72vw, 360px); left: 50vw !important; }
           .nav-arrows { bottom: 20px; right: 20px; }
           .nav-arrow-btn { width: 32px; height: 32px; }
           .bg-hero-img img { margin-top: -20px; }
