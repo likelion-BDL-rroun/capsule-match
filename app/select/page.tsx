@@ -138,15 +138,24 @@ export default function SelectPage() {
           </p>
         </div>
         <style>{`
+          @keyframes sd-wheel { 0%,100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(7px); opacity: 0.3; } }
+          @keyframes sd-fade  { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
           .carousel-wrap { width: 100%; align-self: stretch; }
           .hint-mo { display: none; }
           .pick-header { padding: 40px 40px 24px; }
           .pick-title { font-size: 36px; }
+          .pick-subtitle { font-size: 15px; color: rgba(255,255,255,0.55); margin: 0 0 0; letter-spacing: 0.02em; }
+          .scroll-hint { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 24px 0 32px; animation: sd-fade 2.4s ease-in-out infinite; }
+          .scroll-hint .mouse { width: 24px; height: 38px; border: 2px solid rgba(255,255,255,0.4); border-radius: 12px; display: flex; justify-content: center; padding-top: 6px; }
+          .scroll-hint .wheel { width: 3px; height: 7px; background: rgba(255,255,255,0.7); border-radius: 2px; animation: sd-wheel 1.6s ease-in-out infinite; }
+          .scroll-hint .scroll-label { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; }
           @media (max-width: 768px) {
             .hint-pc { display: none; }
             .hint-mo { display: inline; }
             .pick-header { padding: 20px 16px 16px; }
             .pick-title { font-size: 28px; }
+            .scroll-hint { display: none; }
+            .pick-subtitle { display: none; }
           }
           @media (max-width: 768px) {
             .carousel-wrap {
@@ -156,8 +165,15 @@ export default function SelectPage() {
             }
           }
         `}</style>
+        {/* 서브타이틀 — PC 전용 */}
+        <p className="pick-subtitle">원하는 파트너 카드를 골라서 클릭해보세요</p>
         <div className="carousel-wrap">
           <CardCarousel onComplete={handleCardPick} isLoading={isLoading} />
+        </div>
+        {/* 스크롤 인디케이터 — PC 전용 */}
+        <div className="scroll-hint">
+          <div className="mouse"><div className="wheel" /></div>
+          <span className="scroll-label">마우스 스크롤로 카드를 이동할 수 있어요</span>
         </div>
       </main>
     );
