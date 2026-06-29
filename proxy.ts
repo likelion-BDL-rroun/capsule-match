@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 // 어드민 영역 인증 가드 (Next 16: middleware → proxy).
 // /admin/login 만 공개, 나머지 /admin/* 는 admin_auth 쿠키 필요.
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'likelion2026univ';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'R8n#K2v!Qa';
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
