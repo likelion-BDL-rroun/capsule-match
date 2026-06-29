@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { University } from '@/lib/types';
@@ -20,6 +20,7 @@ export default function SelectPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [codeError, setCodeError] = useState('');
   const [verifiedCode, setVerifiedCode] = useState('');
+  const deepLinked = useRef(false);
 
   useEffect(() => {
     loadUniversities();
@@ -28,6 +29,17 @@ export default function SelectPage() {
   useEffect(() => {
     if (step === 'pickCard') window.scrollTo(0, 0);
   }, [step]);
+
+  // 메인 페이지에서 학교 선택 후 ?u= 파라미터로 진입 시 자동 선택
+  useEffect(() => {
+    if (deepLinked.current || universities.length === 0) return;
+    const uid = new URLSearchParams(window.location.search).get('u');
+    if (!uid) return;
+    const uni = universities.find((u) => u.id === uid);
+    if (!uni) return;
+    deepLinked.current = true;
+    handleUniversitySelect(uni);
+  }, [universities]);
 
   const loadUniversities = async () => {
     const { data } = await supabase
