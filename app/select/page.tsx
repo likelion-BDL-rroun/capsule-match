@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { University } from '@/lib/types';
-import UniversitySelect from '@/components/UniversitySelect';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import CodeInput from '@/components/CodeInput';
 import TicketIntro from '@/components/TicketIntro';
@@ -31,14 +30,17 @@ export default function SelectPage() {
   }, [step]);
 
   // 메인 페이지에서 학교 선택 후 ?u= 파라미터로 진입 시 자동 선택
+  // 유효한 학교가 없으면 학교 리스트는 노출하지 않고 메인 페이지 하단 리스트로 보냄
   useEffect(() => {
     if (deepLinked.current || universities.length === 0) return;
-    const uid = new URLSearchParams(window.location.search).get('u');
-    if (!uid) return;
-    const uni = universities.find((u) => u.id === uid);
-    if (!uni) return;
     deepLinked.current = true;
-    handleUniversitySelect(uni);
+    const uid = new URLSearchParams(window.location.search).get('u');
+    const uni = uid ? universities.find((u) => u.id === uid) : null;
+    if (uni) {
+      handleUniversitySelect(uni);
+    } else {
+      router.replace('/#school-list');
+    }
   }, [universities]);
 
   const loadUniversities = async () => {
@@ -85,7 +87,7 @@ export default function SelectPage() {
     setIsLoading(false);
     if (data.alreadyAssigned || data.success) { router.push(`/result/${selectedUniversity.id}`); return; }
     alert(data.error ?? '오류가 발생했어요. 다시 시도해주세요.');
-    setStep('select');
+    router.push('/#school-list');
   };
 
   // 티켓 확인 인트로
@@ -95,7 +97,7 @@ export default function SelectPage() {
         <TicketIntro
           universityName={selectedUniversity.name}
           onContinue={() => setStep('enterCode')}
-          onBack={() => setStep('select')}
+          onBack={() => router.push('/#school-list')}
         />
       </main>
     );
@@ -183,42 +185,10 @@ export default function SelectPage() {
     );
   }
 
-  // 학교 선택
+  // 학교 리스트 화면은 더 이상 노출하지 않음 — 딥링크 처리 전/리다이렉트 직전 로딩만 표시
   return (
-    <main style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
-      <style>{`
-        .univ-section-inner { padding: 20px 16px 120px; }
-        .univ-back { color: rgba(255,255,255,0.3); font-size: 14px; font-weight: 500; letter-spacing: 0.03em; background: none; border: none; cursor: pointer; display: block; transition: color 0.15s; }
-        .univ-back:hover { color: rgba(255,255,255,0.7); }
-        .univ-title { font-size: 28px; font-weight: 800; color: #fff; text-align: center; margin: 36px 0 14px; }
-        .univ-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); text-align: center; line-height: 1.6; margin: 0 0 40px; }
-        @media (min-width: 769px) {
-          .univ-section-inner { padding: 28px 40px 120px; }
-          .univ-title { font-size: 36px; }
-          .univ-subtitle { font-size: 18px; margin-bottom: 80px; }
-        }
-      `}</style>
-
-      <div className="univ-section-inner" style={{ width: '100%', maxWidth: 1232, margin: '0 auto' }}>
-        <button className="univ-back" onClick={() => router.push('/')}>
-          ‹ 돌아가기
-        </button>
-        <h2 className="univ-title">
-        안녕하세요!
-        <br />
-        학교를 확인하고 골라주세요
-        </h2>
-        <p className="univ-subtitle">
-        학교별 캐릭터 카드는 한 번만 매칭할 수 있어요
-        </p>
-        {universities.length === 0 ? (
-          <div className="flex items-center justify-center" style={{ paddingTop: 60 }}>
-            <div style={{ width: 32, height: 32, border: '4px solid rgba(255,96,0,0.2)', borderTop: '4px solid #FF6000', borderRadius: '50%' }} className="animate-spin" />
-          </div>
-        ) : (
-          <UniversitySelect universities={universities} onSelect={handleUniversitySelect} />
-        )}
-      </div>
+    <main className="flex items-center justify-center" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
+      <div style={{ width: 32, height: 32, border: '4px solid rgba(255,96,0,0.2)', borderTop: '4px solid #FF6000', borderRadius: '50%' }} className="animate-spin" />
     </main>
   );
 }
