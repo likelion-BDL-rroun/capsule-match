@@ -50,12 +50,12 @@ export default function TestSelectPage() {
     setStep('pickCard');
   };
 
-  // 카드 선택: 결과 페이지로 이동 (DB 호출 없음)
+  // 카드 선택: 결과 페이지로 이동 (DB 호출 없음). 선택한 학교 이름을 함께 전달
   const handleCardPick = async () => {
     setIsLoading(true);
     await new Promise(r => setTimeout(r, 800));
     setIsLoading(false);
-    router.push('/test-page/result');
+    router.push(`/test-page/result?uni=${encodeURIComponent(uniName)}`);
   };
 
   if (step === 'ticketIntro') {
