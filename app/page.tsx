@@ -217,9 +217,15 @@ export default function HomePage() {
             {/* 3D 회전 카드 */}
             <div
               className="card-stage"
-              style={{
-                left: isMobile ? '50%' : `${cardLeft}%`,
+              style={isMobile ? {
+                /* ── 모바일 전용 ── */
+                left: '50%',
                 top: `${cardTop}%`,
+                transform: `translate(-50%, -50%) scale(${cardScale})`,
+              } : {
+                /* ── 데스크탑 전용 ── */
+                left: `${cardLeft}%`,
+                top: '50%',
                 transform: `translate(-50%, -50%) scale(${cardScale})`,
               }}
             >
