@@ -42,10 +42,13 @@ function faceGeometry(shape: THREE.Shape) {
   return geo;
 }
 
-function Card({ tilt = 0.12 }: { tilt?: number }) {
+function Card({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number }) {
   const ref = useRef<THREE.Group>(null);
+  const outerRef = useRef<THREE.Group>(null);
   const targetTilt = useRef(tilt);
+  const targetZTilt = useRef(zTilt);
   useEffect(() => { targetTilt.current = tilt; }, [tilt]);
+  useEffect(() => { targetZTilt.current = zTilt; }, [zTilt]);
   const [front, back] = useTexture(['/card-back-Q.png', '/card-back-0624.png']);
 
   const { bodyGeo, faceGeo, bodyMat, frontMat, backMat } = useMemo(() => {
@@ -73,15 +76,18 @@ function Card({ tilt = 0.12 }: { tilt?: number }) {
   useFrame((_, delta) => {
     if (!ref.current) return;
     ref.current.rotation.y += delta * 0.75;
-    // 기울임(rotation.x)을 목표값으로 부드럽게 보간 — 히어로(기울임) ↔ 포커스(정면)
     const cur = ref.current.rotation.x;
     ref.current.rotation.x = cur + (targetTilt.current - cur) * Math.min(1, delta * 6);
+    if (outerRef.current) {
+      const curZ = outerRef.current.rotation.z;
+      outerRef.current.rotation.z = curZ + (targetZTilt.current - curZ) * Math.min(1, delta * 6);
+    }
   });
 
   const eps = DEPTH / 2 + 0.002;
 
   return (
-    <group rotation={[0, 0, -0.35]}>
+    <group ref={outerRef} rotation={[0, 0, -0.35]}>
       <group ref={ref} rotation={[0.12, 0.4, 0]}>
         <mesh geometry={bodyGeo} material={bodyMat} />
         <mesh geometry={faceGeo} material={frontMat} position={[0, 0, eps]} />
@@ -91,7 +97,7 @@ function Card({ tilt = 0.12 }: { tilt?: number }) {
   );
 }
 
-export default function SpinningCard3D({ tilt = 0.12 }: { tilt?: number }) {
+export default function SpinningCard3D({ tilt = 0.12, zTilt = -0.35 }: { tilt?: number; zTilt?: number }) {
   return (
     <Canvas
       camera={{ position: [0, 0, 7.4], fov: 30 }}
@@ -104,7 +110,7 @@ export default function SpinningCard3D({ tilt = 0.12 }: { tilt?: number }) {
       <directionalLight position={[-4, -1, 2]} intensity={0.5} color="#ffd9b0" />
 
       <Suspense fallback={null}>
-        <Card tilt={tilt} />
+        <Card tilt={tilt} zTilt={zTilt} />
         <Environment resolution={64} frames={1}>
           <Lightformer form="rect" intensity={3} position={[0, 2.5, 4]} scale={[8, 4, 1]} />
           <Lightformer form="rect" intensity={2} position={[-5, 0, 2]} scale={[3, 8, 1]} color="#ffd9b0" />

@@ -222,7 +222,7 @@ export default function HomePage() {
                 transform: `translate(-50%, -50%) scale(${cardScale})`,
               }}
             >
-              <SpinningCard3D tilt={cardTilt} />
+              <SpinningCard3D tilt={cardTilt} zTilt={lerp(-0.35, 0, focus)} />
             </div>
 
             {/* 안내 텍스트 */}
