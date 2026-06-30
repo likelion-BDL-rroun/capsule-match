@@ -258,10 +258,14 @@ export default function TestHomePage() {
         .list-section { width: 100%; max-width: 1232px; margin: 0 auto; padding: 200px 16px 620px; }
         .list-title { font-size: 28px; font-weight: 800; color: #fff; text-align: center; margin: 0 0 14px; }
         .list-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); text-align: center; line-height: 1.6; margin: 0 0 40px; }
+        /* 시연용 — 카드 1개라 가운데 정렬 + 타이틀과 간격 추가 */
+        .list-section .univ-grid { margin-top: 56px; justify-content: center; }
         @media (min-width: 769px) {
           .list-section { padding: 240px 40px 620px; }
           .list-title { font-size: 36px; }
           .list-subtitle { font-size: 18px; margin-bottom: 80px; }
+          .list-section .univ-grid { display: flex; justify-content: center; }
+          .list-section .univ-grid > div { width: clamp(150px, 16vw, 200px); }
         }
         .nav-arrows { position: fixed; bottom: 32px; right: 32px; display: flex; flex-direction: column; gap: 8px; z-index: 100; }
         .nav-arrow-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.18); background: rgba(14,14,14,0.7); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.7); transition: border-color 0.2s, color 0.2s, background 0.2s; }
