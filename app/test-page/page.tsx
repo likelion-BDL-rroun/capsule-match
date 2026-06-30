@@ -259,11 +259,11 @@ export default function TestHomePage() {
         .scroll-ind { position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; animation: sd-fade 2.4s ease-in-out infinite; }
         .scroll-ind .mouse { width: 24px; height: 38px; border: 2px solid rgba(255,255,255,0.4); border-radius: 12px; display: flex; justify-content: center; padding-top: 6px; }
         .scroll-ind .wheel { width: 3px; height: 7px; background: rgba(255,255,255,0.7); border-radius: 2px; animation: sd-wheel 1.6s ease-in-out infinite; }
-        .list-section { width: 100%; max-width: 1232px; margin: 0 auto; padding: 200px 16px 120px; }
+        .list-section { width: 100%; max-width: 1232px; margin: 0 auto; padding: 200px 16px 620px; }
         .list-title { font-size: 28px; font-weight: 800; color: #fff; text-align: center; margin: 0 0 14px; }
         .list-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); text-align: center; line-height: 1.6; margin: 0 0 40px; }
         @media (min-width: 769px) {
-          .list-section { padding: 240px 40px 120px; }
+          .list-section { padding: 240px 40px 620px; }
           .list-title { font-size: 36px; }
           .list-subtitle { font-size: 18px; margin-bottom: 80px; }
         }
@@ -383,7 +383,7 @@ export default function TestHomePage() {
               <div style={{ width: 32, height: 32, border: '4px solid rgba(255,96,0,0.2)', borderTop: '4px solid #FF6000', borderRadius: '50%' }} className="animate-spin" />
             </div>
           ) : (
-            <UniversitySelect universities={universities} onSelect={handleSelect} isMobile={isMobile} />
+            <UniversitySelect universities={universities.filter((u) => u.name === '멋사대학')} onSelect={handleSelect} isMobile={isMobile} />
           )}
         </div>
       </section>
