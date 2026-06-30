@@ -1,5 +1,6 @@
 // 대학별 로고 URL 매핑
 const universityLogos: Record<string, string> = {
+  '멋사대학': '/멋사대학.png',  // 시연용(test-page) 학교
   '가천대학교(글로벌)': '/logos/가천대학교(글로벌).png',
   '가톨릭대학교(성심)': '/logos/가톨릭대학교(성심).png',
   '강남대학교': '/logos/강남대학교.png',
