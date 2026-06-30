@@ -265,7 +265,7 @@ export default function TestHomePage() {
           .list-title { font-size: 36px; }
           .list-subtitle { font-size: 18px; margin-bottom: 80px; }
           .list-section .univ-grid { display: flex; justify-content: center; }
-          .list-section .univ-grid > div { width: clamp(150px, 16vw, 200px); }
+          .list-section .univ-grid > div { width: 140px; }
         }
         .nav-arrows { position: fixed; bottom: 32px; right: 32px; display: flex; flex-direction: column; gap: 8px; z-index: 100; }
         .nav-arrow-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.18); background: rgba(14,14,14,0.7); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.7); transition: border-color 0.2s, color 0.2s, background 0.2s; }
