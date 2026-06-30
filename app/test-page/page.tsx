@@ -3,11 +3,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { supabase } from '@/lib/supabaseClient';
 import { University } from '@/lib/types';
 import UniversitySelect from '@/components/UniversitySelect';
 
 const SpinningCard3D = dynamic(() => import('@/components/SpinningCard3D'), { ssr: false });
+
+// 시연용 — DB 없이 하드코딩한 학교 카드 1개
+const DEMO_UNIVERSITIES: University[] = [
+  { id: 'demo', name: '멋사대학', open_code_hash: '', assigned_character_id: null, assigned_at: null, created_at: '' },
+];
 
 const HERO_PARTICLES = [
   { left: '12%', top: '22%', size: 5, opacity: 0.5, dur: 9,    delay: 0,   color: 'rgba(255,150,60,0.9)' },
@@ -37,7 +41,7 @@ const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 
 
 export default function TestHomePage() {
   const router = useRouter();
-  const [universities, setUniversities] = useState<University[]>([]);
+  const [universities] = useState<University[]>(DEMO_UNIVERSITIES);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [gridVisible, setGridVisible] = useState(false);
   // 무거운 80개 학교 리스트는 화면에 가까워질 때까지 mount 보류 (첫 스크롤 끊김 방지)
@@ -68,14 +72,6 @@ export default function TestHomePage() {
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    supabase
-      .from('universities')
-      .select('id, name, assigned_character_id, assigned_at, created_at')
-      .order('name')
-      .then(({ data }) => setUniversities((data as University[]) ?? []));
   }, []);
 
   // 학교 리스트 등장 애니메이션
@@ -234,7 +230,7 @@ export default function TestHomePage() {
 
   // 시연용 — 학교 선택 시 항상 데모 플로우로 (DB 분기 없음)
   const handleSelect = (uni: University) => {
-    router.push(`/test-page/select?u=${uni.id}`);
+    router.push(`/test-page/select?uni=${encodeURIComponent(uni.name)}`);
   };
 
   return (
@@ -383,7 +379,7 @@ export default function TestHomePage() {
               <div style={{ width: 32, height: 32, border: '4px solid rgba(255,96,0,0.2)', borderTop: '4px solid #FF6000', borderRadius: '50%' }} className="animate-spin" />
             </div>
           ) : (
-            <UniversitySelect universities={universities.filter((u) => u.name === '멋사대학')} onSelect={handleSelect} isMobile={isMobile} />
+            <UniversitySelect universities={universities} onSelect={handleSelect} isMobile={isMobile} />
           )}
         </div>
       </section>

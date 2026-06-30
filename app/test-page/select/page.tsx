@@ -2,14 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import CodeInput from '@/components/CodeInput';
 import TicketIntro from '@/components/TicketIntro';
 import CardCarousel from '@/components/CardCarousel';
 
-// 시연용 플로우 — DB 쓰기 없음, 결과 고정(/test-page/result)
-const DEMO_UNI_NAME = '멋쟁이사자처럼대학교';
+// 시연용 플로우 — DB 없음, 결과 고정(/test-page/result)
+const DEMO_UNI_NAME = '멋사대학';
 
 type Step = 'loading' | 'ticketIntro' | 'enterCode' | 'pickCard';
 
@@ -20,21 +19,13 @@ export default function TestSelectPage() {
   const [isLoading, setIsLoading] = useState(false);
   const resolved = useRef(false);
 
-  // 메인(테스트) 페이지에서 ?u= 로 진입 → 학교 이름만 조회 후 데모 플로우 시작
+  // 메인(테스트) 페이지에서 ?uni= 로 진입 → 학교 이름을 그대로 받아 데모 플로우 시작 (DB 조회 없음)
   useEffect(() => {
     if (resolved.current) return;
     resolved.current = true;
-    const uid = new URLSearchParams(window.location.search).get('u');
-    if (!uid) { router.replace('/test-page'); return; }
-    supabase
-      .from('universities')
-      .select('name')
-      .eq('id', uid)
-      .single()
-      .then(({ data }) => {
-        if (data?.name) setUniName(data.name);
-        setStep('ticketIntro');
-      });
+    const uni = new URLSearchParams(window.location.search).get('uni');
+    if (uni) setUniName(uni);
+    setStep('ticketIntro');
   }, [router]);
 
   useEffect(() => {
