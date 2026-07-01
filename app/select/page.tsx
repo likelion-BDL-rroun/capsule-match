@@ -8,6 +8,7 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 import CodeInput from '@/components/CodeInput';
 import TicketIntro from '@/components/TicketIntro';
 import CardCarousel from '@/components/CardCarousel';
+import { logEvent } from '@/lib/analytics';
 
 type Step = 'select' | 'ticketIntro' | 'enterCode' | 'pickCard';
 
@@ -70,13 +71,15 @@ export default function SelectPage() {
     const data = await res.json();
     setIsLoading(false);
     if (data.alreadyAssigned) { router.push(`/result/${selectedUniversity.id}`); return; }
-    if (!data.success) { setCodeError(data.error); return; }
+    if (!data.success) { logEvent('code_fail', selectedUniversity.id); setCodeError(data.error); return; }
+    logEvent('code_success', selectedUniversity.id);
     setVerifiedCode(code);
     setStep('pickCard');
   };
 
   const handleCardPick = async () => {
     if (!selectedUniversity || !verifiedCode) return;
+    logEvent('card_clicked', selectedUniversity.id);
     setIsLoading(true);
     const res = await fetch('/api/assign-character', {
       method: 'POST',

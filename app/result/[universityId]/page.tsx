@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import ResultCard from '@/components/ResultCard';
 import CornerGlow from '@/components/CornerGlow';
+import { logEvent } from '@/lib/analytics';
 
 type ResultData = {
   universityName: string;
@@ -54,6 +55,11 @@ export default function ResultPage() {
       assignedAt: data.assigned_at ?? '',
     });
     setIsLoading(false);
+
+    // 캐릭터 공개 완료 — 플로우를 직접 끝낸 사람만 집계 (공유 링크 방문자 제외)
+    if (sessionStorage.getItem('result_from_flow') === universityId) {
+      logEvent('complete', universityId);
+    }
   };
 
   const fetchBlob = async () => {

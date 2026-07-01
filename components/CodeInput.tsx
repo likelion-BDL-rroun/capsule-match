@@ -226,9 +226,9 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
           </div>
         </div>
 
-        {/* 입력칸 */}
-        <div className="ci-center">
-          <div className="ci-boxes" style={{ animation: error ? 'code-shake 0.4s ease' : undefined }}>
+        {/* 입력칸 — Clarity 세션 녹화에서 코드 값이 노출되지 않도록 마스킹 */}
+        <div className="ci-center" data-clarity-mask="true">
+          <div className="ci-boxes" data-clarity-mask="true" style={{ animation: error ? 'code-shake 0.4s ease' : undefined }}>
             {chars.map((ch, i) => {
               const filled = ch !== '';
               const active = focusIdx === i;
@@ -241,6 +241,7 @@ export default function CodeInput({ universityName, onSubmit, isLoading, error, 
                   type="text"
                   inputMode="numeric"
                   maxLength={2}
+                  data-clarity-mask="true"
                   value={ch}
                   onChange={(e) => handleChange(i, e)}
                   onKeyDown={(e) => handleKeyDown(i, e)}

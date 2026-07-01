@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { supabase } from '@/lib/supabaseClient';
 import { University } from '@/lib/types';
 import UniversitySelect from '@/components/UniversitySelect';
+import { logEvent } from '@/lib/analytics';
 
 const SpinningCard3D = dynamic(() => import('@/components/SpinningCard3D'), { ssr: false });
 
@@ -68,6 +69,11 @@ export default function HomePage() {
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
+  }, []);
+
+  // 방문 이벤트 (메인 페이지 진입)
+  useEffect(() => {
+    logEvent('visit');
   }, []);
 
   useEffect(() => {
@@ -243,6 +249,7 @@ export default function HomePage() {
   }, []);
 
   const handleSelect = (uni: University) => {
+    logEvent('school_selected', uni.id);
     if (uni.assigned_character_id) router.push(`/result/${uni.id}`);
     else router.push(`/select?u=${uni.id}`);
   };
